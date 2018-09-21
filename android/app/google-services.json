@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "188837734533",
+    "firebase_url": "https://ishaanvi-1adfe.firebaseio.com",
+    "project_id": "ishaanvi-1adfe",
+    "storage_bucket": "ishaanvi-1adfe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188837734533:android:cf40c4a65c761873",
+        "android_client_info": {
+          "package_name": "com.isshanvi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "188837734533-og6gbgn0l08qevu4ci8rhos8t886u1md.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.isshanvi",
+            "certificate_hash": "2a24530805d5f9d1cb67c52a80535f59859b581b"
+          }
+        },
+        {
+          "client_id": "188837734533-pifu0ej3a6l4krfjkfjolp9hhblsnqcc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkd6bP6pVZXpcNtzmO9Cx--H5w6fHkeQI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "188837734533-pifu0ej3a6l4krfjkfjolp9hhblsnqcc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
