@@ -7,13 +7,16 @@ import { routerNames } from '../../RouteConfig';
 import { Api } from '../../api/Api';
 import { User } from '../../model/user';
 import { AlertMessage } from '../Modal/';
+import { Storage, StorageKeys } from '../../helper';
+const UserData = new Storage();
 
 export default class Login extends Component {
 
     state = {
         isLoading: false,
         errors: [],
-        alertMessageVisible: false
+        alertMessageVisible: false,
+        alertMessage: {}
     }
 
     constructor(props) {
@@ -24,11 +27,6 @@ export default class Login extends Component {
             password: "",
         }
     }
-
-    componentDidMount = () => {
-    //   this.setAlertMessageVisible(true);
-    }
-    
 
     /** On change */
     onTextChange = (key, value) => {
@@ -55,10 +53,14 @@ export default class Login extends Component {
                     if (res && res.data) {
                         if (res.message === "Success") {
                             User.setUserData(res.data);
-                            if (res.data.forgetPassword) history.push(routerNames.resetPassword);
                             if (res.data && res.data.verificationCode === 0) history.push(routerNames.verification, { data: res.data });
-                            else history.push(routerNames.index);
-                        } else Alert.alert("", res.message);
+                            else if (res.data.forgetPassword) history.push(routerNames.resetPassword);
+                            else {
+                                UserData.setUserData(StorageKeys.USER_DATA, res.data);
+                                history.push(routerNames.index);
+                            }
+                        } else if (res.message === "NotValid") this.setAlertMessageVisible(true, { status: res.message, heading: "User Not Valid!", message: "User/Password incorrect, Please try again" });
+                        else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });
                     } else if (res && res.response) {
                         const { status, response } = res;
                         this.setState({ errors: response && response.length ? response : [] });
@@ -68,14 +70,14 @@ export default class Login extends Component {
         });
     }
 
-    setAlertMessageVisible(alertMessageVisible) {
-        this.setState({ alertMessageVisible });
+    setAlertMessageVisible(alertMessageVisible, alertMessage) {
+        this.setState({ alertMessageVisible, alertMessage });
     }
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { isLoading, alertMessageVisible } = this.state;
+        const { isLoading, alertMessageVisible, alertMessage } = this.state;
 
         console.log(this.props);
         return (
@@ -86,6 +88,8 @@ export default class Login extends Component {
                 />
                 <AlertMessage
                     isVisible={alertMessageVisible}
+                    data={alertMessage}
+                    {...this.props}
                     setVisible={this.setAlertMessageVisible.bind(this, false)} />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={5} padding={[0, 20]} style={[stretch]} >

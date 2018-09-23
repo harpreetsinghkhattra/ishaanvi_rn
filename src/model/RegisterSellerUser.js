@@ -7,7 +7,7 @@ export class RegisterSellerUser {
         "confirm_password": "",
         "name": "",
         "business_name": "",
-        "business_address": "Naggal falsk ldkjflakj dflkaj dlfkaj flkajsdlkfaj dlfkajsdlkfa jsldk",
+        "business_address": "",
         "category": "",
         "userType": 1,
         "validMobileNumber": 0

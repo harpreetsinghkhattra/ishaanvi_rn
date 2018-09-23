@@ -33,7 +33,7 @@ export default class PagerTabIndicator extends Component {
      */
     static defaultProps = {
         tabs: [],
-        changePageWithAnimation: true
+        changePageWithAnimation: false 
     }
 
     state = {

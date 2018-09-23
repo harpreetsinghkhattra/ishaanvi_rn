@@ -39,6 +39,23 @@ export class Api {
             })
     }
 
+    static resendVerificationToken = (keys, body) => {
+        return Helper.validate(keys, body)
+            .then(({ status, response }) => {
+                if (status) {
+                    return request(`${Config.http.baseUrl}resendOTP`, { body: JSON.stringify(body) })
+                        .then((res) => {
+                            console.log("res get => ", res);
+                            return Promise.resolve(res);
+                        })
+                        .catch(err => {
+                            console.log("err", err);
+                            return Promise.reject(err);
+                        })
+                } else return Promise.resolve({ status, response });
+            })
+    }
+
     static sellerSignup = (keys, body) => {
         return Helper.validate(keys, body)
             .then(({ status, response }) => {
@@ -98,6 +115,23 @@ export class Api {
             .then(({ status, response }) => {
                 if (status) {
                     return request(`${Config.http.baseUrl}login`, { body: JSON.stringify(body) })
+                        .then((res) => {
+                            console.log("res get => ", res);
+                            return Promise.resolve(res);
+                        })
+                        .catch(err => {
+                            console.log("err", err);
+                            return Promise.reject(err);
+                        })
+                } else return Promise.resolve({ status, response });
+            })
+    }
+
+    static loginViaSocialMedia = (keys, body) => {
+        return Helper.validate(keys, body)
+            .then(({ status, response }) => {
+                if (status) {
+                    return request(`${Config.http.baseUrl}loginViaFBAndGmail`, { body: JSON.stringify(body) })
                         .then((res) => {
                             console.log("res get => ", res);
                             return Promise.resolve(res);

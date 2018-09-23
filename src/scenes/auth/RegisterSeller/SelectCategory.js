@@ -37,7 +37,7 @@ export default class SelectCategory extends Component {
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <InfoCompleteHeader
-                    index={1} />
+                    index={0} />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'space-between' }, stretch]}>
                     <WView flex dial={5} padding={[0, 10]} style={[stretch]} >
                         <WView flex dial={2} style={[stretch]}>

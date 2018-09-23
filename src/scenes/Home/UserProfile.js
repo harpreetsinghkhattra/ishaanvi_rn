@@ -4,40 +4,40 @@ import { ScrollView, PixelRatio } from 'react-native';
 import Palette from '../../Palette';
 import { Large } from '../../components/UI/btn';
 import { routerNames } from '../../RouteConfig';
-import { RecentProductsList } from '../../components/Lists';
-import { SearchHeader } from '../../components/Header';
-import { Storage, StorageKeys } from '../../helper';
+import { ChangeImage, EditActionView, UserInfo } from '../../components/Edit';
 import { User } from '../../model/user';
+import { Storage, StorageKeys } from '../../helper';
 
 const UserData = new Storage();
 
-export default class Login extends Component {
+export default class UserProfile extends Component {
 
-    async componentDidMount() {
-        const { history } = this.props;
-        const data = await UserData.getUserInfo(StorageKeys.USER_DATA);
+    state = {
+        isLoading: false,
+        userData: {}
+    }
 
-        if (data) {
-            User.setUserData(JSON.parse(data));
-        } else history.push(routerNames.selectUserAction);
+    componentDidMount() {
+        this.setState({ userData: User.getUserData() });
     }
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
+        const { userData } = this.state;
 
-        console.log(this.props);
+        console.log("userData", userData);
         return (
-            <WView dial={2} flex style={{ alignItems: 'stretch' }}>
-                <SearchHeader />
+            <WView dial={2} flex style={stretch}>
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={2} padding={[5, 5]} style={[stretch]} >
-                        <RecentProductsList
-                            heading="Test" />
-                        <RecentProductsList
-                            heading="Test" />
-                        <RecentProductsList
-                            heading="Test" />
+                        <ChangeImage
+                            imageSource={userData && userData.imageUrl ? { uri: userData.imageUrl } : require("../../images/profile.png")} />
+                        <UserInfo
+                            userData={userData} />
+                        <EditActionView
+                            {...this.props}
+                            userData={userData} />
                     </WView>
                 </ScrollView>
             </WView >

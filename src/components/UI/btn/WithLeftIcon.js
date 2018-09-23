@@ -11,7 +11,7 @@ export default WithLeftIcon = ({ isLoading, onPress, style, label, iconStyle, ic
     return (
         <WButton
             dial={5}
-            onPress={onPress}
+            onPress={isLoading ? () => { } : onPress}
             fontSize={16}
             component={() =>
                 <WRow flex dial={5}>

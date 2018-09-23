@@ -9,7 +9,7 @@ import { Api } from '../../../api/Api';
 import { InfoCompleteAutoSelect } from '../../../components/Select/';
 import { TextInputWithLabel } from '../../../components/UI/input';
 import { InfoCompleteHeader } from '../../../components/Header';
-import { AutoComplete } from '../../Modal/';
+import { AutoComplete, AlertMessage } from '../../Modal/';
 import { RegisterSellerUser } from '../../../model/RegisterSellerUser';
 import { Section, WithInfo } from '../../../components/Label';
 
@@ -18,7 +18,9 @@ export default class ContactInfo extends Component {
     state = {
         isLoading: false,
         errors: [],
-        sellerRegisterForm: {}
+        sellerRegisterForm: {},
+        alertMessageVisible: false,
+        alertMessage: {}
     }
 
     componentWillMount = () => {
@@ -44,8 +46,9 @@ export default class ContactInfo extends Component {
                     if (res && res.message) {
                         this.setState({ isLoading: false });
                         if (res.message === "Success") {
-                            history.push(routerNames.verification, {data: {...rest}});
-                        } else Alert.alert("", res.message);
+                            history.push(routerNames.verification, { data: { ...rest } });
+                        } else if (res.message === "Present") this.setAlertMessageVisible(true, { status: res.message, heading: "User is Present!", message: "Please try with another email id" });
+                        else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
                     } else if (res && res.response) {
                         const { status, response } = res;
                         this.setState({ isLoading: false, errors: response && response.length ? response : [] });
@@ -65,10 +68,14 @@ export default class ContactInfo extends Component {
         } else return { status: false, message: "" }
     }
 
+    setAlertMessageVisible(alertMessageVisible, alertMessage) {
+        this.setState({ alertMessageVisible, alertMessage });
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { isLoading, isVisible, sellerRegisterForm } = this.state;
+        const { isLoading, isVisible, sellerRegisterForm, alertMessageVisible, alertMessage } = this.state;
         const { name, email, password, confirm_password, mobile_number, category, business_name, business_address } = sellerRegisterForm;
 
         console.log(this.props);
@@ -76,6 +83,11 @@ export default class ContactInfo extends Component {
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <InfoCompleteHeader
                     index={3} />
+                <AlertMessage
+                    isVisible={alertMessageVisible}
+                    data={alertMessage}
+                    {...this.props}
+                    setVisible={this.setAlertMessageVisible.bind(this, false)} />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'space-between' }, stretch]}>
                     <WView flex dial={5} padding={[10, 20]} style={[stretch]} >
                         <WView flex dial={2} style={[stretch]}>

@@ -10,20 +10,53 @@ import { Api } from '../../api/Api';
 import { InfoCompleteAutoSelect } from '../../components/Select/';
 import { TextInputWithLabel } from '../../components/UI/input';
 import { PlaceSearchHeader } from '../../components/Header';
+import { Storage, StorageKeys } from '../../helper';
+
+const UserData = new Storage();
 
 export default class AutoComplete extends Component {
 
     state = {
         isLoading: false,
-        locations: []
+        locations: [],
+        isRecentLocations: true
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.recentLocations = [];
     }
 
     static propTypes = {
         setLocation: PropTypes.func
     }
 
-    constructor(props) {
-        super(props);
+    componentDidMount = () => {
+        this.setState({ isLoading: true });
+        this.getLocationData();
+    }
+
+
+    async getLocationData() {
+        let locations = await UserData.getUserInfo(StorageKeys.AUTO_COMPLETE_LOCATIONS);
+        const rencentItemsCount = 9;
+
+        if (locations) {
+            var recentLocations = JSON.parse(locations);
+            console.log(recentLocations);
+            if (
+                recentLocations &&
+                recentLocations.length &&
+                recentLocations.length > rencentItemsCount
+            ) {
+                recentLocations.splice(10, recentLocations.length - rencentItemsCount);
+            }
+
+            console.log('modified', recentLocations);
+            this.recentLocations = Array.from(recentLocations && recentLocations.length>0 ? recentLocations : []);
+            this.setState({ isLoading: false, locations: Array.from(recentLocations) });
+        } else this.setState({ isLoading: false });
     }
 
     /** On change */
@@ -34,7 +67,7 @@ export default class AutoComplete extends Component {
                 console.log(res);
                 switch (res.status) {
                     case "OK":
-                        this.setState({ isLoading: false, locations: res.predictions })
+                        this.setState({ isLoading: false, isRecentLocations: false, locations: res.predictions })
                         break;
                     default:
                         this.setState({ isLoading: false });
@@ -47,13 +80,28 @@ export default class AutoComplete extends Component {
             });
     }
 
-    _renderRow({ description }, index) {
+    _renderRow(item, index) {
+        const { description, id } = item;
         const { image, border, stretch } = styles;
         const { locations } = this.state;
         const { setVisible } = this.props;
+        const setLocation = () => {
+
+            if (
+                this.recentLocations &&
+                this.recentLocations.length &&
+                this.recentLocations.findIndex(ele => ele.id === id) > -1
+            ) {
+
+            } else {
+                this.recentLocations.push(item);
+                UserData.setUserData(StorageKeys.AUTO_COMPLETE_LOCATIONS, Array.from(this.recentLocations).reverse());
+            }
+            setVisible(false, description)
+        }
 
         return (
-            <WTouchable key={`location_item_${index}`} onPress={() => setVisible(false, description)} dial={4} padding={[10, 0]} style={[stretch, index !== locations.length - 1 ? border : {}]}>
+            <WTouchable key={`location_item_${index}`} onPress={() => setLocation()} dial={4} padding={[10, 0]} style={[stretch, index !== locations.length - 1 ? border : {}]}>
                 <WRow>
                     <Image style={image} source={require("../../images/location.png")} />
                     <WText margin={[0, 10]} fontSize={14}>{description}</WText>
@@ -65,7 +113,7 @@ export default class AutoComplete extends Component {
     render() {
         const { screenWidth, screenHeightWithHeader, history, isVisible, setVisible, setLocation } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { locations, isLoading } = this.state;
+        const { locations, isLoading, isRecentLocations } = this.state;
 
         console.log(this.props);
         return (
@@ -84,7 +132,10 @@ export default class AutoComplete extends Component {
                     <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'space-between' }, stretch]}>
                         <WView flex dial={5} padding={[20, 20]} style={[stretch]} >
                             <WView flex dial={2} style={[stretch]}>
+                                {isRecentLocations && <WText fontFamily={"Muli-Bold"} fontSize={18} color={Palette.theme_color} padding={[10, 0]}>Recent Locations :</WText>}
                                 {isLoading && <WSpinner size={"small"} color={Palette.theme_color} />}
+                                {isRecentLocations && locations && locations.length === 0 && !isLoading && <WText fontFamily={"Muli-Bold"} fontSize={14} color={Palette.border_color} padding={[10, 0]}>No Recent Location Present!</WText>}
+                                {!isRecentLocations && locations && locations.length === 0 && !isLoading && <WText fontFamily={"Muli-Bold"} fontSize={14} color={Palette.border_color} padding={[10, 0]}>No Location Found!</WText>}
                                 <FlatList
                                     keyExtractor={(item, index) => `location-${index}`}
                                     data={locations}

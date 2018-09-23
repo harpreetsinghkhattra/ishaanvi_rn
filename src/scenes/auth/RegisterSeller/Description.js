@@ -87,7 +87,7 @@ export default class Description extends Component {
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <InfoCompleteHeader
-                    index={2} />
+                    index={1} />
                 <AutoComplete
                     isVisible={isVisible}
                     setVisible={this.setVisible.bind(this)}

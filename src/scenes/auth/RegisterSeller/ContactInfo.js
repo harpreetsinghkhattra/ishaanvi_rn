@@ -37,14 +37,14 @@ export default class ContactInfo extends Component {
         RegisterSellerUser.setData({ [key]: value });
         this.setState({ [key]: value });
 
-        switch (key) {
-            case "mobile_number":
-                if (value && value.length >= 10) {
-                    var mob_number = value.length > 10 ? value.substr(value.length - 10, value.length) : value;
-                    this.submitNumber(mob_number);
-                }
-                break;
-        }
+        // switch (key) {
+        //     case "mobile_number":
+        //         if (value && value.length >= 10) {
+        //             var mob_number = value.length > 10 ? value.substr(value.length - 10, value.length) : value;
+        //             this.submitNumber(mob_number);
+        //         }
+        //         break;
+        // }
     }
 
     /** Is valid mobile number */
@@ -53,7 +53,7 @@ export default class ContactInfo extends Component {
         this.setState(() => ({ loadingValidNumber: true, errors: [] }), () => {
             Api.isValidMobileNumber(Object.keys({ mobile_number }), { mobile_number })
                 .then(res => {
-                    console.log(res);  
+                    console.log(res);
                     if (res && res.message) {
                         if (res.message === "Success" && res.data.status === 0) {
                             this.onTextChange("validMobileNumber", 0);
@@ -118,7 +118,7 @@ export default class ContactInfo extends Component {
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <InfoCompleteHeader
-                    index={3} />
+                    index={2} />
                 <AutoComplete
                     isVisible={isVisible}
                     setVisible={this.setVisible.bind(this, false)}
@@ -148,8 +148,8 @@ export default class ContactInfo extends Component {
                                 iconPath={require("../../../images/via_email.png")}
                                 value={email}
                                 onChangeText={value => this.onTextChange("email", value)}
-                                getFocus={ref => this.input1 = ref}
-                                onSubmitEditing={() => this.input2 && this.input2.focus()}
+                                getFocus={ref => this.input2 = ref}
+                                onSubmitEditing={() => this.input3 && this.input3.focus()}
                             />
 
                             <TextInputWithLabel
@@ -157,13 +157,14 @@ export default class ContactInfo extends Component {
                                 label="Phone Number *"
                                 placeholderName={"e.g. 9999999999"}
                                 isLoading={isLoading}
+                                keyboardType="numeric"
                                 isLoadingValidNumber={loadingValidNumber}
                                 value={mobile_number}
                                 isError={this.isError("mobile_number")}
                                 iconPath={require("../../../images/mobile_phone.png")}
                                 onChangeText={value => this.onTextChange("mobile_number", value)}
-                                getFocus={ref => this.input1 = ref}
-                                onSubmitEditing={() => this.input2 && this.input2.focus()}
+                                getFocus={ref => this.input3 = ref}
+                                onSubmitEditing={() => this.input4 && this.input4.focus()}
                             />
 
                             <TextInputWithLabel
@@ -176,8 +177,8 @@ export default class ContactInfo extends Component {
                                 onChangeText={value => this.onTextChange("password", value)}
                                 iconPath={require("../../../images/lock.png")}
                                 secureTextEntry={true}
-                                getFocus={ref => this.input3 = ref}
-                                onSubmitEditing={() => this.input4 && this.input4.focus()}
+                                getFocus={ref => this.input4 = ref}
+                                onSubmitEditing={() => this.input5 && this.input5.focus()}
                             />
 
                             <TextInputWithLabel
@@ -190,7 +191,7 @@ export default class ContactInfo extends Component {
                                 isLoading={isLoading}
                                 secureTextEntry={true}
                                 iconPath={require("../../../images/lock.png")}
-                                getFocus={ref => this.input4 = ref}
+                                getFocus={ref => this.input5 = ref}
                                 onSubmitEditing={this.sumbit.bind(this)}
                             />
 

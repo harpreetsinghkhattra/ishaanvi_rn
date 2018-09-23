@@ -5,7 +5,7 @@ import { WText, WTouchable, WRow, WView, WButton } from './';
 import { Image, Platform, TouchableNativeFeedback, TouchableOpacity } from 'react-native'
 import Palette from '../../Palette';
 
-export default WHeader = ({ onPress, iconName, iconType, label }) => {
+export default WHeader = ({ onPress, iconName, iconType, label, isLoading }) => {
 
     const { iconS, transparent } = styles;
 
@@ -15,7 +15,7 @@ export default WHeader = ({ onPress, iconName, iconType, label }) => {
                 <WButton
                     dial={5}
                     containerStyle={{ padding: 10, borderRadius: 20 }}
-                    onPress={onPress}
+                    onPress={isLoading ? () => { } : onPress}
                     component={() =>
                         <WView flex dial={5}>
                             <Image source={require("../../images/back.png")} style={{
@@ -37,7 +37,8 @@ WHeader.propTypes = {
     iconType: PropTypes.string,
     iconName: PropTypes.string,
     onPress: PropTypes.func,
-    label: PropTypes.string
+    label: PropTypes.string,
+    isLoading: PropTypes.bool
 }
 
 WHeader.defaultProps = {

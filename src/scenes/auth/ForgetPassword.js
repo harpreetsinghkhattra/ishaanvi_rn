@@ -5,12 +5,15 @@ import Palette from '../../Palette';
 import { Large } from '../../components/UI/btn';
 import { routerNames } from '../../RouteConfig';
 import { Api } from '../../api/Api';
+import { AlertMessage } from '../Modal/';
 
 export default class Login extends Component {
 
     state = {
         isLoading: false,
-        errors: []
+        errors: [],
+        alertMessageVisible: false,
+        alertMessage: {}
     }
 
     constructor(props) {
@@ -38,7 +41,8 @@ export default class Login extends Component {
                     if (res && res.data) {
                         if (res.message === "Success") {
                             history.push(routerNames.login);
-                        } else Alert.alert("", res.message);
+                        } else if (res.message === "NoValue") this.setAlertMessageVisible(true, { status: res.message, heading: "No Data Found!", message: "No data found, Please try again" });
+                        else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });
                     } else if (res && res.response) {
                         const { status, response } = res;
                         console.log("res status", response);
@@ -58,10 +62,14 @@ export default class Login extends Component {
         } else return { status: false, message: "" }
     }
 
+    setAlertMessageVisible(alertMessageVisible, alertMessage) {
+        this.setState({ alertMessageVisible, alertMessage });
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { isLoading } = this.state;
+        const { isLoading, alertMessageVisible, alertMessage } = this.state;
 
         console.log(this.props);
         return (
@@ -69,6 +77,11 @@ export default class Login extends Component {
                 <Header
                     label={"Forgot password"}
                     onPress={() => history.goBack()} />
+                <AlertMessage
+                    isVisible={alertMessageVisible}
+                    data={alertMessage}
+                    {...this.props}
+                    setVisible={this.setAlertMessageVisible.bind(this, false)} />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={5} padding={[0, 20]} style={[stretch]} >
                         <WView flex dial={5}>

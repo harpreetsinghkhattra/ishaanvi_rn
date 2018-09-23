@@ -9,15 +9,22 @@ import { Api } from '../../../api/Api';
 import { InfoCompleteAutoSelect } from '../../../components/Select/';
 import { TextInputWithLabel } from '../../../components/UI/input';
 import { InfoCompleteHeader } from '../../../components/Header';
-import { AutoComplete } from '../../Modal/';
+import { AlertMessage } from '../../Modal/';
 import { VerificationData } from '../../../model/VerificationData';
 import { Section, WithInfo } from '../../../components/Label';
+import { User } from '../../../model/user';
+import { Storage, StorageKeys } from '../../../helper/';
+
+const UserData = new Storage();
 
 export default class Verification extends Component {
 
     state = {
         isLoading: false,
-        errors: []
+        isResendLoading: false,
+        errors: [],
+        alertMessageVisible: false,
+        alertMessage: {}
     }
 
     componentDidMount = () => {
@@ -29,6 +36,10 @@ export default class Verification extends Component {
     onTextChange = (key, value) => {
         VerificationData.setData({ [key]: value });
         this.onFocus();
+    }
+
+    setAlertMessageVisible(alertMessageVisible, alertMessage) {
+        this.setState({ alertMessageVisible, alertMessage });
     }
 
     /** Focus if empty */
@@ -69,6 +80,29 @@ export default class Verification extends Component {
         }
     }
 
+    resendCode() {
+        const { history, location } = this.props;
+        const { state } = location;
+
+        this.setState(() => ({ isResendLoading: true, errors: [] }), () => {
+            Api.resendVerificationToken(['email'], { email: state.data.email })
+                .then(res => {
+                    console.log("verification  resend token res", res);
+                    if (res && res.message) {
+                        this.setState({ isResendLoading: false });
+                        if (res.message === "Success") {
+                            this.setAlertMessageVisible(true, { status: "Success", heading: "Code Sent!", message: "Verification code has been sent successfully on your registered number" });
+                        } else if (res.message === "NotValid") this.setAlertMessageVisible(true, { status: res.message, heading: "Code Not Valid!", message: "Code is incorrect, Please try again" });
+                        else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });
+                    } else if (res && res.response) {
+                        const { status, response } = res;
+                        this.setState({ isResendLoading: false, errors: response && response.length ? response : [] });
+                    }
+                })
+                .catch(err => console.log(err));
+        });
+    }
+
     /** On submit */
     sumbit = () => {
         const { history, location } = this.props;
@@ -79,11 +113,17 @@ export default class Verification extends Component {
             Api.verification(Object.keys(VerificationForm), Object.assign(VerificationForm, { email: state.data.email }))
                 .then(res => {
                     console.log("verification res", res);
-                    if (res && res.message) {      
+                    if (res && res.message) {
                         this.setState({ isLoading: false });
                         if (res.message === "Success") {
-                            history.push(routerNames.index);
-                        } else Alert.alert("", res.message);
+                            if (res.data.forgetPassword) history.push(routerNames.resetPassword);
+                            else {
+                                User.setUserData(res.data);
+                                UserData.setUserData(StorageKeys.USER_DATA, res.data);
+                                history.push(routerNames.index);
+                            }
+                        } else if (res.message === "NotValid") this.setAlertMessageVisible(true, { status: res.message, heading: "Code Not Valid!", message: "Code is incorrect, Please try again" });
+                        else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });
                     } else if (res && res.response) {
                         const { status, response } = res;
                         this.setState({ isLoading: false, errors: response && response.length ? response : [] });
@@ -106,10 +146,15 @@ export default class Verification extends Component {
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { isLoading, isVisible } = this.state;
+        const { isLoading, isResendLoading, isVisible, alertMessageVisible, alertMessage } = this.state;
 
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
+                <AlertMessage
+                    isVisible={alertMessageVisible}
+                    data={alertMessage}
+                    {...this.props}
+                    setVisible={this.setAlertMessageVisible.bind(this, false)} />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'space-between' }, stretch]}>
                     <WView flex dial={5} padding={[10, 20]} style={[stretch]} >
                         <WView flex dial={5} style={[stretch]}>
@@ -205,8 +250,9 @@ export default class Verification extends Component {
 
                         <Large
                             label="Resend OTP"
+                            isLoading={isResendLoading}
                             style={{ marginTop: 5 }}
-                            onPress={() => history.goBack()}
+                            onPress={this.resendCode.bind(this)}
                         />
                     </WView>
                 </ScrollView>

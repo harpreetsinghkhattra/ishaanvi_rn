@@ -14,7 +14,7 @@ import {
 import Home from './scenes/Home/Home';
 
 export const routerNames = {
-    selectUserAction: "/",
+    selectUserAction: "/selectUserAction",
     selectAuthType: "/select_auth_type",
     register: "/register",
     registerSellerSelectCategory: "/register_seller_select_category",
@@ -24,7 +24,7 @@ export const routerNames = {
     login: "/login",
     resetPassword: "/reset_password",
     forgetPassword: "/forget_password",
-    index: "/index",
+    index: "/",
     verification: "/verification"
 }
 

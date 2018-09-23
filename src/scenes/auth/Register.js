@@ -6,12 +6,15 @@ import { Large } from '../../components/UI/btn';
 import { CheckBox } from '../../components/UI/checkbox';
 import { routerNames } from '../../RouteConfig';
 import { Api } from '../../api/Api';
+import { AlertMessage } from '../Modal/';
 
 export default class Register extends Component {
 
     state = {
         isLoading: false,
-        errors: []
+        errors: [],
+        alertMessageVisible: false,
+        alertMessage: {}
     }
 
     constructor(props) {
@@ -43,7 +46,8 @@ export default class Register extends Component {
                     if (res && res.data) {
                         if (res.message === "Success") {
                             history.push(routerNames.login);
-                        } else Alert.alert("", res.message);
+                        } else if (res.message === "Present") this.setAlertMessageVisible(true, { status: res.message, heading: "User is Present!", message: "Please try with another email id" });
+                        else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
                     } else if (res && res.response) {
                         const { status, response } = res;
                         console.log("res status", response);
@@ -52,6 +56,10 @@ export default class Register extends Component {
                 })
                 .catch(err => console.log(err));
         });
+    }
+
+    setAlertMessageVisible(alertMessageVisible, alertMessage) {
+        this.setState({ alertMessageVisible, alertMessage });
     }
 
     /** On error */
@@ -66,7 +74,7 @@ export default class Register extends Component {
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { isLoading } = this.state;
+        const { isLoading, alertMessage, alertMessageVisible } = this.state;
 
         console.log(this.props);
         return (
@@ -74,6 +82,11 @@ export default class Register extends Component {
                 <Header
                     label={"Sign up"}
                     onPress={() => history.goBack()} />
+                <AlertMessage
+                    isVisible={alertMessageVisible}
+                    data={alertMessage}
+                    {...this.props}
+                    setVisible={this.setAlertMessageVisible.bind(this, false)} />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={5} padding={[0, 20]} style={[stretch]} >
                         <WView flex dial={5}>

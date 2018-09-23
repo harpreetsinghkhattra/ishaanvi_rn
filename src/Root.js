@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { NativeRouter, BackButton } from 'react-router-native'
+import { User } from './model/user';
 
 import MainScene from './scenes/MainScene';
 
@@ -84,7 +85,11 @@ class Rootrn extends Component {
 
     render() {
         return (
-            <NativeRouter>
+            <NativeRouter
+                getUserConfirmation={(message, cb)=>{
+                    console.log("message", message);
+                    cb(false);
+                }}>
                 <View
                     onLayout={(event) => this._onScreenUpdate(event)}
                     style={{

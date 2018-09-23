@@ -24,7 +24,7 @@ export default class TextInputWithLabel extends Component {
         iconPath: PropTypes.any,
         isLoading: PropTypes.bool,
         containerStyle: PropTypes.any,
-        flex: PropTypes.bool,
+        flex: PropTypes.number,
         isLoadingValidNumber: PropTypes.bool,
         label: PropTypes.string
     }

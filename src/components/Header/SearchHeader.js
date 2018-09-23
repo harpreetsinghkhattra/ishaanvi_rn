@@ -9,7 +9,7 @@ export default class SearchHeader extends Component {
         return (
             <WRow dial={5} padding={[5, 5]} backgroundColor={Palette.theme_color} style={{ justifyContent: "space-between" }}>
                 <WTextInput
-                    flex
+                    flex={1}
                     containerStyle={textInputContainerStyle}
                     placeholderName="Location"
                     iconPath={require("../../images/search.png")}
