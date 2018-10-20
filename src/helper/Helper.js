@@ -112,4 +112,11 @@ export class Helper {
                 } else return Promise.resolve({ status: false, response: parameters });
             });
     }
+
+    /** Reset and push rout in stack */
+    static resetAndPushRoot(history, path) {
+        history.entries = [];
+        history.index = -1;
+        history.push(path);
+    }
 }

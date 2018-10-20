@@ -11,6 +11,7 @@ import { TextInputWithLabel } from '../../../components/UI/input';
 import { InfoCompleteHeader } from '../../../components/Header';
 import { AutoComplete } from '../../Modal/';
 import { RegisterSellerUser } from '../../../model/RegisterSellerUser';
+import { User } from '../../../model/user';
 
 export default class SelectCategory extends Component {
 
@@ -18,11 +19,37 @@ export default class SelectCategory extends Component {
         isError: false
     }
 
+    componentDidMount = () => {
+        this.init();
+    }
+
+
+    init() {
+        const { history, location } = this.props;
+        const { screenType } = location.state;
+        const { name, createdTime, business_address, business_name, deletedStatus, email, forgetPassword, mobile_number, status, termsAndConditions, updatedTime, userType, category } = User.getUserData();
+        console.log('editSeller', JSON.stringify(User.getUserData())); 
+
+        if (screenType === "edit") {
+            RegisterSellerUser.setData({
+                email,
+                mobile_number,
+                "terms_and_conditions": termsAndConditions,
+                name,
+                business_name,
+                business_address,
+                userType
+            });
+        }
+    }
+
     /** On next */
     next = () => {
-        const { history } = this.props;
+        const { history, location } = this.props;
+        const { screenType } = location.state;
+
         if (RegisterSellerUser.getData().category) {
-            history.push(routerNames.registerSellerDescription);
+            history.push(routerNames.registerSellerDescription, { screenType });
         } else this.setState({ isError: true });
     }
 
@@ -30,10 +57,10 @@ export default class SelectCategory extends Component {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
         const { isLoading, isError } = this.state;
+        const { category } = User.getUserData();
 
         const categoryWidth = (screenWidth - 70) / 2;
 
-        console.log(this.props);
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <InfoCompleteHeader
@@ -50,6 +77,7 @@ export default class SelectCategory extends Component {
 
                             <CategorySelect
                                 width={categoryWidth}
+                                value={category}
                                 data={[
                                     { label: "Multi Brand's", imageSource: require("../../../images/muli_brands.png") },
                                     { label: "Garments", imageSource: require("../../../images/garments.png") },

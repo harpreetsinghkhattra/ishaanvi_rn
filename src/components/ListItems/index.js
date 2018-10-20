@@ -1,3 +1,5 @@
 import RecentProductsItem from './RecentProductsItem';
+import SelectProductTypeItem from './SelectProductTypeItem';
+import PostListItem from './PostListItem';
 
-export { RecentProductsItem };
+export { RecentProductsItem, SelectProductTypeItem, PostListItem };

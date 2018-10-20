@@ -7,8 +7,6 @@ const request = function (url, opts) {
         headers: new Headers({ "content-type": "application/json" })
     }, opts)
 
-    console.log(options);
-
     return wrappedFetch(url, options);
 }
 

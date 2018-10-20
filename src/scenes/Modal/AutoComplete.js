@@ -35,6 +35,8 @@ export default class AutoComplete extends Component {
     componentDidMount = () => {
         this.setState({ isLoading: true });
         this.getLocationData();
+
+        this.input1 && this.input1.focus();
     }
 
 
@@ -54,7 +56,7 @@ export default class AutoComplete extends Component {
             }
 
             console.log('modified', recentLocations);
-            this.recentLocations = Array.from(recentLocations && recentLocations.length>0 ? recentLocations : []);
+            this.recentLocations = Array.from(recentLocations && recentLocations.length > 0 ? recentLocations : []);
             this.setState({ isLoading: false, locations: Array.from(recentLocations) });
         } else this.setState({ isLoading: false });
     }
@@ -125,6 +127,7 @@ export default class AutoComplete extends Component {
                 <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                     <PlaceSearchHeader
                         value={""}
+                        getFocus={ref => this.input1 = ref}
                         placeholderName={"Search for location"}
                         onChangeText={(value) => value.length > 3 && this.onTextChange("location", value)}
                         onSubmitEditing={() => { }}
@@ -132,9 +135,9 @@ export default class AutoComplete extends Component {
                     <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'space-between' }, stretch]}>
                         <WView flex dial={5} padding={[20, 20]} style={[stretch]} >
                             <WView flex dial={2} style={[stretch]}>
-                                {isRecentLocations && <WText fontFamily={"Muli-Bold"} fontSize={18} color={Palette.theme_color} padding={[10, 0]}>Recent Locations :</WText>}
+                                {isRecentLocations && locations && locations.length !== 0 && <WText fontFamily={"Muli-Bold"} fontSize={18} color={Palette.theme_color} padding={[10, 0]}>Recent Locations :</WText>}
                                 {isLoading && <WSpinner size={"small"} color={Palette.theme_color} />}
-                                {isRecentLocations && locations && locations.length === 0 && !isLoading && <WText fontFamily={"Muli-Bold"} fontSize={14} color={Palette.border_color} padding={[10, 0]}>No Recent Location Present!</WText>}
+                                {isRecentLocations && locations && locations.length === 0 && !isLoading && <WText fontFamily={"Muli-Bold"} fontSize={14} color={Palette.border_color} padding={[10, 0]}>Find your location!</WText>}
                                 {!isRecentLocations && locations && locations.length === 0 && !isLoading && <WText fontFamily={"Muli-Bold"} fontSize={14} color={Palette.border_color} padding={[10, 0]}>No Location Found!</WText>}
                                 <FlatList
                                     keyExtractor={(item, index) => `location-${index}`}

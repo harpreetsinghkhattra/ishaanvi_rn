@@ -24,6 +24,15 @@ export default class CategorySelect extends Component {
         const { data } = this.props;
         const selectedItem = RegisterSellerUser.getData();
         this.setState({ data: data.map((ele, i) => ele.label.toLowerCase() === selectedItem.category ? Object.assign(ele, { "isSelected": true }) : Object.assign(ele, { "isSelected": false })) });
+        this.init();
+    }
+
+    init = () => {
+        const { value, data } = this.props;
+        if(value){
+            var index = data.findIndex(ele => ele.label.toLowerCase() === value);
+            this._onPress(data[index], index);
+        }
     }
 
     _onPress = (item, index) => {
@@ -34,12 +43,11 @@ export default class CategorySelect extends Component {
     }
 
     render = () => {
-
-        const { data } = this.state;
+        const { data } = this.state;     
 
         return (
             <FlatList
-                data={data}
+                data={data}  
                 numColumns={2}
                 keyExtractor={(item, index) => `category-select-${index}`}
                 renderItem={({ item, index }) => <CategorySelectBtn isSelected={item["isSelected"]} onPress={this._onPress.bind(this, item, index)} imageSource={item.imageSource} label={item.label} />}

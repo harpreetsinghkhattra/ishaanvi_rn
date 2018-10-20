@@ -32,7 +32,6 @@ export default class Description extends Component {
         this.setState({ business_address, business_name });
     }
 
-
     /** On change */
     onTextChange = (key, value) => {
         RegisterSellerUser.setData({ [key]: value });
@@ -41,7 +40,9 @@ export default class Description extends Component {
 
     /** On next */
     next = () => {
-        const { history } = this.props;
+        const { history, location } = this.props;
+        const { screenType } = location.state;
+
         const { business_address, business_name } = RegisterSellerUser.getData();
         console.log({ business_address, business_name });
 
@@ -50,7 +51,7 @@ export default class Description extends Component {
                 .then(res => {
                     if (res && res.message === "Success") {
                         this.setState({ isLoading: false });
-                        history.push(routerNames.registerSellerContactInfo);
+                        history.push(routerNames.registerSellerContactInfo, { screenType });
                     } else if (res && res.response) {
                         const { status, response } = res;
                         this.setState({ isLoading: false, errors: response && response.length ? response : [] });
@@ -113,7 +114,7 @@ export default class Description extends Component {
                                 placeholderName={"Mohali Punjab, India"}
                                 isError={this.isError("business_address")}
                                 isLoading={isLoading}
-                                keyboardType={"numeric"}
+                                keyboardType={"default"}
                                 onChangeText={this.setVisible.bind(this, true)}
                                 onFocus={this.setVisible.bind(this, true)}
                                 getFocus={ref => this.input2 = ref}

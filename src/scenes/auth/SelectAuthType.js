@@ -9,7 +9,7 @@ import { GoogleSignin } from 'react-native-google-signin';
 import { Api } from '../../api/Api';
 import { User } from '../../model/user';
 import { AlertMessage } from '../Modal/';
-import { Storage, StorageKeys } from '../../helper';
+import { Storage, StorageKeys, Helper } from '../../helper';
 const UserData = new Storage();
 
 export default class SelectAuthType extends Component {
@@ -102,7 +102,7 @@ export default class SelectAuthType extends Component {
                             else if (res.data.forgetPassword) history.push(routerNames.resetPassword);
                             else {
                                 UserData.setUserData(StorageKeys.USER_DATA, res.data);
-                                history.push(routerNames.index);
+                                Helper.resetAndPushRoot(history, routerNames.index);
                             }
                         } else if (res.message === "NotValid") this.setAlertMessageVisible(true, { status: res.message, heading: "User Not Valid!", message: "User/Password incorrect, Please try again" });
                         else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });

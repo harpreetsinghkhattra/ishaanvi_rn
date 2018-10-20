@@ -13,7 +13,7 @@ import { AlertMessage } from '../../Modal/';
 import { VerificationData } from '../../../model/VerificationData';
 import { Section, WithInfo } from '../../../components/Label';
 import { User } from '../../../model/user';
-import { Storage, StorageKeys } from '../../../helper/';
+import { Storage, StorageKeys, Helper } from '../../../helper/';
 
 const UserData = new Storage();
 
@@ -120,7 +120,7 @@ export default class Verification extends Component {
                             else {
                                 User.setUserData(res.data);
                                 UserData.setUserData(StorageKeys.USER_DATA, res.data);
-                                history.push(routerNames.index);
+                                Helper.resetAndPushRoot(history, routerNames.index);
                             }
                         } else if (res.message === "NotValid") this.setAlertMessageVisible(true, { status: res.message, heading: "Code Not Valid!", message: "Code is incorrect, Please try again" });
                         else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });
@@ -237,7 +237,7 @@ export default class Verification extends Component {
                                     isError={this.isError("pin6")}
                                     onChangeText={value => this.onTextChange("pin6", value)}
                                     getFocus={ref => this.input6 = ref}
-                                    onSubmitEditing={() => this.input2 && this.input2.focus()}
+                                    onSubmitEditing={this.sumbit.bind(this)}
                                 />
                             </WRow>
                         </WView>
@@ -245,14 +245,14 @@ export default class Verification extends Component {
                             label="Submit"
                             style={{ marginTop: 10 }}
                             isLoading={isLoading}
-                            onPress={this.sumbit.bind(this)}
+                            onPress={(isLoading || isResendLoading) ? () => { } : this.sumbit.bind(this)}
                         />
 
                         <Large
                             label="Resend OTP"
                             isLoading={isResendLoading}
                             style={{ marginTop: 5 }}
-                            onPress={this.resendCode.bind(this)}
+                            onPress={(isLoading || isResendLoading) ? () => { } : this.resendCode.bind(this)}
                         />
                     </WView>
                 </ScrollView>

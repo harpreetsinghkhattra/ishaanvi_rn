@@ -10,10 +10,28 @@ import { routerNames } from '../../RouteConfig';
 import Index from './Index';
 import UserProfile from './UserProfile';
 
+import { Api, Socket, User as UserApi } from '../../api';
+import { User } from '../../model/user';
+import { get_user_profile } from '../../api/SocketUrls';
+import { Storage, StorageKeys, Helper } from '../../helper';
+const UserData = new Storage();
+
 export default class Home extends Component {
 
     componentDidMount() {
-        
+        this.getUserResponse();
+    }
+
+    async getUserResponse() {
+        const { _id: id, userAccessToken: accessToken } = User.getUserData();
+        await Socket.request(get_user_profile.emit, { id, accessToken });
+        await UserApi.getSocketResponseOnce(get_user_profile.on, (res) => {
+            if (res && res.message === "Success") {
+                alert(JSON.stringify(res.data));
+                User.setUserData(res.data);
+                // UserData.setUserData(StorageKeys.USER_DATA, res.data);
+            }
+        });
     }
 
     render() {
@@ -64,7 +82,7 @@ export default class Home extends Component {
         }
 
         return (
-            <WView dial={2} flex={1} style={[{width: screenWidth, minHeight: screenHeight}]}>
+            <WView dial={2} flex={1} style={[{ width: screenWidth, minHeight: screenHeight }]}>
                 <WView dial={2} flex style={{ alignSelf: 'stretch', alignItems: 'stretch' }}>
                     <TabViews
                         tabPosition="bottom"

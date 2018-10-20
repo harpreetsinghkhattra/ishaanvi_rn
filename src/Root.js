@@ -34,7 +34,6 @@ class Rootrn extends Component {
             fontScale: null,
             userHasActivatedCallback: null
         };
-
     }
 
     componentWillMount() {
@@ -86,7 +85,7 @@ class Rootrn extends Component {
     render() {
         return (
             <NativeRouter
-                getUserConfirmation={(message, cb)=>{
+                getUserConfirmation={(message, cb) => {
                     console.log("message", message);
                     cb(false);
                 }}>

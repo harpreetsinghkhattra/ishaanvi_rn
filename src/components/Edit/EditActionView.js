@@ -5,7 +5,7 @@ import { LabelWithRightBtn } from './';
 import { Switch } from 'react-native';
 import { Section } from '../Label';
 import { AlertMessage } from '../../scenes/Modal/'
-import { Storage, StorageKeys } from '../../helper';
+import { Storage, StorageKeys, Helper } from '../../helper';
 import { routerNames } from '../../RouteConfig';
 import { User } from '../../model/user';
 
@@ -19,6 +19,12 @@ export default class EditActionView extends Component {
         alertMessage: {}
     }
 
+    openScreen = (path, options) => {
+        const { history } = this.props;
+        options = options && options.screenType ? options : {};
+        history.push(path, options);
+    }
+
     setAlertMessageVisible(alertMessageVisible, alertMessage) {
         this.setState({ alertMessageVisible, alertMessage });
     }
@@ -27,9 +33,9 @@ export default class EditActionView extends Component {
         const { history } = this.props;
 
         this.setAlertMessageVisible(false, {});
-        // User.resetUserData();
-        // await UserData.removeItem(StorageKeys.USER_DATA);
-        history.push(routerNames.selectUserAction);
+        User.resetUserData();
+        await UserData.removeItem(StorageKeys.USER_DATA);
+        Helper.resetAndPushRoot(history, routerNames.selectUserAction);
     }
 
     onDecline = () => {
@@ -39,7 +45,7 @@ export default class EditActionView extends Component {
     render() {
         const { stretch } = styles;
         const { alertMessageVisible, alertMessage } = this.state;
-        const { userType  } = User.getUserData();
+        const { userType } = User.getUserData();
 
         return (
             <WView dial={5} padding={[10, 0]} style={[stretch]}>
@@ -55,18 +61,20 @@ export default class EditActionView extends Component {
                 <Section
                     label={"Actions"} />
                 <LabelWithRightBtn
+                    onPress={this.openScreen.bind(this, User.getUserData().userType === 1 ? routerNames.registerSellerSelectCategory : routerNames.edit_user_profile, { screenType: "edit" })}
                     label={"Edit User"} />
                 <LabelWithRightBtn
                     label={"Edit Password"} />
-                {   
+                {
                     userType === 1 &&
                     <LabelWithRightBtn
-                    label={"Selling Board"} />
+                        onPress={this.openScreen.bind(this, routerNames.post_offer_list, {})}
+                        label={"Selling Board"} />
                 }
                 {
-                    userType === 1 &&                    
+                    userType === 1 &&
                     <LabelWithRightBtn
-                    label={"View Portal"} />
+                        label={"View Portal"} />
                 }
                 <LabelWithRightBtn
                     label={"Notifications"} />

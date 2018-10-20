@@ -25,7 +25,6 @@ export class Api {
                         token += body[value] ? body[value] : "";
                     }
 
-                    alert(token);
                     return request(`${Config.http.baseUrl}verification`, { body: JSON.stringify({ email, token }) })
                         .then((res) => {
                             console.log("res get => ", res);

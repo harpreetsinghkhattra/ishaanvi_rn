@@ -17,8 +17,7 @@ export default class WTextInput extends Component {
         source: PropTypes.any,
         placeholderName: PropTypes.string.isRequired,
         keyboardType: PropTypes.string,
-        value: PropTypes.string.isRequired,
-        onSubmitEditing: PropTypes.func.isRequired,
+        onSubmitEditing: PropTypes.func.isRequired, 
         margin: PropTypes.array,
         padding: PropTypes.array,
         iconPath: PropTypes.any,
@@ -30,7 +29,6 @@ export default class WTextInput extends Component {
     static defaultProps = {
         placeholderTextColor: Palette.placholderColor,
         keyboardType: "default",
-        value: "",
         secureTextEntry: false,
         returnKeyType: "next"
     }
@@ -53,7 +51,6 @@ export default class WTextInput extends Component {
             placeholderTextColor,
             placeholderName,
             keyboardType,
-            value,
             onSubmitEditing,
             secureTextEntry = undefined,
             returnKeyLabel,

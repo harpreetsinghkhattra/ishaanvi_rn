@@ -5,7 +5,7 @@ import { WText, WTouchable, WRow, WView, WButton, WTextInput } from '../common';
 import { Image, Platform, TouchableNativeFeedback, TouchableOpacity } from 'react-native'
 import Palette from '../../Palette';
 
-export default PlaceSearchHeader = ({ onPress, iconName, iconType, label, onChangeText, isLoading, value, onSubmitEditing, placeholderName }) => {
+export default PlaceSearchHeader = ({ onPress, iconName, iconType, label, onChangeText, isLoading, value, onSubmitEditing, placeholderName, getFocus }) => {
 
     const { iconS, transparent } = styles;
 
@@ -27,12 +27,12 @@ export default PlaceSearchHeader = ({ onPress, iconName, iconType, label, onChan
             </WView>
             <WTextInput
                 flex={3}
+                getFocus={getFocus}
                 placeholderName={placeholderName}
                 isLoading={isLoading}
                 onChangeText={onChangeText}
-                containerStyle={{ borderColor: "transparent" }} 
+                containerStyle={{ borderColor: "transparent" }}
                 onSubmitEditing={onSubmitEditing}
-                value={value}
             />
             <WView flex dial={5} />
         </Header>
@@ -56,7 +56,8 @@ PlaceSearchHeader.propTypes = {
     padding: PropTypes.array,
     iconPath: PropTypes.any,
     isLoading: PropTypes.bool,
-    onChangeText: PropTypes.func
+    onChangeText: PropTypes.func,
+    getFocus: PropTypes.func
 }
 
 PlaceSearchHeader.defaultProps = {

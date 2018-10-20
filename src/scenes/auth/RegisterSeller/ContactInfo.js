@@ -73,25 +73,51 @@ export default class ContactInfo extends Component {
 
     /** On submit */
     sumbit = () => {
-        const { history } = this.props;
-        const { terms_and_conditions, validMobileNumber, ...rest } = RegisterSellerUser.getData();
+        const { history, location } = this.props;
+        const { screenType } = location.state;
 
-        validMobileNumber === 0 &&
-            this.setState(() => ({ isLoading: true, errors: [] }), () => {
-                Api.isValidForm(Object.keys({ ...rest }), { ...rest })
-                    .then(res => {
-                        if (res && res.message) {
-                            this.setState({ isLoading: false });
-                            if (res.message === "Success") {
-                                history.push(routerNames.registerSellerViewInfo);
-                            } else Alert.alert("", res.message);
-                        } else if (res && res.response) {
-                            const { status, response } = res;
-                            this.setState({ isLoading: false, errors: response && response.length ? response : [] });
-                        }
-                    })
-                    .catch(err => console.log(err));
-            });
+        console.log('editSeller', RegisterSellerUser.getData());
+
+        if (screenType === "edit") {
+            const { terms_and_conditions, validMobileNumber, password, confirm_password, ...rest } = RegisterSellerUser.getData();
+
+            validMobileNumber === 0 &&
+                this.setState(() => ({ isLoading: true, errors: [] }), () => {
+                    Api.isValidForm(Object.keys({ ...rest }), { ...rest })
+                        .then(res => {
+                            if (res && res.message) {
+                                this.setState({ isLoading: false });
+                                if (res.message === "Success") {
+                                    history.push(routerNames.registerSellerViewInfo, { screenType });
+                                } else Alert.alert("", res.message);
+                            } else if (res && res.response) {
+                                const { status, response } = res;
+                                this.setState({ isLoading: false, errors: response && response.length ? response : [] });
+                            }
+                        })
+                        .catch(err => console.log(err));
+                });
+        } else {
+            const { terms_and_conditions, validMobileNumber, password, confirm_password, ...rest } = RegisterSellerUser.getData();
+
+            validMobileNumber === 0 &&
+                this.setState(() => ({ isLoading: true, errors: [] }), () => {
+                    Api.isValidForm(Object.keys({ ...rest }), { ...rest })
+                        .then(res => {
+                            if (res && res.message) {
+                                this.setState({ isLoading: false });
+                                if (res.message === "Success") {
+                                    history.push(routerNames.registerSellerViewInfo, { screenType });
+                                } else Alert.alert("", res.message);
+                            } else if (res && res.response) {
+                                const { status, response } = res;
+                                console.log('editSeller', res);
+                                this.setState({ isLoading: false, errors: response && response.length ? response : [] });
+                            }
+                        })
+                        .catch(err => console.log(err));
+                });
+        }
     }
 
     /** On error */
@@ -110,9 +136,11 @@ export default class ContactInfo extends Component {
     }
 
     render() {
-        const { screenWidth, screenHeightWithHeader, history } = this.props;
+        const { screenWidth, screenHeightWithHeader, history, location } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
         const { isLoading, isVisible, name, email, password, confirm_password, mobile_number, loadingValidNumber } = this.state;
+        const { screenType } = location.state;
+        const isPassword = screenType === 'edit' ? true : false;
 
         console.log(this.props);
         return (
@@ -167,34 +195,39 @@ export default class ContactInfo extends Component {
                                 onSubmitEditing={() => this.input4 && this.input4.focus()}
                             />
 
-                            <TextInputWithLabel
-                                margin={[10, 0]}
-                                label={"Password (at least 5 characters) *"}
-                                placeholderName={"e.g. ******"}
-                                isError={this.isError("password")}
-                                isLoading={isLoading}
-                                value={password}
-                                onChangeText={value => this.onTextChange("password", value)}
-                                iconPath={require("../../../images/lock.png")}
-                                secureTextEntry={true}
-                                getFocus={ref => this.input4 = ref}
-                                onSubmitEditing={() => this.input5 && this.input5.focus()}
-                            />
+                            {
+                                !isPassword &&
+                                <TextInputWithLabel
+                                    margin={[10, 0]}
+                                    label={"Password (at least 5 characters) *"}
+                                    placeholderName={"e.g. ******"}
+                                    isError={this.isError("password")}
+                                    isLoading={isLoading}
+                                    value={password}
+                                    onChangeText={value => this.onTextChange("password", value)}
+                                    iconPath={require("../../../images/lock.png")}
+                                    secureTextEntry={true}
+                                    getFocus={ref => this.input4 = ref}
+                                    onSubmitEditing={() => this.input5 && this.input5.focus()}
+                                />
+                            }
 
-                            <TextInputWithLabel
-                                margin={[10, 0]}
-                                label={"Confirm Password *"}
-                                value={confirm_password}
-                                placeholderName={"e.g. ******"}
-                                isError={this.isError("confirm_password")}
-                                onChangeText={value => this.onTextChange("confirm_password", value)}
-                                isLoading={isLoading}
-                                secureTextEntry={true}
-                                iconPath={require("../../../images/lock.png")}
-                                getFocus={ref => this.input5 = ref}
-                                onSubmitEditing={this.sumbit.bind(this)}
-                            />
-
+                            {
+                                !isPassword &&
+                                <TextInputWithLabel
+                                    margin={[10, 0]}
+                                    label={"Confirm Password *"}
+                                    value={confirm_password}
+                                    placeholderName={"e.g. ******"}
+                                    isError={this.isError("confirm_password")}
+                                    onChangeText={value => this.onTextChange("confirm_password", value)}
+                                    isLoading={isLoading}
+                                    secureTextEntry={true}
+                                    iconPath={require("../../../images/lock.png")}
+                                    getFocus={ref => this.input5 = ref}
+                                    onSubmitEditing={this.sumbit.bind(this)}
+                                />
+                            }
                         </WView>
                         <WRow dial={4} padding={[10, 0]} style={{ justifyContent: "space-between" }}>
                             <WithSeprateIcon

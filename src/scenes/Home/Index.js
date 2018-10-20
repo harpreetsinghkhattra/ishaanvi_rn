@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { WView, WText, WRow, Header, WTextInput } from '../../components/common';
-import { ScrollView, PixelRatio } from 'react-native';
+import { WView, WText, WRow, Header, WTextInput, WTouchable } from '../../components/common';
+import { ScrollView, PixelRatio, Image } from 'react-native';
 import Palette from '../../Palette';
 import { Large } from '../../components/UI/btn';
 import { routerNames } from '../../RouteConfig';
@@ -13,18 +13,17 @@ const UserData = new Storage();
 
 export default class Login extends Component {
 
-    async componentDidMount() {
+    openScreen(path) {
         const { history } = this.props;
-        const data = await UserData.getUserInfo(StorageKeys.USER_DATA);
 
-        if (data) {
-            User.setUserData(JSON.parse(data));
-        } else history.push(routerNames.selectUserAction);
+        history.push(path);
     }
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
-        const { stretch, btnStyle, btnContainer, border } = styles;
+        const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
+        const { userType } = User.getUserData();
+        const plus = require('../../images/plus.png');
 
         console.log(this.props);
         return (
@@ -40,6 +39,12 @@ export default class Login extends Component {
                             heading="Test" />
                     </WView>
                 </ScrollView>
+                {
+                    userType === 1 &&
+                    <WTouchable onPress={this.openScreen.bind(this, routerNames.post_offer_detail)} dial={5} style={floatBtn}>
+                        <Image source={plus} style={icon} />
+                    </WTouchable>
+                }
             </WView >
         )
     }
@@ -62,5 +67,19 @@ const styles = {
         borderStyle: "solid",
         borderBottomWidth: (5 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
         borderColor: Palette.theme_color
+    },
+    icon: {
+        width: 20,
+        height: 20,
+        tintColor: Palette.white
+    },
+    floatBtn: {
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        backgroundColor: Palette.theme_color,
+        width: 50,
+        height: 50,
+        borderRadius: 25
     }
 }

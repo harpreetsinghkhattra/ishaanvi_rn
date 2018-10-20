@@ -7,7 +7,7 @@ import { routerNames } from '../../RouteConfig';
 import { Api } from '../../api/Api';
 import { AlertMessage } from '../Modal/';
 import { User } from '../../model/user';
-import { Storage, StorageKeys } from '../../helper/';
+import { Storage, StorageKeys, Helper } from '../../helper/';
 const UserData = new Storage();
 
 export default class ResetPassword extends Component {
@@ -57,7 +57,7 @@ export default class ResetPassword extends Component {
                         if (res.message === "Success") {
                             User.setUserData(res.data);
                             UserData.setUserData(StorageKeys.USER_DATA, res.data); 
-                            history.push(routerNames.index);
+                            Helper.resetAndPushRoot(history, routerNames.index);
                         } else if (res.message === "NoValue") this.setAlertMessageVisible(true, { status: res.message, heading: "Not present!", message: "Email does not exists, Please try again" });
                         else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });
                     } else if (res && res.response) {

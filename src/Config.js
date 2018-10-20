@@ -20,13 +20,15 @@ export default {
 
     // HTTP settings
     http: {
-        server: "https://thawing-citadel-16848.herokuapp.com/",
-        baseUrl: "https://thawing-citadel-16848.herokuapp.com/api/",
+        // server: "https://thawing-citadel-16848.herokuapp.com/",
+        // baseUrl: "https://thawing-citadel-16848.herokuapp.com/api/",
+        server: "http://13.127.188.164:3000/",
+        baseUrl: "http://13.127.188.164:3000/api/",
         locationBaseUrl: "https://maps.googleapis.com/maps/api/place/autocomplete/json"
     },
 
     keys:{
-        googleLocation: "AIzaSyBVx1pUqB-gI7wh0OJ8-unCZGGIdfee-Jk"
+        googleLocation: "AIzaSyC3p6fQ5ebHm1IUq71tA8czm6Cqvr0hzpY"
     },
 
     keystore: {

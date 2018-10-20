@@ -22,7 +22,8 @@ class Main extends Component {
 
     constructor(props) {
         super(props)
-        this.is_mounted = false
+        this.is_mounted = false;
+        this.routes = {};
     }
 
     componentDidMount() {
@@ -51,6 +52,13 @@ class Main extends Component {
         // } 
     }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+      console.log("shouldUpdate", this.routes);
+
+      return true;
+    }
+    
+
     render() {
         return (
             <Switch>
@@ -62,6 +70,7 @@ class Main extends Component {
                             exact={exact}
                             path={path}
                             component={(rest) => {
+                                this.routes = rest; 
                                 this.handleBackPress(rest);
                                 return (<Component {...rest} {...this.props} />);
                             }} />);

@@ -77,7 +77,7 @@ export default class AlertMessage extends Component {
                                 <Image source={icon} style={[image]} />
                             </WView>
                             <WText fontSize={18} padding={[5, 0, 0, 0]} center fontFamily={"Muli-Bold"}>{heading}</WText>
-                            <WText padding={[0, 0, 5, 0]} center color={Palette.border_color} lines={2}>{message}</WText>
+                            <WText padding={[0, 5, 5, 5]} center color={Palette.border_color} lines={2}>{message}</WText>
                             <WView flex dial={5} backgroundColor={Palette.theme_color}>
                                 <Image source={require("../../images/down_caret.png")} style={[image, caretImage]} />
                                 {this._renderButton()}

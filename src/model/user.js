@@ -2,6 +2,7 @@ export class User {
     static state = {
         "_id": "",
         "email": "",
+        "name": "",
         "userType": "",
         "mobileNumber": "",
         "termsAndConditions": "",
@@ -25,6 +26,7 @@ export class User {
         this.state = {
             "_id": "",
             "email": "",
+            "name": "",
             "userType": "",
             "mobileNumber": "",
             "termsAndConditions": "",
