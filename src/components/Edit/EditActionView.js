@@ -64,6 +64,7 @@ export default class EditActionView extends Component {
                     onPress={this.openScreen.bind(this, User.getUserData().userType === 1 ? routerNames.registerSellerSelectCategory : routerNames.edit_user_profile, { screenType: "edit" })}
                     label={"Edit User"} />
                 <LabelWithRightBtn
+                    onPress={this.openScreen.bind(this, routerNames.resetPassword, { screenType: "edit" })}
                     label={"Edit Password"} />
                 {
                     userType === 1 &&

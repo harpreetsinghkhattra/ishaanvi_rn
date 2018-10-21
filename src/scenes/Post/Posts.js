@@ -31,9 +31,9 @@ export default class Posts extends Component {
     }
 
 
-    openScreen = (path) => {
+    openScreen = (path, item) => {
         const { history } = this.props;
-        history.push(path);
+        history.push(path, { item });
     }
 
     getProducts = () => {
@@ -52,7 +52,7 @@ export default class Posts extends Component {
 
         UserApi.getSocketResponseOnce(get_products.on, (res) => {
             if (res.message === "Success") {
-                this.setState({ isLoading: false, products: res.data });
+                this.setState({ isLoading: false, products: res.data ? [] : [] });
                 return;
             }
 
@@ -78,7 +78,7 @@ export default class Posts extends Component {
                                 <WText color={Palette.theme_color} fontFamily={"Muli-Bold"} fontSize={18}>Products</WText>
                                 <Large
                                     label="Add Product"
-                                    onPress={this.openScreen.bind(this, routerNames.post_offer_detail)}
+                                    onPress={this.openScreen.bind(this, routerNames.post_offer_detail, {})}
                                     style={{ height: 30 }}
                                 />
                             </WRow>
@@ -86,10 +86,16 @@ export default class Posts extends Component {
                                 isLoading ?
                                     <WSpinner size="small" color={Palette.theme_color} />
                                     :
+                                    products && products.length ?
                                     <PostsList
                                         {...this.props}
                                         data={products}
                                     />
+                                    :
+                                    <WView flex dial={5}>
+                                        <WText fontSize={15} fontFamily={'Muli-Bold'} center>No Product is Present</WText>
+                                        <WText fontSize={14} fontFamily={'Muli-Bold'} center color={Palette.theme_color} onPress={this.openScreen.bind(this, routerNames.post_offer_detail, {})}>Add New Product</WText>
+                                    </WView>
                             }
 
                         </WView>

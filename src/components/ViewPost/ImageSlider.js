@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, Image } from 'react-native';
 import Palette from '../../Palette';
 import { SliderIndicator } from './';
@@ -8,21 +9,24 @@ import { routerNames } from '../../RouteConfig';
 
 export default class Home extends Component {
 
+    static propTypes = {
+        data: PropTypes.array
+    }
+
+    openPress(path, data) {
+        const { history } = this.props;
+        history.push(path, data);
+    }
+
     render() {
+        const { data } = this.props;
         const empty = [];
-        const views = [
-            { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' },
-            { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' },
-            { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' },
-            { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' },
-            { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' },
-        ];
         const { screenWidth, screenHeight, history } = this.props;
 
         const _renderHeader = () => {
             return (
                 <SliderIndicator
-                    tabs={views}
+                    tabs={data}
                     iconStyle={{ tintColor: Palette.white }}
                 />
             );
@@ -37,10 +41,10 @@ export default class Home extends Component {
                         indicator={_renderHeader()}
                         style={{ flex: 1 }}
                     >
-                        {views.map((ele, index) =>
-                            <WView flex key={`images-${index}`}>
-                                <Image source={ele} style={{ width: screenWidth, height: 200 }} resizeMode={"cover"} />
-                            </WView>
+                        {data.map((ele, index) =>
+                            <WTouchable onPress={this.openPress.bind(this, routerNames.view_offer_images, { data, initialPage: index })} activeOpacity={1} flex key={`images-${index}`}>
+                                <Image source={{ uri: ele }} style={{ width: screenWidth, height: 200 }} resizeMode={"cover"} />
+                            </WTouchable>
                         )}
                     </TabViews>
                 </WView>

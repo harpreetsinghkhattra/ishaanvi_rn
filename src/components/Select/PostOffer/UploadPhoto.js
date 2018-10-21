@@ -7,6 +7,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
 import { User } from '../../../model/user';
 import { ProgressBar } from '../../Edit/';
+import { PostOffer } from '../../../model/PostOffer';
 
 export default class UploadPhoto extends Component {
 
@@ -17,6 +18,12 @@ export default class UploadPhoto extends Component {
   static propTypes = {
     onPress: PropTypes.func
   }
+
+  componentDidMount = () => {
+    const { photos } = PostOffer.getData();
+    this.setState({ images: photos && photos.length ? photos : [] });
+  }
+
 
   getImageFromCamera = () => {
     const { onPhotosSelect } = this.props;

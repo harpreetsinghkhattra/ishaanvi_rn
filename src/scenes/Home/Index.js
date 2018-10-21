@@ -16,7 +16,7 @@ export default class Login extends Component {
     openScreen(path) {
         const { history } = this.props;
 
-        history.push(path);
+        history.push(path, {});
     }
 
     render() {

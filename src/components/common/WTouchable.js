@@ -14,6 +14,7 @@ const View = (props) => {
         margin,
         padding,
         reverse,
+        activeOpacity=0.6,
         ...otherProps
     } = props;
 
@@ -31,7 +32,7 @@ const View = (props) => {
     const flexDirection = reverse ? 'column-reverse' : 'column';
 
     return (
-        <RNTouchable style={[{ flexDirection, justifyContent, alignItems, flex }, _WStyles, style]} {...otherProps} activeOpacity = {0.6}>
+        <RNTouchable style={[{ flexDirection, justifyContent, alignItems, flex }, _WStyles, style]} {...otherProps} activeOpacity = {activeOpacity}>
             {props.children}
         </RNTouchable>
     );

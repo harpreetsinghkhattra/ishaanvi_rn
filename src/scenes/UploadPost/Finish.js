@@ -23,15 +23,18 @@ export default class Finish extends Component {
         this.setState({ userData: User.getUserData() });
     }
 
-    openScreen(){
-        const { history } = this.props;
-        history.go(-3);
+    openScreen() {
+        const { history, location } = this.props;
+        const { screenType, item } = location.state;
+
+        history.go(screenType === 'edit' ? -4 : -3);
     }
 
     render() {
-        const { screenWidth, screenHeightWithHeader, history } = this.props;
+        const { screenWidth, screenHeightWithHeader, history, location } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
         const { userData } = this.state;
+        const { screenType, item } = location.state;
 
         return (
             <WView dial={2} flex style={stretch}>
@@ -43,7 +46,7 @@ export default class Finish extends Component {
                     <WView flex dial={2} padding={[5, 5]} style={[stretch, { justifyContent: 'space-between' }]} >
                         <WView flex dial={5}>
                             <WText fontSize={20} color={Palette.theme_color} fontFamily={"Muli-Bold"} center>Success!</WText>
-                            <WText fontSize={14} color={Palette.border_color} center>Product successfully created.</WText>
+                            <WText fontSize={14} color={Palette.border_color} center>{`Product successfully ${screenType === 'edit' ? 'updated' : 'created'}.`}</WText>
                         </WView>
                         <Large
                             label="Done"

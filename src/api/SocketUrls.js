@@ -18,6 +18,11 @@ const add_product = {
     on: "/socket/api/response/addProduct"
 }
 
+const edit_product = {
+    emit: "/socket/api/editProduct",
+    on: "/socket/api/response/editProduct"
+}
+
 const get_products = {
     emit: "/socket/api/getUserProducts",
     on: "/socket/api/response/getUserProducts"
@@ -32,6 +37,7 @@ export {
     edit_user_profile,
     get_user_profile,
     add_product,
+    edit_product,
     get_products,
     get_product,
     edit_seller_profile

@@ -50,7 +50,7 @@ export default class SliderIndeicator extends Component {
             return (
                 <Image
                     key={`tabs-indicator${index}`}
-                    style={[styles.image, { tintColor: isSelected ? Palette.white : Palette.line_color }]}
+                    style={[styles.image, { tintColor: isSelected ? Palette.theme_color : Palette.white }]}
                     source={circle}
                 />
             )

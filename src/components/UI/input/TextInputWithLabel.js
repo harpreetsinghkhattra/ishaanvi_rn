@@ -71,6 +71,7 @@ export default class TextInputWithLabel extends Component {
             flex,
             label,
             isLoadingValidNumber,
+            editable,
             ...rest
         } = this.props;
 
@@ -94,7 +95,7 @@ export default class TextInputWithLabel extends Component {
                         underlineColorAndroid={"transparent"}
                         placeholderTextColor={placeholderTextColor}
                         placeholder={placeholderName}
-                        editable={isLoading ? false : true}
+                        editable={(isLoading || editable) ? false : true}
                         onSubmitEditing={onSubmitEditing}
                         secureTextEntry={isSecureTextEntry}
                         returnKeyType={returnKeyType}

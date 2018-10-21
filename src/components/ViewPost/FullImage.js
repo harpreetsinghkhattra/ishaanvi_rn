@@ -9,6 +9,8 @@ import { routerNames } from '../../RouteConfig';
 export default class Home extends Component {
 
     render() {
+        const { screenWidth, screenHeight, history, location } = this.props;
+        const { data, initialPage } = location.state;
         const empty = [];
         const views = [
             { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' },
@@ -17,12 +19,11 @@ export default class Home extends Component {
             { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' },
             { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' },
         ];
-        const { screenWidth, screenHeight, history } = this.props;
 
         const _renderHeader = () => {
             return (
                 <SliderIndicator
-                    tabs={views}
+                    tabs={data}
                     iconStyle={{ tintColor: Palette.white }}
                 />
             );
@@ -35,11 +36,12 @@ export default class Home extends Component {
                         tabPosition="bottom"
                         horizontalScroll={true}
                         indicator={_renderHeader()}
+                        initialPage={initialPage ? initialPage : 0}
                         style={{ flex: 1 }}
                     >
-                        {views.map((ele, index) =>
+                        {data.map((ele, index) =>
                             <WView flex key={`images-${index}`}>
-                                <Image source={ele} style={{ width: screenWidth, height: screenHeight }} resizeMode={"cover"} />
+                                <Image source={{ uri: ele }} style={{ width: screenWidth, height: screenHeight }} resizeMode={"cover"} />
                             </WView>
                         )}
                     </TabViews>

@@ -62,29 +62,32 @@ export default class UserInfo extends Component {
                 <Section
                     label={"User Info"} />
                 {
-                    name &&
-                    <WithInfo
-                        label={"Name"}
-                        padding={[5, 10]}
-                        value={name} />
+                    name ?
+                        <WithInfo
+                            label={"Name"}
+                            padding={[5, 10]}
+                            value={name} />
+                        : null
                 }
                 <WithInfo
                     label={"Email"}
                     padding={[5, 10]}
                     value={email} />
                 {
-                    mobile_number &&
-                    <WithInfo
-                        label={"Mobile Number"}
-                        padding={[5, 10]}
-                        value={mobile_number} />
+                    mobile_number ?
+                        <WithInfo
+                            label={"Mobile Number"}
+                            padding={[5, 10]}
+                            value={mobile_number} />
+                        : null
                 }
                 {
-                    location &&
-                    <WithInfo
-                        label={"Location"}
-                        padding={[5, 10]}
-                        value={location} />
+                    location ?
+                        <WithInfo
+                            label={"Location"}
+                            padding={[5, 10]}
+                            value={location} />
+                        : null
                 }
             </WView>
         );

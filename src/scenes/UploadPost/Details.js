@@ -15,7 +15,7 @@ import { PostOffer } from '../../model/PostOffer';
 
 import { Api, Socket, User as UserApi } from '../../api';
 import { AlertMessage, AutoComplete } from '../Modal/';
-import { add_product } from '../../api/SocketUrls';
+import { add_product, edit_product } from '../../api/SocketUrls';
 
 const UserData = new Storage();
 const BOTTOM_STATUS_BAR = 56;
@@ -32,10 +32,38 @@ export default class Details extends Component {
     }
 
     componentWillMount = () => {
+        this.init();
+
         const { photos, ...rest } = PostOffer.getData();
         this.setState({ formData: { ...rest }, userData: User.getUserData() });
     }
 
+    init = () => {
+        const { history, location } = this.props;
+        const { screenType, item } = location.state;
+
+        if (screenType === "edit") {
+            const { name, size, color, description, price, discount, itemCode, material, occasion, type, selectType, category, images, status } = item;
+
+            PostOffer.setData({
+                itemCode,
+                name,
+                size,
+                color,
+                description,
+                price,
+                discount,
+                material,
+                occasion,
+                type,
+                selectType,
+                category,
+                status,
+                deletedStatus: '0',
+                photos: images && images.length ? images : []
+            });
+        } else PostOffer.resetData();
+    }
 
     /** On change */
     onTextChange = (key, value) => {
@@ -56,7 +84,22 @@ export default class Details extends Component {
             this.setState({ isLoading: false });
             if (res && res.data) {
                 if (res.message === "Success") {
-                    history.push(routerNames.post_offer_photos)
+                    history.push(routerNames.post_offer_photos, {})
+                } else if (res.message === "Present") this.setAlertMessageVisible(true, { status: res.message, heading: "Product is Present!", message: "Please try with another item code" });
+                else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
+            } else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
+        });
+    }
+
+    /** Get response edit */
+    getEditProductResponse = () => {
+        const { history } = this.props;
+
+        UserApi.getSocketResponseOnce(edit_product.on, (res) => {
+            this.setState({ isLoading: false });
+            if (res && res.data) {
+                if (res.message === "Success") {
+                    history.push(routerNames.post_offer_photos, { screenType: 'edit' });
                 } else if (res.message === "Present") this.setAlertMessageVisible(true, { status: res.message, heading: "Product is Present!", message: "Please try with another item code" });
                 else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
             } else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
@@ -65,25 +108,44 @@ export default class Details extends Component {
 
     /** On submit */
     sumbit = () => {
-        const { history } = this.props;
-        const { photos, ...rest } = PostOffer.getData();
+        const { history, location } = this.props;
+        const { screenType, item } = location.state;
+        const { photos, status, deletedStatus, ...rest } = PostOffer.getData();
         const { _id: id, userAccessToken: accessToken } = User.getUserData();
 
-        this.setState(() => ({ isLoading: true, errors: [] }), () => {
-            Api.isValidForm(Object.keys({ ...rest }), { ...rest })
-                .then(res => {
-                    if (res && res.message) {
-                        if (res.message === "Success") {
-                            Socket.request(add_product.emit, Object.assign({ ...rest }, { id, accessToken }));
-                            this.getAddProductResponse();
-                        } else Alert.alert("", res.message);
-                    } else if (res && res.response) {
-                        const { status, response } = res;
-                        this.setState({ isLoading: false, errors: response && response.length ? response : [] });
-                    }
-                })
-                .catch(err => console.log(err));
-        });
+        if (screenType === "edit") {
+            this.setState(() => ({ isLoading: true, errors: [] }), () => {
+                Api.isValidForm(Object.keys(Object.assign({ ...rest }, { status, deletedStatus })), Object.assign({ ...rest }, { status, deletedStatus }))
+                    .then(res => {
+                        if (res && res.message) {
+                            if (res.message === "Success") {
+                                Socket.request(edit_product.emit, Object.assign({ ...rest }, { id, accessToken, status, deletedStatus }));
+                                this.getEditProductResponse();
+                            } else Alert.alert("", res.message);
+                        } else if (res && res.response) {
+                            const { status, response } = res;
+                            this.setState({ isLoading: false, errors: response && response.length ? response : [] });
+                        }
+                    })
+                    .catch(err => console.log(err));
+            });
+        } else {
+            this.setState(() => ({ isLoading: true, errors: [] }), () => {
+                Api.isValidForm(Object.keys({ ...rest }), { ...rest })
+                    .then(res => {
+                        if (res && res.message) {
+                            if (res.message === "Success") {
+                                Socket.request(add_product.emit, Object.assign({ ...rest }, { id, accessToken }));
+                                this.getAddProductResponse();
+                            } else Alert.alert("", res.message);
+                        } else if (res && res.response) {
+                            const { status, response } = res;
+                            this.setState({ isLoading: false, errors: response && response.length ? response : [] });
+                        }
+                    })
+                    .catch(err => console.log(err));
+            });
+        }
     }
 
     /** On error */
@@ -101,16 +163,18 @@ export default class Details extends Component {
     }
 
     render() {
-        const { screenWidth, screenHeightWithHeader, history } = this.props;
+        const { screenWidth, screenHeightWithHeader, history, location } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
         const { userData, formData, alertMessage, alertMessageVisible, isLoading } = this.state;
         const { name, itemCode, category, color, description, discount, material, occasion, type, selectType, price, size } = formData;
+
+        const { screenType, item } = location.state;
 
         return (
             <WView dial={2} flex style={stretch}>
                 <Header
                     onPress={() => history.goBack()}
-                    label={"Product Details"}
+                    label={screenType === "edit" ? "Edit Product" : "Product Details"}
                 />
                 <AlertMessage
                     isVisible={alertMessageVisible}
@@ -136,6 +200,7 @@ export default class Details extends Component {
                                 margin={[10, 0]}
                                 label="Item Code *"
                                 placeholderName={"e.g. 10001"}
+                                editable={screenType === "edit" ? true : false}
                                 isError={this.isError('itemCode')}
                                 value={itemCode}
                                 onChangeText={value => this.onTextChange("itemCode", value)}
@@ -218,7 +283,7 @@ export default class Details extends Component {
                                 isError={this.isError('occasion')}
                                 value={occasion}
                                 onChangeText={value => this.onTextChange("occasion", value)}
-                                getFocus={ref => this.input9= ref}
+                                getFocus={ref => this.input9 = ref}
                                 onSubmitEditing={() => this.input10 && this.input10.focus()}
                             />
                             <TextInputWithLabel
@@ -229,7 +294,7 @@ export default class Details extends Component {
                                 value={type}
                                 onChangeText={value => this.onTextChange("type", value)}
                                 getFocus={ref => this.input10 = ref}
-                                onSubmitEditing={()=>{}}
+                                onSubmitEditing={() => { }}
                             />
 
                             <Section
@@ -246,6 +311,17 @@ export default class Details extends Component {
                                 onSelect={value => this.onTextChange("category", value)}
                                 value={category}
                                 data={['Muli-Brand', 'Garments', 'Butique', 'Designer']} />
+                            {
+                                screenType === "edit" ?
+                                    <SelectProductTypeList
+                                        heading={"Product status *"}
+                                        isError={this.isError('status')}
+                                        onSelect={value => this.onTextChange("status", value === 'active' ? '1' : '0')}
+                                        value={item.status && parseInt(item.status) === 1 ? 'active' : 'deactive'}
+                                        data={['Active', 'Deactive']} />
+                                    : null
+                            }
+
                         </WView>
                         <Large
                             label="Next"

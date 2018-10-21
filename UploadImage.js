@@ -33,7 +33,6 @@ export default class UserProfile extends Component {
     componentWillMount = () => {
         const { photos, ...rest } = PostOffer.getData();
         this.setState({ formData: { photos }, userData: User.getUserData() });
-        alert(JSON.stringify(photos));
     }
 
     /** On photos select */
@@ -46,9 +45,8 @@ export default class UserProfile extends Component {
     }
 
     uploadPhotos = (data) => {
-        let { photos, itemCode, id, accessToken, status } = data;
-        const { history, location } = this.props;
-        const { screenType, item } = location.state;
+        let { photos, itemCode, id, accessToken } = data;
+        const { history } = this.props;
 
         // photos = photos.map((uri, i) => {
         //     return ({
@@ -65,12 +63,11 @@ export default class UserProfile extends Component {
                 uri,
                 type: 'image/png',
                 name: `product-photo-${i}`
-            });
+            }); 
         });
         formData.append('id', id);
         formData.append('accessToken', accessToken);
         formData.append('itemCode', itemCode);
-        formData.append('status', status ? status : 1);
 
         this.setState({ uploadingImage: true });
         axios.post('http://13.127.188.164/api/uploadProductFiles', formData, {
@@ -82,7 +79,7 @@ export default class UserProfile extends Component {
         }).then((res) => {
             this.setState({ uploadingImage: false, isLoading: false });
             if (res && res.data && res.data.message === "Success") {
-                history.push(routerNames.post_offer_finish, { screenType: screenType === "edit" ? screenType : '' });
+                history.push(routerNames.post_offer_finish);
             } else this.setAlertMessageVisible(true, { status: res.message, heading: "", message: "Please try again!" });
         }).catch(error => {
             console.log("error: => ", error);
@@ -92,7 +89,7 @@ export default class UserProfile extends Component {
     /** On submit */
     sumbit = () => {
         const { history } = this.props;
-        const { photos, itemCode, status } = PostOffer.getData();
+        const { photos, itemCode } = PostOffer.getData();
         const { _id: id, userAccessToken: accessToken } = User.getUserData();
 
         this.setState(() => ({ isLoading: true, errors: [] }), () => {
@@ -100,7 +97,7 @@ export default class UserProfile extends Component {
                 .then(res => {
                     if (res && res.message) {
                         if (res.message === "Success" && photos.length) {
-                            this.uploadPhotos({ photos, itemCode, id, accessToken, status });
+                            this.uploadPhotos({ photos, itemCode, id, accessToken });
                         } else if (photos.length === 0) this.setAlertMessageVisible(true, { status: res.message, heading: "No File Selected!", message: "Please select at least one file" });
                         else this.setAlertMessageVisible(true, { status: res.message, heading: "", message: "Please try again!" });
                     } else if (res && res.response) {

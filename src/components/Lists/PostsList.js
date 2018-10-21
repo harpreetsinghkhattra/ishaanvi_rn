@@ -4,6 +4,7 @@ import { FlatList } from 'react-native';
 import { WText, WView } from '../common';
 import { PostListItem } from '../ListItems/';
 import Palette from '../../Palette';
+import { routerNames } from '../../RouteConfig';
 
 export default class PostsList extends Component {
 
@@ -21,7 +22,7 @@ export default class PostsList extends Component {
     }
 
     render = () => {
-        const { heading, isError, onSelect, data } = this.props;
+        const { heading, isError, onSelect, data, onPress } = this.props;
 
         return (
             <FlatList
@@ -31,6 +32,7 @@ export default class PostsList extends Component {
                 renderItem={({ item, index }) => {
                     return (
                         <PostListItem
+                            onPress={onPress.bind(this, routerNames.view_offer, item)}
                             item={item}
                         />
                     );
