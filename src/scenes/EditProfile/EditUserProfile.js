@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { WView, WText, WRow, Header, WTextInput } from '../../components/common';
+import { WView, WText, WRow, Header, WTextInput, WSpinner } from '../../components/common';
 import { ScrollView, PixelRatio, Alert } from 'react-native';
 import Palette from '../../Palette';
 import { Large } from '../../components/UI/btn';
@@ -14,6 +14,7 @@ export default class Register extends Component {
 
     state = {
         isLoading: false,
+        isLocationDetailLoading: false,
         errors: [],
         alertMessageVisible: false,
         alertMessage: {},
@@ -21,10 +22,11 @@ export default class Register extends Component {
         requestBody: {
             id: "",
             accessToken: "",
-            email: "",
-            mobile_number: "",
             name: "",
-            location: ""
+            mobile_number: "",
+            email: "",
+            location: "",
+            address: ""
         },
     }
 
@@ -43,14 +45,16 @@ export default class Register extends Component {
         alert(JSON.stringify(User.getUserData()));
 
         this.setState(prevState => {
-            const { email, mobileNumber, location, name, _id, userAccessToken } = User.getUserData();
+            const { email, mobile_number, location, address, name, _id, userAccessToken } = User.getUserData();
+
             const requestBody = {
                 id: _id,
                 accessToken: userAccessToken,
                 email,
-                mobile_number: mobileNumber,
+                mobile_number,
                 name,
-                location
+                address: address ? address : '',
+                location: location && location.lat ? location : { lat: null, lng: null }
             }
 
             return ({ requestBody });
@@ -69,9 +73,31 @@ export default class Register extends Component {
     /** Set visible */
     setVisible = (isVisible, location) => {
         if (location && typeof location === 'string') {
-            this.onTextChange("location", location);
-            this.setState({ isVisible, location });
+            this.onTextChange("address", location);
+            this.setState(() => ({ isVisible }), this.getLocationDetail.bind(this));
         } else this.setState({ isVisible })
+    }
+
+    /** Get location detail */
+    getLocationDetail = () => {
+        const { requestBody } = this.state;
+        this.setState({ isLocationDetailLoading: true });
+        Api.getLocationDetail(["address"], { address: requestBody.address })
+            .then(res => {
+                console.log(res);
+                switch (res.status) {
+                    case "OK":
+                        this.setState({ isLocationDetailLoading: false });
+                        res && res.candidates && res.candidates.length && this.onTextChange("location", res.candidates[0].geometry.location);
+                        break;
+                    default:
+                        this.setState({ isLocationDetailLoading: false });
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                this.setState({ isLocationDetailLoading: false });
+            });
     }
 
     /** Get response */
@@ -79,10 +105,12 @@ export default class Register extends Component {
         const { history } = this.props;
 
         UserApi.editUserSocketResponse((res) => {
+            console.log("requestBody", res);
+
             this.setState({ isLoading: false });
             if (res && res.data) {
                 if (res.message === "Success") {
-                    alert(JSON.stringify(res.data));
+                    alert('editUserResponse', res.data);
                     history.go(-1);
                 } else if (res.message === "Present") this.setAlertMessageVisible(true, { status: res.message, heading: "User is Present!", message: "Please try with another email id" });
                 else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
@@ -97,8 +125,10 @@ export default class Register extends Component {
         const { email, name } = requestBody;
 
         this.setState(() => ({ isLoading: true, errors: [] }), () => {
-            Api.isValidForm(["email", "name"], { email, name })
+            Api.isValidForm(Object.keys(requestBody), requestBody)
                 .then(res => {
+                    console.log("requestBody", requestBody);
+
                     Socket.request(edit_user_profile.emit, requestBody);
                     if (res && res.message === "Success") {
                         this.getEditUserResponse();
@@ -127,8 +157,8 @@ export default class Register extends Component {
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { isLoading, alertMessage, alertMessageVisible, isVisible, requestBody } = this.state;
-        const { location, email, name, mobile_number } = requestBody;
+        const { isLoading, alertMessage, alertMessageVisible, isVisible, requestBody, isLocationDetailLoading } = this.state;
+        const { address, email, name, mobile_number } = requestBody;
 
         console.log(this.props);
         return (
@@ -191,22 +221,29 @@ export default class Register extends Component {
                             <WTextInput
                                 margin={[10, 0]}
                                 placeholderName={"Address"}
-                                isError={this.isError("location")}
+                                isError={this.isError("address")}
                                 onChangeText={this.setVisible.bind(this, true)}
                                 onFocus={this.setVisible.bind(this, true)}
                                 isLoading={isLoading}
                                 iconPath={require("../../images/location.png")}
                                 getFocus={ref => this.input4 = ref}
                                 onSubmitEditing={this.sumbit.bind(this)}
-                                value={location}
+                                value={address}
                             />
-
+                            {
+                                isLocationDetailLoading ?
+                                    <WView dial={5} padding={[5, 5]}>
+                                        <WSpinner size={"small"} color={Palette.theme_color} />
+                                        <WText fontFamily={"Muli-Bold"}>Please wait...</WText>
+                                    </WView>
+                                    : null
+                            }
                             <WRow dial={5} padding={[10, 0]} style={{ justifyContent: "center" }}>
                                 <Large
                                     flex={1}
                                     label="Submit"
                                     isLoading={isLoading}
-                                    onPress={this.sumbit.bind(this)}
+                                    onPress={(isLocationDetailLoading) ? () => { } : this.sumbit.bind(this)}
                                 />
                             </WRow>
                         </WView>

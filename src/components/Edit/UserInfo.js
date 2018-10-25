@@ -54,7 +54,7 @@ export default class UserInfo extends Component {
 
     _userInfo = () => {
         const { userData } = this.props;
-        const { location, name, email, mobile_number } = userData;
+        const { address, name, email, mobile_number } = userData;
         const { stretch } = styles;
 
         return (
@@ -82,11 +82,11 @@ export default class UserInfo extends Component {
                         : null
                 }
                 {
-                    location ?
+                    address ?
                         <WithInfo
                             label={"Location"}
                             padding={[5, 10]}
-                            value={location} />
+                            value={address} />
                         : null
                 }
             </WView>

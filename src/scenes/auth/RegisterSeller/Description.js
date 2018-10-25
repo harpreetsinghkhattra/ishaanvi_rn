@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { WView, WText, WRow, Header, WTextInput } from '../../../components/common';
+import { WView, WText, WRow, Header, WTextInput, WSpinner } from '../../../components/common';
 import { ScrollView, PixelRatio, Alert } from 'react-native';
 import Palette from '../../../Palette';
 import { Large, WithSeprateIcon } from '../../../components/UI/btn';
@@ -16,10 +16,12 @@ export default class Description extends Component {
 
     state = {
         isLoading: false,
+        isLocationDetailLoading: false,
         errors: [],
         isVisible: false,
         business_name: "",
-        business_address: ""
+        business_address: "",
+        address: ""
     }
 
     constructor(props) {
@@ -27,9 +29,9 @@ export default class Description extends Component {
     }
 
     componentWillMount = () => {
-        const { business_address, business_name } = RegisterSellerUser.getData();
+        const { business_address, business_name, address } = RegisterSellerUser.getData();
 
-        this.setState({ business_address, business_name });
+        this.setState({ business_address, business_name, address });
     }
 
     /** On change */
@@ -40,14 +42,14 @@ export default class Description extends Component {
 
     /** On next */
     next = () => {
-        const { history, location } = this.props;
-        const { screenType } = location.state;
+        const { history } = this.props;
+        const { screenType } = this.props.location.state;
 
-        const { business_address, business_name } = RegisterSellerUser.getData();
-        console.log({ business_address, business_name });
+        const { business_address, business_name, address, location } = RegisterSellerUser.getData();
+        console.log({ business_address, business_name, location });
 
         this.setState(() => ({ isLoading: true, errors: [] }), () => {
-            Api.isValidForm(["business_address", "business_name"], { business_address, business_name })
+            Api.isValidForm(["business_address", "business_name", "address", "location"], { business_address, business_name, address, location })
                 .then(res => {
                     if (res && res.message === "Success") {
                         this.setState({ isLoading: false });
@@ -61,11 +63,33 @@ export default class Description extends Component {
         });
     }
 
+    /** Get location detail */
+    getLocationDetail = () => {
+        const { business_address } = this.state;
+        this.setState({ isLocationDetailLoading: true });
+        Api.getLocationDetail(["address"], { address: business_address })
+            .then(res => {
+                console.log(res);
+                switch (res.status) {
+                    case "OK":
+                        this.setState({ isLocationDetailLoading: false });
+                        res && res.candidates && res.candidates.length && this.onTextChange("location", res.candidates[0].geometry.location);
+                        break;
+                    default:
+                        this.setState({ isLocationDetailLoading: false });
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                this.setState({ isLocationDetailLoading: false });
+            });
+    }
+
     /** Set visible */
     setVisible = (isVisible, business_address) => {
         if (business_address && typeof business_address === 'string') {
             this.onTextChange("business_address", business_address);
-            this.setState({ isVisible, business_address });
+            this.setState(() => ({ isVisible, business_address }), () => this.getLocationDetail());
         } else this.setState({ isVisible })
     }
 
@@ -82,9 +106,8 @@ export default class Description extends Component {
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { isLoading, isVisible, business_address, business_name } = this.state;
+        const { isLoading, isVisible, business_address, business_name, address, isLocationDetailLoading } = this.state;
 
-        console.log(this.props);
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <InfoCompleteHeader
@@ -122,16 +145,37 @@ export default class Description extends Component {
                                 value={business_address}
                                 onSubmitEditing={() => this.input3 && this.input3.focus()}
                             />
+                            <TextInputWithLabel
+                                margin={[10, 0]}
+                                label={"Address *"}
+                                placeholderName={"Mohali Punjab, India"}
+                                isError={this.isError("address")}
+                                isLoading={isLoading}
+                                keyboardType={"default"}
+                                onChangeText={value => this.onTextChange("address", value)}
+                                getFocus={ref => this.input3 = ref}
+                                iconPath={require("../../../images/location.png")}
+                                value={address}
+                                onSubmitEditing={() => { }}
+                            />
                         </WView>
+                        {
+                            isLocationDetailLoading ?
+                                <WView dial={5} padding={[5, 5]}>
+                                    <WSpinner size={"small"} color={Palette.theme_color} />
+                                    <WText fontFamily={"Muli-Bold"}>Please wait...</WText>
+                                </WView>
+                                : null
+                        }
                         <WRow dial={4} padding={[10, 0]} style={{ justifyContent: "space-between" }}>
                             <WithSeprateIcon
                                 isLeftIcon={true}
-                                onPress={() => history.goBack()}
+                                onPress={(isLocationDetailLoading) ? () => { } : () => history.goBack()} 
                                 label="BACK"
                             />
                             <WithSeprateIcon
                                 iconPath={require("../../../images/right_arrow_btn.png")}
-                                onPress={this.next.bind(this)}
+                                onPress={(isLocationDetailLoading) ? () => { } : this.next.bind(this)}
                                 isRightIcon={true}
                                 label="NEXT"
                             />

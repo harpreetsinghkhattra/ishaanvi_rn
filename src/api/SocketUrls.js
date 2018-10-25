@@ -1,6 +1,6 @@
 const edit_user_profile = {
-    emit: "/socket/api/getUser",
-    on: "/socket/api/response/getUser"
+    emit: "/socket/api/editUserProfile",
+    on: "/socket/api/response/editUserProfile"
 }
 
 const edit_seller_profile = {

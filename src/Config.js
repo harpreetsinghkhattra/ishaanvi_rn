@@ -24,7 +24,8 @@ export default {
         // baseUrl: "https://thawing-citadel-16848.herokuapp.com/api/",
         server: "http://13.127.188.164:3000/",
         baseUrl: "http://13.127.188.164:3000/api/",
-        locationBaseUrl: "https://maps.googleapis.com/maps/api/place/autocomplete/json"
+        locationBaseUrl: "https://maps.googleapis.com/maps/api/place/autocomplete/json",
+        locationDetailBaseUrl: "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
     },
 
     keys:{
@@ -38,3 +39,6 @@ export default {
         publicKeyAlgorithm: 'rsa'
     }
 }
+
+
+// https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Naggal&inputtype=textquery&fields=formatted_address,geometry&key=AIzaSyC3p6fQ5ebHm1IUq71tA8czm6Cqvr0hzpY

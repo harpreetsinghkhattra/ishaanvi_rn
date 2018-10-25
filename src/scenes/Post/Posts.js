@@ -52,7 +52,7 @@ export default class Posts extends Component {
 
         UserApi.getSocketResponseOnce(get_products.on, (res) => {
             if (res.message === "Success") {
-                this.setState({ isLoading: false, products: res.data ? [] : [] });
+                this.setState({ isLoading: false, products: res.data }); 
                 return;
             }
 
@@ -89,6 +89,7 @@ export default class Posts extends Component {
                                     products && products.length ?
                                     <PostsList
                                         {...this.props}
+                                        onPress={this.openScreen.bind(this)}
                                         data={products}
                                     />
                                     :
