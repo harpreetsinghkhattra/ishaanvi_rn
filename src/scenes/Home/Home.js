@@ -56,6 +56,7 @@ export default class Home extends Component {
                 {
                     text: '',
                     onTabPress: () => alert("Comming soon..."),
+                    iconStyle: { width: 20, height: 20},
                     iconSource: require('../../images/search.png'),
                 },
                 {

@@ -42,3 +42,4 @@ export default {
 
 
 // https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Naggal&inputtype=textquery&fields=formatted_address,geometry&key=AIzaSyC3p6fQ5ebHm1IUq71tA8czm6Cqvr0hzpY
+// https://maps.googleapis.com/maps/api/geocode/json?latlng=30.68042849999999,76.6181655&key=AIzaSyC3p6fQ5ebHm1IUq71tA8czm6Cqvr0hzpY

@@ -17,7 +17,7 @@ export default class WTextInput extends Component {
         source: PropTypes.any,
         placeholderName: PropTypes.string.isRequired,
         keyboardType: PropTypes.string,
-        onSubmitEditing: PropTypes.func.isRequired, 
+        onSubmitEditing: PropTypes.func.isRequired,
         margin: PropTypes.array,
         padding: PropTypes.array,
         iconPath: PropTypes.any,
@@ -65,6 +65,7 @@ export default class WTextInput extends Component {
             isLoading,
             containerStyle,
             flex,
+            iconTintColor,
             ...rest
         } = this.props;
 
@@ -74,7 +75,7 @@ export default class WTextInput extends Component {
                     {
                         iconPath &&
                         <WView dial={5} padding={[0, 5, 0, 0]}>
-                            <Image source={iconPath} style={[iconStyle, isError.status ? error : success]} />
+                            <Image source={iconPath} style={[iconStyle, isError.status ? error : success, { tintColor: iconTintColor }]} />
                         </WView>
                     }
                     <TextInput
@@ -97,7 +98,7 @@ export default class WTextInput extends Component {
                         </WTouchable>
                     }
                 </WRow>
-                {isError.status && isError.message !== '' && <WText dial={6} fontSize={10} right color={Palette.red}>{isError.message}</WText>} 
+                {isError.status && isError.message !== '' && <WText dial={6} fontSize={10} right color={Palette.red}>{isError.message}</WText>}
             </WView>
         )
     }

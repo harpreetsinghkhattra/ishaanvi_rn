@@ -73,7 +73,7 @@ export default class PagerTabIndicator extends Component {
                     <WView flex={1} dial={5}>
                         <WView dial={5} padding={[8, 0]} style={[isSelected ? styles.bottomBorder : {}]}>
                             <Image
-                                style={[styles.image, iconStyle]}
+                                style={[styles.image, tab.iconStyle,iconStyle]} 
                                 source={tab.iconSource}
                                 ratio={0.5}
                             />
@@ -133,8 +133,9 @@ const styles = StyleSheet.create({
         position: 'absolute'
     },
     bottomBorder: {
-        borderBottomWidth: (1.5 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
+        borderBottomWidth: (2.5 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
         borderColor: Palette.white,
-        borderStyle: "solid"
+        borderStyle: "solid",
+        borderRadius: 1  
     }
 })
