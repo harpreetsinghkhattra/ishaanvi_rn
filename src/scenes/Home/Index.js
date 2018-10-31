@@ -8,6 +8,7 @@ import { RecentProductsList } from '../../components/Lists';
 import { SearchHeader } from '../../components/Header';
 import { Storage, StorageKeys } from '../../helper';
 import { User } from '../../model/user';
+import { MyLocation, HomeFilter } from '../Modal/';
 
 const UserData = new Storage();
 
@@ -29,10 +30,20 @@ export default class Login extends Component {
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <SearchHeader />
+                <MyLocation
+                    {...this.props}
+                    isVisible={false}
+                    setVisible={()=>{}}
+                />
+                <HomeFilter
+                    {...this.props}
+                    isVisible={true}
+                    setVisible={()=>{}}
+                />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={2} padding={[5, 5]} style={[stretch]} >
                         <RecentProductsList
-                            heading="Test" />
+                            heading="Google s paldj alkdj laksjd laksjd laskdf alksd sjd fjlsd fsd" />
                         <RecentProductsList
                             heading="Test" />
                         <RecentProductsList
