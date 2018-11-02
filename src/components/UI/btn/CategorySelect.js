@@ -18,7 +18,7 @@ const CategorySelect = ({ imageSource, onPress, isSelected, label }) => {
             activeOpacity={0.9}
             style={
                 [
-                    { flex: 1, minHeight: 200, margin: 5 },
+                    { flex: 0.5, minHeight: 200, margin: 5 },
                     isSelected ? selected : unSelected
                 ]
             }

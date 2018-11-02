@@ -76,9 +76,9 @@ export default class ViewPost extends Component {
 
                 <WTouchable onPress={this.openScreen.bind(this, routerNames.post_offer_detail, { screenType: "edit", item })} dial={5} style={floatBtn}>
                     <Image source={edit} style={icon} />
-                </WTouchable>
+                </WTouchable> 
             </WView >
-        )
+        ) 
     }
 }
 

@@ -19,16 +19,25 @@ export default class SelectCategory extends Component {
         isError: false
     }
 
+    constructor(props) {
+        super(props);
+        this.clearData = true;
+    }
+
     componentDidMount = () => {
         this.init();
     }
 
+    componentWillMount = () => {
+        if(screenType === "edit" || !this.clearData)
+    }
+    
 
     init() {
         const { history, location } = this.props;
         const { screenType } = location.state;
         const { name, createdTime, business_address, business_name, deletedStatus, email, forgetPassword, mobile_number, status, termsAndConditions, updatedTime, userType, category } = User.getUserData();
-        console.log('editSeller', JSON.stringify(User.getUserData())); 
+        console.log('editSeller', JSON.stringify(User.getUserData()));
 
         if (screenType === "edit") {
             RegisterSellerUser.setData({
@@ -49,6 +58,7 @@ export default class SelectCategory extends Component {
         const { screenType } = location.state;
 
         if (RegisterSellerUser.getData().category) {
+            this.clearData = false;
             history.push(routerNames.registerSellerDescription, { screenType });
         } else this.setState({ isError: true });
     }
@@ -83,6 +93,7 @@ export default class SelectCategory extends Component {
                                     { label: "Garments", imageSource: require("../../../images/garments.png") },
                                     { label: "Boutiques", imageSource: require("../../../images/boutique.png") },
                                     { label: "Designers \n(men, woman)", imageSource: require("../../../images/designer.jpg") },
+                                    { label: "Cloth \nHouse/Shop", imageSource: require("../../../images/cloth_shop.jpg") },
                                 ]}
                             />
 

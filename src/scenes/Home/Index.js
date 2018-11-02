@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WTouchable } from '../../components/common';
 import { ScrollView, PixelRatio, Image } from 'react-native';
 import Palette from '../../Palette';
@@ -8,11 +8,38 @@ import { RecentProductsList } from '../../components/Lists';
 import { SearchHeader } from '../../components/Header';
 import { Storage, StorageKeys } from '../../helper';
 import { User } from '../../model/user';
+import { UserLocation } from '../../model/UserLocation';
 import { MyLocation, HomeFilter } from '../Modal/';
 
 const UserData = new Storage();
 
-export default class Login extends Component {
+export default class Login extends PureComponent {
+
+    state = {
+        isHomeFilterVisible: false,
+        isLocationModalVisible: false
+    }
+
+    componentDidMount = () => {
+        console.log("locations stored data", UserLocation.getUserLocationData());
+        this.setState({ isLocationModalVisible: true });
+    }
+
+    /** Set visible */
+    setLocationModalVisible = (isLocationModalVisible, location) => {
+        if (location && typeof location === 'string') {
+            // this.onTextChange("userLocation", location);
+            // this.setState(() => ({ isVisible }), this.getLocationDetail.bind(this));
+        } else this.setState({ isLocationModalVisible })
+    }
+
+    /** Set visible */
+    setFilterModalVisible = (isHomeFilterVisible, location) => {
+        if (location && typeof location === 'string') {
+            // this.onTextChange("userLocation", location);
+            // this.setState(() => ({ isVisible }), this.getLocationDetail.bind(this));
+        } else this.setState({ isHomeFilterVisible })
+    }
 
     openScreen(path) {
         const { history } = this.props;
@@ -24,21 +51,24 @@ export default class Login extends Component {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
         const { userType } = User.getUserData();
+        const { isHomeFilterVisible, isLocationModalVisible } = this.state;
         const plus = require('../../images/plus.png');
 
         console.log(this.props);
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
-                <SearchHeader />
+                <SearchHeader
+                    openFilter={this.setState.bind(this, true)}
+                />
                 <MyLocation
                     {...this.props}
-                    isVisible={false}
-                    setVisible={()=>{}}
+                    isVisible={isLocationModalVisible}
+                    setVisible={this.setLocationModalVisible.bind(this, false)}
                 />
                 <HomeFilter
                     {...this.props}
-                    isVisible={true}
-                    setVisible={()=>{}}
+                    isVisible={isHomeFilterVisible}
+                    setVisible={this.setFilterModalVisible.bind(this, false)}
                 />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={2} padding={[5, 5]} style={[stretch]} >

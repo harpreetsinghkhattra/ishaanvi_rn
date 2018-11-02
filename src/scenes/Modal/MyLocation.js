@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { WView, WText, WRow, Header, WTextInput, WTouchable, WSpinner } from '../../components/common';
-import { ScrollView, PixelRatio, Alert, Modal, FlatList, Image, StyleSheet } from 'react-native';
+import { ScrollView, PixelRatio, Alert, Modal, FlatList, Image, StyleSheet, PermissionsAndroid } from 'react-native';
 import Palette from '../../Palette';
 import { Large, WithSeprateIcon } from '../../components/UI/btn';
 import { CheckBox } from '../../components/UI/checkbox';
@@ -10,26 +10,100 @@ import { Api } from '../../api/Api';
 import { InfoCompleteAutoSelect } from '../../components/Select/';
 import { TextInputWithLabel } from '../../components/UI/input';
 import { PlaceSearchHeader } from '../../components/Header';
+import { UserLocation } from '../../model/UserLocation';
+import { Storage, StorageKeys } from '../../helper/';
+
+const storage = new Storage();
 
 export default class MyLocation extends Component {
 
     state = {
-        message: {}
+        message: {},
+        isLoadingLocation: false,
+        isLoadingLocationDetail: false,
+        isLoadingZipcode: false
     }
 
     static propTypes = {
         data: PropTypes.object
     }
 
-    _renderButton = () => {
-        const { isVisible, setVisible, data, onAccept, onDecline, label1, label2 } = this.props;
-        const { stretch, btnStyle, btnContainer, border, circleView, image, caretImage } = styles;
+    /** On change */
+    onTextChange = (key, value) => {
+        this.setState({ [key]: value });
+        UserLocation.setUserLocationData({ [key]: value });
+    }
 
-        return (
-            <WTouchable dial={5} onPress={setVisible} style={[btnStyle]} margin={[30, 0]} backgroundColor={"green"}>
-                <WText fontSize={14} padding={[0, 60]} color={Palette.white} fontFamily={"Muli-Bold"} center>Send</WText>
-            </WTouchable>
+    async requestLocationPermission() {
+        try {
+            const isLocationPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+
+            if (isLocationPermission) {
+                alert('already present');
+                this.getGeoLocation();
+            }
+            else {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    {
+                        'title': 'Ishaanvi wants your location',
+                        'message': ''
+                    }
+                )
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    this.getGeoLocation();
+                } else {
+                    alert("Camera permission denied");
+                }
+            }
+        } catch (err) {
+            console.warn(err)
+        }
+    }
+
+    getGeoLocation() {
+        this.setState({ isLoadingLocation: true });
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+
+                this.onTextChange('latitude', position.coords.latitude);
+                this.onTextChange('longitude', position.coords.longitude);
+
+                this.getLocationDetailViaCurrentLocation();
+            },
+            (error) => alert(JSON.stringify(error)),
+            {},
         );
+    }
+
+    /** Get location detail */
+    getLocationDetailViaCurrentLocation = () => {
+        const { latitude, longitude } = UserLocation.getUserLocationData();
+
+        console.log('locations data', UserLocation.getUserLocationData())
+        this.setState({ isLocationDetailLoading: true, isLoadingLocation: false });
+        Api.getLocationDetailViaLatLng(["latlng"], { latlng: `${latitude},${longitude}` })
+            .then(res => {
+                console.log('locations data server',res);
+                switch (res.status) {
+                    case "OK":
+                        this.setState({ isLocationDetailLoading: false });
+
+                        alert('before');
+                        if (res && res.results && ( !res.results.length || res.results.length === 0)) return;
+                        alert('after');
+
+                        this.onTextChange('address', res.results[0].formatted_address);
+                        storage.setUserData(StorageKeys.UserLocation, UserLocation.getUserLocationData());
+                        return;
+                    default:
+                        this.setState({ isLocationDetailLoading: false });
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                this.setState({ isLocationDetailLoading: false });
+            });
     }
 
     render() {
@@ -37,6 +111,7 @@ export default class MyLocation extends Component {
         const { stretch, btnStyle, btnContainer, border, circleView, image, caretImage, textInputContainerStyle, iconStyle } = styles;
         const icon = require('../../images/location.png');
         const send = require('../../images/send.png');
+        const { isLoadingLocation, isLoadingLocationDetail, isLoadingZipcode } = this.state;
 
         return (
             <Modal
@@ -47,7 +122,7 @@ export default class MyLocation extends Component {
                 <WView dial={8} flex style={{ minWidth: screenWidth, minHeight: screenHeight, backgroundColor: "rgba(0, 0, 0, 0.7)" }}>
                     <WView dial={8} style={[stretch, { position: 'absolute', bottom: 0 }]}>
                         <WRow dial={6} style={[stretch]}>
-                            <WText fontSize={16} padding={[10, 10]} fontFamily={"Muli-Bold"} color={Palette.white} right>Done</WText>
+                            <WText onPress={setVisible} fontSize={16} padding={[10, 10]} fontFamily={"Muli-Bold"} color={Palette.white} right>Done</WText>
                         </WRow>
                         <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: 200, backgroundColor: 'green', alignItems: 'flex-end', justifyContent: 'flex-end' }, stretch]}>
                             <WView dial={8} padding={[10, 10]} style={[stretch]} backgroundColor={Palette.white}>
@@ -55,13 +130,23 @@ export default class MyLocation extends Component {
                                     Ishaanvi wants a destination to show relevant collections
                             </WText>
 
-                                <WTouchable dial={5} style={btnContainer} >
-                                    <WRow dial={5}>
-                                        <Image source={send} style={iconStyle} />
-                                        <WView padding={[0, 5]} dial={4} flex>
-                                            <WText fontSize={14} fontFamily={"Muli-Bold"}>USE CURRENT LOCATION</WText>
-                                        </WView>
-                                    </WRow>
+                                <WTouchable dial={5} onPress={(isLoadingLocation || isLoadingLocationDetail || isLoadingZipcode) ? () => { } : this.requestLocationPermission.bind(this)} style={btnContainer} >
+                                    {
+                                        (isLoadingLocation || isLoadingLocationDetail) ?
+                                            <WRow dial={5}>
+                                                <WSpinner size={"small"} color={Palette.theme_color} />
+                                                <WView padding={[0, 5]} dial={4} flex>
+                                                    <WText fontSize={14} fontFamily={"Muli-Bold"}>{`Getting ${isLoadingLocationDetail ? "location detail" : "location"}, please wait...`}</WText>
+                                                </WView>
+                                            </WRow>
+                                            :
+                                            <WRow dial={5}>
+                                                <Image source={send} style={iconStyle} />
+                                                <WView padding={[0, 5]} dial={4} flex>
+                                                    <WText fontSize={14} fontFamily={"Muli-Bold"}>USE CURRENT LOCATION</WText>
+                                                </WView>
+                                            </WRow>
+                                    }
                                 </WTouchable>
                                 <WText padding={[10, 10]} center>Or</WText>
                                 <WTextInput
@@ -118,11 +203,10 @@ const styles = {
     textInputContainerStyle: {
         height: 40,
         justifyContent: 'center',
-        borderBottomWidth: 0,
         alignItems: 'center',
         backgroundColor: Palette.white,
         borderColor: Palette.line_color,
-        borderWidth: (1.5 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
+        borderWidth: (1 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
         borderStyle: 'solid',
         borderRadius: 5,
         paddingHorizontal: 10,

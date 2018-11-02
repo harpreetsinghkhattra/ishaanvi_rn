@@ -10,6 +10,7 @@ import { Api } from '../../api/Api';
 import { InfoCompleteAutoSelect } from '../../components/Select/';
 import { TextInputWithLabel } from '../../components/UI/input';
 import { FilterBottomBar, FilterHeader } from '../../components/Header';
+import { SelectProductTypeList } from '../../components/Lists';
 
 export default class MyLocation extends Component {
 
@@ -48,30 +49,11 @@ export default class MyLocation extends Component {
                     <FilterHeader />
                     <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: 150 }, stretch]}>
                         <WView dial={8} padding={[10, 10]} style={[stretch]} backgroundColor={Palette.white}>
-                            <WText padding={[0, 5, 5, 5]} center lines={2} fontSize={12} color={Palette.border_color} lines={2}>
-                                Ishaanvi wants a destination to show relevant collections
-                            </WText>
-
-                            <WTouchable dial={5} style={btnContainer} >
-                                <WRow dial={5}>
-                                    <Image source={send} style={iconStyle} />
-                                    <WView padding={[0, 5]} dial={4} flex>
-                                        <WText fontSize={14} fontFamily={"Muli-Bold"}>USE CURRENT LOCATION</WText>
-                                    </WView>
-                                </WRow>
-                            </WTouchable>
-                            <WText padding={[10, 10]} center>Or</WText>
-                            <WTextInput
-                                flex={1}
-                                containerStyle={textInputContainerStyle}
-                                placeholderName="Enter Zip code"
-                                style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
-                                iconTintColor={Palette.border_color}
-                                iconPath={require("../../images/search.png")}
-                                onSubmitEditing={() => { }}
-                            />
-                            <Large
-                                label={"SEND"} />
+                            <SelectProductTypeList
+                                heading={"Select Category "}
+                                onSelect={value => { }}
+                                value={""}
+                                data={['Multi-Brand', 'Garments', 'Butique', 'Designer']} />
                         </WView>
                     </ScrollView>
                     <FilterBottomBar />

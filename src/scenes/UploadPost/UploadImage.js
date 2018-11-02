@@ -82,6 +82,7 @@ export default class UserProfile extends Component {
         }).then((res) => {
             this.setState({ uploadingImage: false, isLoading: false });
             if (res && res.data && res.data.message === "Success") {
+                PostOffer.resetData();
                 history.push(routerNames.post_offer_finish, { screenType: screenType === "edit" ? screenType : '' });
             } else this.setAlertMessageVisible(true, { status: res.message, heading: "", message: "Please try again!" });
         }).catch(error => {

@@ -62,7 +62,7 @@ export default class Details extends Component {
                 deletedStatus: '0',
                 photos: images && images.length ? images : []
             });
-        } else PostOffer.resetData();
+        } 
     }
 
     /** On change */
@@ -162,6 +162,12 @@ export default class Details extends Component {
         this.setState({ alertMessageVisible, alertMessage });
     }
 
+    back = () => {
+        const { history } = this.props;
+        history.goBack();
+        PostOffer.resetData();
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history, location } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
@@ -173,7 +179,7 @@ export default class Details extends Component {
         return (
             <WView dial={2} flex style={stretch}>
                 <Header
-                    onPress={() => history.goBack()}
+                    onPress={this.back.bind(this)}
                     label={screenType === "edit" ? "Edit Product" : "Product Details"}
                 />
                 <AlertMessage
@@ -210,7 +216,7 @@ export default class Details extends Component {
                             <TextInputWithLabel
                                 margin={[10, 0]}
                                 label="Size *"
-                                placeholderName={"e.g. 12cm"}
+                                placeholderName={"e.g. 12 inches"}
                                 isError={this.isError('size')}
                                 keyboardType={'numeric'}
                                 value={size}
@@ -266,7 +272,7 @@ export default class Details extends Component {
 
                             <Section
                                 label={"Highlights"} />
-                            <TextInputWithLabel
+                            <MultiTextInputWithLabel
                                 margin={[10, 0]}
                                 label="Material *"
                                 placeholderName={"e.g. materials"}
@@ -276,7 +282,7 @@ export default class Details extends Component {
                                 getFocus={ref => this.input8 = ref}
                                 onSubmitEditing={() => this.input9 && this.input9.focus()}
                             />
-                            <TextInputWithLabel
+                            <MultiTextInputWithLabel
                                 margin={[10, 0]}
                                 label="Occasion *"
                                 placeholderName={"e.g. occasion"}
@@ -286,7 +292,7 @@ export default class Details extends Component {
                                 getFocus={ref => this.input9 = ref}
                                 onSubmitEditing={() => this.input10 && this.input10.focus()}
                             />
-                            <TextInputWithLabel
+                            <MultiTextInputWithLabel
                                 margin={[10, 0]}
                                 label="Type *"
                                 placeholderName={"e.g. type"}
@@ -310,7 +316,7 @@ export default class Details extends Component {
                                 isError={this.isError('category')}
                                 onSelect={value => this.onTextChange("category", value)}
                                 value={category}
-                                data={['Muli-Brand', 'Garments', 'Butique', 'Designer']} />
+                                data={['Multi Brand\'s', 'Garments', 'Boutiques', 'Designers \n(men, woman)', 'Cloth \nHouse/Shop']} />
                             {
                                 screenType === "edit" ?
                                     <SelectProductTypeList

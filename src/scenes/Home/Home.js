@@ -18,22 +18,6 @@ const UserData = new Storage();
 
 export default class Home extends Component {
 
-    componentDidMount() {
-        this.getUserResponse();
-    }
-
-    async getUserResponse() {
-        const { _id: id, userAccessToken: accessToken } = User.getUserData();
-        await Socket.request(get_user_profile.emit, { id, accessToken });
-        await UserApi.getSocketResponseOnce(get_user_profile.on, (res) => {
-            if (res && res.message === "Success") {
-                alert(JSON.stringify(res.data));
-                User.setUserData(res.data);
-                // UserData.setUserData(StorageKeys.USER_DATA, res.data);
-            }
-        });
-    }
-
     render() {
         const empty = [];
         const views = [

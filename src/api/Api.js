@@ -214,4 +214,42 @@ export class Api {
                 } else return Promise.resolve({ status, response });
             })
     }
+
+    static getLocationDetailViaZipCode = (keys, body) => {
+        return Helper.validate(keys, body)
+            .then(({ status, response }) => {
+                if (status) {
+                    return request(
+                        `${Config.http.locationDetailViaZipCode}?address=${body.zipCode}&key=${Config.keys.googleLocation}`, { "method": "GET" }
+                    )
+                        .then((res) => {
+                            console.log("res get => ", res);
+                            return Promise.resolve(res);
+                        })
+                        .catch(err => {
+                            console.log("err", err);
+                            return Promise.reject(err);
+                        })
+                } else return Promise.resolve({ status, response });
+            })
+    }
+
+    static getLocationDetailViaLatLng = (keys, body) => {
+        return Helper.validate(keys, body)
+            .then(({ status, response }) => {
+                if (status) {
+                    return request(
+                        `${Config.http.locationDetailViaZipCode}?latlng=${body.latlng}&key=${Config.keys.googleLocation}`, { "method": "GET" }
+                    )
+                        .then((res) => {
+                            console.log("res get => ", res);
+                            return Promise.resolve(res);
+                        })
+                        .catch(err => {
+                            console.log("err", err);
+                            return Promise.reject(err);
+                        })
+                } else return Promise.resolve({ status, response });
+            })
+    }
 }

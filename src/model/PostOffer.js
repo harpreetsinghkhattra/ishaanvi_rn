@@ -16,7 +16,7 @@ const postOfferData = {
 };
 
 export class PostOffer {
-    static state = postOfferData;
+    static state = Object.assign({}, postOfferData);
 
     static setData(data) {
         Object.assign(this.state, data);
@@ -27,6 +27,7 @@ export class PostOffer {
     }
 
     static resetData() {
-        this.state = postOfferData;
+        alert(JSON.stringify(postOfferData));
+        this.state = Object.assign({}, postOfferData);
     }
 }

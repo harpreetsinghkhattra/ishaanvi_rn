@@ -6,6 +6,7 @@ import { Large } from '../../components/UI/btn/'
 import { routerNames } from '../../RouteConfig';
 import { Storage, StorageKeys, Helper } from '../../helper';
 import { User } from '../../model/user';
+import { UserLocation } from '../../model/UserLocation';
 
 const UserData = new Storage();
 
@@ -18,7 +19,11 @@ export default class SelectAdType extends Component {
     async componentDidMount() {
         const { history } = this.props;
         const data = await UserData.getUserInfo(StorageKeys.USER_DATA);
+        const userLocation = await UserData.getUserInfo(StorageKeys.USER_LOCATION);
         this.setState(() => ({ isLoading: false }), () => {
+            
+            if(userLocation) UserLocation.setUserLocationData(userLocation);
+
             if (data) {
                 User.setUserData(JSON.parse(data));
                 Helper.resetAndPushRoot(history, routerNames.index);

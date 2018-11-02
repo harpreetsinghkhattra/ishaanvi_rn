@@ -25,7 +25,8 @@ export default {
         server: "http://13.127.188.164:3000/",
         baseUrl: "http://13.127.188.164:3000/api/",
         locationBaseUrl: "https://maps.googleapis.com/maps/api/place/autocomplete/json",
-        locationDetailBaseUrl: "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
+        locationDetailBaseUrl: "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
+        locationDetailViaZipCode: "https://maps.googleapis.com/maps/api/geocode/json"
     },
 
     keys:{

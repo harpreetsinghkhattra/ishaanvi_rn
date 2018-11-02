@@ -42,8 +42,6 @@ export default class Register extends Component {
         const { history, location } = this.props;
         const { screenType } = location.state;
 
-        alert(JSON.stringify(User.getUserData()));
-
         this.setState(prevState => {
             const { email, mobile_number, location, address, name, _id, userAccessToken } = User.getUserData();
 

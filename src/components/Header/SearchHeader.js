@@ -64,6 +64,7 @@ export default class SearchHeader extends Component {
     render() {
         const { textInputContainer, textInputContainerStyle, btnContainerStyle, btnContainerStyle1, stretch, iconStyle } = styles
         const filterIcon = require('../../images/filter.png');
+        const { openFilter } = this.props;
 
         return (
             <WRow dial={5} padding={[5, 10]} backgroundColor={Palette.theme_color}>
@@ -77,7 +78,7 @@ export default class SearchHeader extends Component {
                         iconPath={require("../../images/location.png")}
                         onSubmitEditing={() => { }}
                     />
-                    <WTouchable dial={5} padding={[0, 10]} style={btnContainerStyle}>
+                    <WTouchable onPress={openFilter} dial={5} padding={[0, 10]} style={btnContainerStyle}>
                         <Image source={filterIcon} style={iconStyle} />
                     </WTouchable>
                 </WRow>

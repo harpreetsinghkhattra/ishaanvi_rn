@@ -24,15 +24,15 @@ export default class SelectProductTypeItem extends Component {
         return (
             <WTouchable dial={5} style={[stretch, container]} onPress={onPress}>
                 <WRow dial={5} style={[stretch]} padding={[5, 0]}>
-                    <Image source={{ uri: images && images.length ? images[0] : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4idCXJDfaeZP6TVEynolhQN4cXZw0Mh9QFyQTIGEBEum5Xsz_' }} style={image} resizeMode="cover" />
+                    <Image source={images && images.length ? { uri: images[0] } : require("../../images/product-dummy.png")} style={image} resizeMode="cover" />
                     <WView flex dial={4} padding={[5, 5]}>
-                        <WText fontSize={14} fontFamily={"Muli-Bold"} style={{ textTransform: 'capitalize'}}>{`${name}`}</WText>
-                        <WText fontSize={14}>{`CODE: ${itemCode}`}</WText>
+                        <WText fontSize={14} fontFamily={"Muli-Bold"} style={{ textTransform: 'capitalize' }}>{`${name}`}</WText>
+                        <WText fontSize={14}>{`CODE: ${itemCode}`}</WText>   
                         <WText color={Palette.border_color} style={[{ textDecorationLine: 'line-through' }]}>{`₹ ${parseFloat(price).toFixed(2)}`}</WText>
-                        <WRow dial={5} style={subContainer}>
+                        <WRow dial={5} style={subContainer}>    
                             <WText>{`₹ ${parseFloat((parseFloat(price) - (parseFloat(discount) / 100) * parseFloat(price))).toFixed(2)}`}</WText>
-                            {
-                                status && parseInt(status) === 1 ? 
+                            { 
+                                status && parseInt(status) === 1 ?
                                     <WText fontFamily={"Muli-Bold"} color={Palette.theme_color}>Active</WText>
                                     :
                                     <WText fontFamily={"Muli-Bold"} color={Palette.red}>Not Active</WText>
