@@ -46,6 +46,14 @@ export default class Posts extends Component {
         });
     }
 
+    /** On back */
+    onBack = () => {
+        const { history, location } = this.props;
+        if (location.state && location.state.screenType === "edit")
+            history.replace(routerNames.index, { selectedIndex: 4 })
+        else history.go(-1); 
+    }
+
     /** Get response */
     getProductsResponse = () => {
         const { history } = this.props;
@@ -68,7 +76,7 @@ export default class Posts extends Component {
         return (
             <WView dial={2} flex style={stretch}>
                 <Header
-                    onPress={() => history.goBack()}
+                    onPress={this.onBack.bind(this)}
                     label={"Selling Board"}
                 />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start' }, stretch]}>

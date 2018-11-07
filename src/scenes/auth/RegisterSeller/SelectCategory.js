@@ -25,19 +25,20 @@ export default class SelectCategory extends Component {
     }
 
     componentDidMount = () => {
-        this.init();
+        this.init(); 
+    }   
+
+    componentWillUnmount() { 
+        if (this.clearData) {
+            RegisterSellerUser.resetData();
+        }
     }
 
-    componentWillMount = () => {
-        if(screenType === "edit" || !this.clearData)
-    }
-    
 
     init() {
         const { history, location } = this.props;
         const { screenType } = location.state;
         const { name, createdTime, business_address, business_name, deletedStatus, email, forgetPassword, mobile_number, status, termsAndConditions, updatedTime, userType, category } = User.getUserData();
-        console.log('editSeller', JSON.stringify(User.getUserData()));
 
         if (screenType === "edit") {
             RegisterSellerUser.setData({
@@ -61,6 +62,14 @@ export default class SelectCategory extends Component {
             this.clearData = false;
             history.push(routerNames.registerSellerDescription, { screenType });
         } else this.setState({ isError: true });
+    }
+
+    /** On back */
+    onBack = () => {
+        const { history, location } = this.props;
+        if (location.state && location.state.screenType === "edit")
+            history.replace(routerNames.index, { selectedIndex: 4 })
+        else history.go(-1);
     }
 
     render() {
@@ -101,7 +110,7 @@ export default class SelectCategory extends Component {
                         <WRow dial={4} padding={[10, 0]} style={{ justifyContent: "space-between" }}>
                             <WithSeprateIcon
                                 isLeftIcon={true}
-                                onPress={() => history.goBack()}
+                                onPress={this.onBack.bind(this)}
                                 label="BACK"
                             />
                             <WithSeprateIcon

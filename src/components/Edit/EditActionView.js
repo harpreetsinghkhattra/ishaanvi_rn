@@ -69,7 +69,7 @@ export default class EditActionView extends Component {
                 {
                     userType === 1 &&
                     <LabelWithRightBtn
-                        onPress={this.openScreen.bind(this, routerNames.post_offer_list, {})}
+                        onPress={this.openScreen.bind(this, routerNames.post_offer_list, { screenType: "edit" })}
                         label={"Selling Board"} />
                 }
                 {

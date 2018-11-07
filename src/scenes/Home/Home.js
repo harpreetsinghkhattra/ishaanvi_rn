@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { View, Text, Image } from 'react-native';
 import Palette from '../../Palette';
 import TabsView from '../../components/Tabs/TabsView';
@@ -9,6 +9,7 @@ import { routerNames } from '../../RouteConfig';
 
 import Index from './Index';
 import UserProfile from './UserProfile';
+import EventEmitter from 'events';
 
 import { Api, Socket, User as UserApi } from '../../api';
 import { User } from '../../model/user';
@@ -16,17 +17,41 @@ import { get_user_profile } from '../../api/SocketUrls';
 import { Storage, StorageKeys, Helper } from '../../helper';
 const UserData = new Storage();
 
-export default class Home extends Component {
+export default class Home extends PureComponent {
+
+    constructor(props) {
+        super(props);
+
+        this._tabEmitter = new EventEmitter();
+    }
+
+    getIntialIndex = () => {
+        const { history } = this.props;
+        const { location } = history;
+        const state = location && location.state ? location.state : {};
+        if (state.selectedIndex) return state.selectedIndex;
+
+        return 0;
+    }
+
+
+    componentWillUnmount() {
+        this._tabEmitter.removeAllListeners();
+    }
 
     render() {
         const empty = [];
         const views = [
             <Index
+                tabEmitter={this._tabEmitter}
+                initialPage={this.getIntialIndex()}
                 {...this.props} />,
             empty,
             empty,
             empty,
             <UserProfile
+                tabEmitter={this._tabEmitter}
+                initialPage={this.getIntialIndex()}
                 {...this.props} />
         ];
         const { screenWidth, screenHeight, history } = this.props;
@@ -40,7 +65,7 @@ export default class Home extends Component {
                 {
                     text: '',
                     onTabPress: () => alert("Comming soon..."),
-                    iconStyle: { width: 20, height: 20},
+                    iconStyle: { width: 20, height: 20 },
                     iconSource: require('../../images/search.png'),
                 },
                 {
@@ -61,6 +86,7 @@ export default class Home extends Component {
             return (
                 <TabsView
                     tabs={tabs}
+                    tabEmitter={this._tabEmitter}
                     iconStyle={{ tintColor: Palette.white }}
                 />
             );
@@ -72,6 +98,8 @@ export default class Home extends Component {
                     <TabViews
                         tabPosition="bottom"
                         indicator={_renderHeader()}
+                        initialPage={this.getIntialIndex()}
+                        tabEmitter={this._tabEmitter}
                         style={{ flex: 1 }}
                     >
                         {views.map((ele, index) =>

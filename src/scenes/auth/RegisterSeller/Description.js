@@ -30,6 +30,7 @@ export default class Description extends Component {
 
     componentWillMount = () => {
         const { business_address, business_name, address } = RegisterSellerUser.getData();
+        console.log("description", RegisterSellerUser.getData());
 
         this.setState({ business_address, business_name, address });
     }

@@ -79,6 +79,14 @@ export default class ResetPassword extends Component {
         } else return { status: false, message: "" }
     }
 
+    /** On back */
+    onBack = () => {
+        const { history, location } = this.props;
+        if (location.state && location.state.screenType === "edit")
+            history.replace(routerNames.index, { selectedIndex: 4 })
+        else history.go(-1);
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
@@ -88,7 +96,7 @@ export default class ResetPassword extends Component {
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <Header
-                    onPress={() => history.goBack()}
+                    onPress={this.onBack.bind(this)}
                     label={"Reset password"} />
                 <AlertMessage
                     isVisible={alertMessageVisible}

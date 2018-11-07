@@ -15,14 +15,36 @@ const UserData = new Storage();
 
 export default class Login extends PureComponent {
 
-    state = {
-        isHomeFilterVisible: false,
-        isLocationModalVisible: false
+    constructor(props) {
+        super(props);
+
+        const { initialPage } = this.props;
+        alert("initialPage => " + initialPage);
+        this.state = {
+            isHomeFilterVisible: false,
+            isLocationModalVisible: false,
+            isLazyLoading: initialPage === 0 ? true : false
+        }
+
+        this.listenLazyLoadEvent();
+    }
+
+    listenLazyLoadEvent = () => {
+        const { tabEmitter } = this.props;
+        if (tabEmitter.addListener) {
+            tabEmitter.addListener('home_lazy_load', (data) => {
+                if (data && data.index === 0)
+                    this.setState(prevState => {
+                        if (!prevState.isLazyLoading) {
+                            return { isLazyLoading: true };
+                        }
+                    });
+            });
+        }
     }
 
     componentDidMount = () => {
-        console.log("locations stored data", UserLocation.getUserLocationData());
-        this.setState({ isLocationModalVisible: true });
+        // this.setState({ isLocationModalVisible: true });
     }
 
     /** Set visible */
@@ -41,20 +63,21 @@ export default class Login extends PureComponent {
         } else this.setState({ isHomeFilterVisible })
     }
 
-    openScreen(path) {
+    openScreen(path, data) {
         const { history } = this.props;
 
-        history.push(path, {});
+        history.push(path, data ? data : {});
     }
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
         const { userType } = User.getUserData();
-        const { isHomeFilterVisible, isLocationModalVisible } = this.state;
+        const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading } = this.state;
         const plus = require('../../images/plus.png');
+        const empty = [];
 
-        console.log(this.props);
+        if (!isLazyLoading) return empty;
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <SearchHeader
@@ -62,12 +85,12 @@ export default class Login extends PureComponent {
                 />
                 <MyLocation
                     {...this.props}
-                    isVisible={isLocationModalVisible}
+                    isVisible={false}
                     setVisible={this.setLocationModalVisible.bind(this, false)}
                 />
                 <HomeFilter
                     {...this.props}
-                    isVisible={isHomeFilterVisible}
+                    isVisible={false}
                     setVisible={this.setFilterModalVisible.bind(this, false)}
                 />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
@@ -82,12 +105,11 @@ export default class Login extends PureComponent {
                 </ScrollView>
                 {
                     userType === 1 &&
-                    <WTouchable onPress={this.openScreen.bind(this, routerNames.post_offer_detail)} dial={5} style={floatBtn}>
+                    <WTouchable onPress={this.openScreen.bind(this, routerNames.post_offer_detail, { screenType: "home" })} dial={5} style={floatBtn}>
                         <Image source={plus} style={icon} />
                     </WTouchable>
                 }
-            </WView >
-        )
+            </WView >);
     }
 }
 

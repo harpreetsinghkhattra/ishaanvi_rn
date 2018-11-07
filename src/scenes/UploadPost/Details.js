@@ -24,6 +24,7 @@ export default class Details extends Component {
 
     state = {
         isLoading: false,
+        isSubmitLoading: false,
         userData: {},
         formData: {},
         errors: [],
@@ -62,7 +63,7 @@ export default class Details extends Component {
                 deletedStatus: '0',
                 photos: images && images.length ? images : []
             });
-        } 
+        }
     }
 
     /** On change */
@@ -92,14 +93,15 @@ export default class Details extends Component {
     }
 
     /** Get response edit */
-    getEditProductResponse = () => {
+    getEditProductResponse = (btnStatus) => {
         const { history } = this.props;
 
         UserApi.getSocketResponseOnce(edit_product.on, (res) => {
-            this.setState({ isLoading: false });
+            this.setState({ isLoading: false, isSubmitLoading: false });
             if (res && res.data) {
                 if (res.message === "Success") {
-                    history.push(routerNames.post_offer_photos, { screenType: 'edit' });
+                    if (btnStatus === -1) history.go(-1);
+                    else history.push(routerNames.post_offer_photos, { screenType: 'edit' });
                 } else if (res.message === "Present") this.setAlertMessageVisible(true, { status: res.message, heading: "Product is Present!", message: "Please try with another item code" });
                 else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
             } else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
@@ -107,24 +109,25 @@ export default class Details extends Component {
     }
 
     /** On submit */
-    sumbit = () => {
+    sumbit = (btnStatus) => {
         const { history, location } = this.props;
         const { screenType, item } = location.state;
         const { photos, status, deletedStatus, ...rest } = PostOffer.getData();
         const { _id: id, userAccessToken: accessToken } = User.getUserData();
+        const btnLoading = btnStatus === -1 ? 'isSubmitLoading' : 'isLoading';
 
         if (screenType === "edit") {
-            this.setState(() => ({ isLoading: true, errors: [] }), () => {
+            this.setState(() => ({ [btnLoading]: true, errors: [] }), () => {
                 Api.isValidForm(Object.keys(Object.assign({ ...rest }, { status, deletedStatus })), Object.assign({ ...rest }, { status, deletedStatus }))
                     .then(res => {
                         if (res && res.message) {
                             if (res.message === "Success") {
                                 Socket.request(edit_product.emit, Object.assign({ ...rest }, { id, accessToken, status, deletedStatus }));
-                                this.getEditProductResponse();
+                                this.getEditProductResponse(btnStatus);
                             } else Alert.alert("", res.message);
                         } else if (res && res.response) {
                             const { status, response } = res;
-                            this.setState({ isLoading: false, errors: response && response.length ? response : [] });
+                            this.setState({ [btnLoading]: false, errors: response && response.length ? response : [] });
                         }
                     })
                     .catch(err => console.log(err));
@@ -163,15 +166,18 @@ export default class Details extends Component {
     }
 
     back = () => {
-        const { history } = this.props;
-        history.goBack();
+        const { history, location } = this.props;
+
+        if (location.state && location.state.screenType === "home")
+            history.replace(routerNames.index, { selectedIndex: 0 })
+        else history.go(-1);
         PostOffer.resetData();
     }
 
     render() {
         const { screenWidth, screenHeightWithHeader, history, location } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { userData, formData, alertMessage, alertMessageVisible, isLoading } = this.state;
+        const { userData, formData, alertMessage, alertMessageVisible, isLoading, isSubmitLoading } = this.state;
         const { name, itemCode, category, color, description, discount, material, occasion, type, selectType, price, size } = formData;
 
         const { screenType, item } = location.state;
@@ -332,9 +338,19 @@ export default class Details extends Component {
                         <Large
                             label="Next"
                             isLoading={isLoading}
-                            onPress={this.sumbit.bind(this)}
-                            style={{ marginTop: 10, marginBottom: 56 }}
+                            onPress={this.sumbit.bind(this, 1)}
+                            style={{ marginTop: 10, marginBottom: screenType === "edit" ? 0 : 56 }}
                         />
+                        {
+                            screenType === "edit" ?
+                                <Large
+                                    label="Submit"
+                                    isLoading={isSubmitLoading}
+                                    onPress={this.sumbit.bind(this, -1)}
+                                    style={{ marginTop: 10, marginBottom: 56 }}
+                                />
+                                : null
+                        }
                     </WView>
                 </ScrollView>
                 <CompleteIndicatorStatus />

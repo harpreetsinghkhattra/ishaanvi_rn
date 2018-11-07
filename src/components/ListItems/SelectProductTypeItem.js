@@ -24,7 +24,9 @@ export default class SelectProductTypeItem extends Component {
 
         return (
             <WRow dial={5} style={[container]}>
-                <WText fontSize={14}>{label}</WText>
+                <WView dial={4} style={stretch}>
+                    <WText fontSize={14} padding={[0, 10, 0, 0]}>{label}</WText>
+                </WView>
                 <WTouchable dial={6} padding={[5, 10]} onPress={onPress}>
                     <Image source={selected ? checked : unChecked} style={[image, { tintColor: isError && isError.status ? Palette.red : Palette.black }]} />
                 </WTouchable>

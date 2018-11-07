@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { WView, WText, WRow, Header, WTextInput } from '../../components/common';
 import { ScrollView, PixelRatio } from 'react-native';
 import Palette from '../../Palette';
@@ -9,19 +9,53 @@ import { User } from '../../model/user';
 import { Storage, StorageKeys } from '../../helper';
 import { Api, Socket, User as UserApi } from '../../api';
 import { get_user_profile } from '../../api/SocketUrls';
-
+ 
 const UserData = new Storage();
+const PAGE_INDEX = 4; 
 
-export default class UserProfile extends Component {
+export default class UserProfile extends PureComponent {
 
-    state = {
-        isLoading: false,
-        userData: {}
+    constructor(props) {
+        super(props);
+
+        const { initialPage } = this.props;
+        this.state = {
+            isLoading: false,
+            userData: {},
+            isLazyLoading: initialPage === PAGE_INDEX ? true : false
+        }
+
+        this.listenLazyLoadEvent();
     }
 
-    componentDidMount() {
+    componentWillMount = () => {
+        const { initialPage } = this.props;
+
+        if (initialPage === PAGE_INDEX) this.init();
+    }
+
+
+    listenLazyLoadEvent = () => {
+        const { tabEmitter } = this.props;
+        if (tabEmitter.addListener) {
+            tabEmitter.addListener('home_lazy_load', (data) => {
+                if (data && data.index === PAGE_INDEX)
+                    this.setState(prevState => {
+
+                        if (prevState.isLazyLoading) this.init();
+                        if (!prevState.isLazyLoading) {
+                            this.init();
+                            return { isLazyLoading: true };
+                        }
+                    });
+            });
+        }
+    }
+
+    init = () => {
         this.setState({ isLoading: true });
         this.getUserResponse();
+        this.setState({ userData: User.getUserData() });
     }
 
     async getUserResponse() {
@@ -29,7 +63,6 @@ export default class UserProfile extends Component {
         await Socket.request(get_user_profile.emit, { id, accessToken });
         await UserApi.getSocketResponseOnce(get_user_profile.on, (res) => {
             if (res && res.message === "Success") {
-                alert(JSON.stringify(res.data));
                 User.setUserData(res.data);
                 this.setState({ isLoading: false, userData: User.getUserData() });
                 // UserData.setUserData(StorageKeys.USER_DATA, res.data);
@@ -37,16 +70,14 @@ export default class UserProfile extends Component {
         });
     }
 
-    componentDidMount() {
-        this.setState({ userData: User.getUserData() });
-    }
-
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { userData, isLoading } = this.state;
+        const { userData, isLoading, isLazyLoading } = this.state;
+        const empty = [];
 
-        console.log("userData", userData);
+        if (!isLazyLoading) return empty;
+
         return (
             <WView dial={2} flex style={stretch}>
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>

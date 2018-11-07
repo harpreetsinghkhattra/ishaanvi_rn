@@ -152,6 +152,12 @@ export default class Register extends Component {
         } else return { status: false, message: "" }
     }
 
+    onBack = () => {
+        const { history } = this.props;
+
+        history.replace(routerNames.index, { selectedIndex: 4})
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
@@ -163,7 +169,7 @@ export default class Register extends Component {
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <Header
                     label={"Edit User Profile"}
-                    onPress={() => history.goBack()} />
+                    onPress={this.onBack.bind(this)} />
                 <AlertMessage
                     isVisible={alertMessageVisible}
                     data={alertMessage}

@@ -15,7 +15,7 @@ const registerSellerUserData = {
 };
 
 export class RegisterSellerUser {
-    static state = registerSellerUserData;
+    static state = Object.assign({}, registerSellerUserData);;
 
     static setData(data) {
         Object.assign(this.state, data);
@@ -26,6 +26,6 @@ export class RegisterSellerUser {
     }
 
     static resetData() {
-        this.state = registerSellerUserData;
+        this.state = Object.assign({}, registerSellerUserData);
     }
 }

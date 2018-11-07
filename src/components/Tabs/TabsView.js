@@ -33,7 +33,7 @@ export default class PagerTabIndicator extends Component {
      */
     static defaultProps = {
         tabs: [],
-        changePageWithAnimation: false 
+        changePageWithAnimation: false
     }
 
     state = {
@@ -73,7 +73,7 @@ export default class PagerTabIndicator extends Component {
                     <WView flex={1} dial={5}>
                         <WView dial={5} padding={[8, 0]} style={[isSelected ? styles.bottomBorder : {}]}>
                             <Image
-                                style={[styles.image, tab.iconStyle,iconStyle]} 
+                                style={[styles.image, tab.iconStyle, iconStyle]}
                                 source={tab.iconSource}
                                 ratio={0.5}
                             />
@@ -87,15 +87,16 @@ export default class PagerTabIndicator extends Component {
                 {tabsView}
             </View>
         )
-    }
+    } 
 
     onPageSelected(e) {
+        this.props.tabEmitter.emit('home_lazy_load', { index: e.position });
         this.setState({ selectedIndex: e.position })
     }
-
+ 
     onPageScroll(e) {
     }
-}
+}  
 
 //Styels for this component
 const styles = StyleSheet.create({
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'stretch',
         borderColor: "#F7F7F7",
-        borderTopWidth: StyleSheet.hairlineWidth * 2, 
+        borderTopWidth: StyleSheet.hairlineWidth * 2,
         backgroundColor: Palette.theme_color
     },
     itemContainer: {
@@ -136,6 +137,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: (2.5 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
         borderColor: Palette.white,
         borderStyle: "solid",
-        borderRadius: 1  
+        borderRadius: 1
     }
 })
