@@ -5,11 +5,11 @@ import Palette from '../../Palette'
 
 export default class FilterHeader extends Component {
     static propTypes = {
-        prop: PropTypes
+        onClearAll: PropTypes.func
     }
 
     render() {
-        const { onPress } = this.props;
+        const { onClearAll } = this.props;
         const { container } = styles;
 
         return (
@@ -17,7 +17,7 @@ export default class FilterHeader extends Component {
                 <WView dial={4} padding={[0, 10]}>
                     <WText fontSize={18} right fontFamily={"Muli-Bold"}>Filters</WText>  
                 </WView>
-                <WTouchable dial={6} onPress={onPress} padding={[0, 10]}>
+                <WTouchable dial={6} onPress={onClearAll} padding={[0, 10]}>
                     <WText fontSize={14} right color={Palette.theme_color}>CLEAR ALL</WText>
                 </WTouchable>
             </WRow>

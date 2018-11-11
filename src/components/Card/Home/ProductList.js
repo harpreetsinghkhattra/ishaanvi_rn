@@ -1,23 +1,22 @@
 import React, { PureComponent } from 'react'
-import { WView, WText, WRow, Header, WTextInput, WTouchable, WSpinner } from '../../components/common';
+import { WView, WText, WRow, Header, WTextInput, WTouchable, WSpinner } from '../../common';
 import { ScrollView, PixelRatio, Image, FlatList, RefreshControl } from 'react-native';
-import Palette from '../../Palette';
-import { Large } from '../../components/UI/btn';
-import { routerNames } from '../../RouteConfig';
-import { RecentProductsList } from '../../components/Lists';
-import { SearchHeader } from '../../components/Header';
-import { Storage, StorageKeys } from '../../helper';
-import { User } from '../../model/user';
-import { UserLocation } from '../../model/UserLocation';
-import { MyLocation, HomeFilter } from '../Modal/';
-import { get_home_items } from '../../api/SocketUrls';
-import { Api, Socket, User as UserApi } from '../../api';
-import { ProductList } from '../../components/Card/Home';
+import Palette from '../../../Palette';
+import { Large } from '../../UI/btn';
+import { routerNames } from '../../../RouteConfig';
+import { RecentProductsList } from '../../Lists';
+import { SearchHeader } from '../../Header';
+import { Storage, StorageKeys } from '../../../helper';
+import { User } from '../../../model/user';
+import { UserLocation } from '../../../model/UserLocation';
+import { MyLocation, HomeFilter } from '../../../scenes/Modal';
+import { get_home_items } from '../../../api/SocketUrls';
+import { Api, Socket, User as UserApi } from '../../../api';
 
 const UserData = new Storage();
 const PAGE_INDEX = 0;
 
-export default class Login extends PureComponent {
+export default class ProductList extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -26,33 +25,14 @@ export default class Login extends PureComponent {
         this.state = {
             isHomeFilterVisible: false,
             isLocationModalVisible: false,
-            isLazyLoading: initialPage === PAGE_INDEX ? true : false,
             isLoading: false,
             data: []
         }
 
-        this.listenLazyLoadEvent();
     }
 
     componentDidMount = () => {
-        const { initialPage } = this.props;
-
-        // if (initialPage === PAGE_INDEX) this.init();
-    }
-
-    listenLazyLoadEvent = () => {
-        const { tabEmitter } = this.props;
-        if (tabEmitter.addListener) {
-            tabEmitter.addListener('home_lazy_load', (data) => {
-                if (data && data.index === 0)
-                    this.setState(prevState => {
-                        if (!prevState.isLazyLoading) {
-                            // this.init()
-                            return { isLazyLoading: true };
-                        }
-                    });
-            });
-        }
+        this.init();
     }
 
     init = () => {
@@ -66,7 +46,7 @@ export default class Login extends PureComponent {
         Socket.request(get_home_items.emit, {
             id,
             accessToken,
-            category: filterData.category && filterData.category.length === 0 ? filterData.category : "all",
+            category: filterData.category && filterData.category.length ? filterData.category : "all",
             area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
             "coordinates": [31.9579623, 75.6282207]
         });
@@ -109,7 +89,9 @@ export default class Login extends PureComponent {
 
     /** Set visible */
     setFilterModalVisible = (isHomeFilterVisible, refresh) => {
-        if (refresh === "refresh") this.productListRef && this.productListRef.init();
+        if (refresh === "refresh") {
+            this.init();
+        }
 
         this.setState({ isHomeFilterVisible });
     }
@@ -126,7 +108,6 @@ export default class Login extends PureComponent {
     }
 
     onRequestMoreProducts = () => {
-        console.log("home loading render");
         this.setState({ isRequestMoreProducts: true });
         this.onBottomPullSocketResponse();
     }
@@ -140,40 +121,48 @@ export default class Login extends PureComponent {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
         const { userType } = User.getUserData();
-        const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
-        const plus = require('../../images/plus.png');
+        const { isHomeFilterVisible, isLocationModalVisible, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
+        const plus = require('../../../images/plus.png');
         const empty = [];
 
-        if (!isLazyLoading) return empty;
+        console.log("home loading render product list");
 
-        console.log("home loading render");
         return (
-            <WView dial={2} flex style={{ alignItems: 'stretch' }}>
-                <SearchHeader
-                    openFilter={this.setFilterModalVisible.bind(this, true)}
-                />
-                <HomeFilter
-                    {...this.props}
-                    isVisible={isHomeFilterVisible}
-                    setVisible={this.setFilterModalVisible.bind(this, false, 'refresh')}
-                />
-                <WView
-                    flex
-                    dial={2}
-                    style={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - 56, justifyContent: 'flex-start' }, stretch]}
-                >
-                    <ProductList
-                        ref={ref => this.productListRef = ref}
-                        { ...this.props }
-                    />
-                </WView>
+            <WView flex dial={2} padding={[5, 5]} style={[stretch]} >
                 {
-                    userType === 1 &&
-                    <WTouchable onPress={this.openScreen.bind(this, routerNames.post_offer_detail, { screenType: "home" })} dial={5} style={floatBtn}>
-                        <Image source={plus} style={icon} />
-                    </WTouchable>
+                    isLoading ?
+                        <WView dial={5} flex>
+                            <WSpinner size={"small"} color={Palette.theme_color} />
+                            <WText fontSize={16} fontFamily={"Muli-Bold"}>Looking for shops...</WText>
+                        </WView>
+                        :
+                        data && data.length ?
+                            <FlatList
+                                contentContainerStyle={{ flexGrow: 1 }}
+                                keyExtractor={(item, index) => `products-${index}-${new Date().getTime()}`}
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={isRefreshingList}
+                                        onRefresh={this.onProductListRefresh.bind(this)}
+                                    />
+                                }
+                                onEndReachedThreshold={0.5}
+                                onEndReached={this.onRequestMoreProducts.bind(this)}
+                                data={data}
+                                renderItem={({ item, index }) =>
+                                    <RecentProductsList
+                                        key={`products-${index}-${new Date().getTime()}`}
+                                        data={item.items}
+                                        isLoading={this.isRequestMoreProducts(index)}
+                                        heading={item.business_name} />}
+                            />
+                            :
+                            <WView dial={5}>
+                                <WText fontSize={16} fontFamily={"Muli-Bold"}>No product found</WText>
+                                <Image source={require('../../../images/no_product.png')} resizeMode="cover" style={{ height: 200 }} />
+                            </WView>
                 }
-            </WView >);
+            </WView>);
     }
 }
 

@@ -11,7 +11,17 @@ export class User {
         "userAccessToken": "",
         "createdTime": "",
         "updatedTime": "",
-        "forgetPassword": 0
+        "forgetPassword": 0,
+        "filterData": {
+            "area": [0, 500],
+            "category": []
+        },
+        "location": {
+            "latitude": '',
+            "longitude": '',
+            "address": '',
+            "zipCode": ''
+        }
     }
 
     static setUserData(data) {

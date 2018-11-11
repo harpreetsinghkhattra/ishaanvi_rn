@@ -40,6 +40,7 @@ export default class Home extends PureComponent {
     }
 
     render() {
+        console.log("home loading render in tabs");
         const empty = [];
         const views = [
             <Index

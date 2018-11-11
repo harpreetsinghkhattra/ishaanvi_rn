@@ -8,38 +8,49 @@ import Palette from '../../Palette';
 export default class SelectProductTypeList extends Component {
 
     state = {
-        data: []
+        data: [],
     }
 
     static propTypes = {
         heading: PropTypes.string,
         data: PropTypes.array,
         value: PropTypes.string,
-        isError: PropTypes.object
+        isError: PropTypes.object,
+        isMultiple: PropTypes.bool
     }
 
     componentDidMount = () => {
         this.parseData();
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        const { value } = this.props;
+        if (value.length !== prevProps.value.length) this.parseData();
+    }
+
     parseData = () => {
-        const { data, value } = this.props;
+        const { data, value, isMultiple } = this.props;
         var tempData = data.map((ele) => {
-            if (value === ele.toLowerCase()) return ({ label: ele, isSelected: true });
+            if (isMultiple && value && value.findIndex(category => category === ele.toLowerCase()) > -1) return ({ label: ele, isSelected: true });
+            else if (!isMultiple && value === ele.toLowerCase()) return ({ label: ele, isSelected: true });
             else return ({ label: ele, isSelected: false })
         });
+
+        console.log("slectProductType list", tempData);
+        console.log("slectProductType list", value);
         this.setState({ data: tempData });
     }
 
     /** Select item */
     selectItem = (item, index) => {
-        const { onSelect } = this.props;
+        const { onSelect, isMultiple } = this.props;
         this.setState(prevState => {
             var tempData = prevState.data.map((ele, i) => {
                 if (index === i) {
-                    ele.isSelected = true;
-                    onSelect(ele.label.toLowerCase());
-                } else ele.isSelected = false;
+                    if (isMultiple) ele.isSelected = ele.isSelected ? false : true;
+                    else ele.isSelected = true;
+                    onSelect(ele.label.toLowerCase(), ele.isSelected);
+                } else if (!isMultiple) ele.isSelected = false;
                 return ele;
             });
             return ({ data: tempData });

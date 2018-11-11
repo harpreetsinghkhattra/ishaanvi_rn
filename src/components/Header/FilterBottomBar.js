@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { WRow, WTouchable, WView, WText } from '../common'
 import Palette from '../../Palette'
 
-export default class FilterHeader extends Component {
+export default class FilterBottomBar extends Component {
     static propTypes = {
-        prop: PropTypes
+        onClose: PropTypes.func,
+        onApply: PropTypes.func
     }
 
     render() {

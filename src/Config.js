@@ -33,7 +33,7 @@ export default {
         googleLocation: "AIzaSyC3p6fQ5ebHm1IUq71tA8czm6Cqvr0hzpY"
     },
 
-    keystore: {
+    keystore: { 
         name: APP_NAME.toLowerCase(),
         pemCertificatePath: 'rsa-example.pem',
         keyName: APP_NAME.toLowerCase(),

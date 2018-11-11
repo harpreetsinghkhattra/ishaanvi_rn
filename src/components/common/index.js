@@ -8,5 +8,6 @@ import WTouchable from './WTouchable';
 import TabBase from './TabBase';
 import Header from './Header';
 import Image from './Image';
+import Slider from './Slider';
 
-export { WButton, WRow, WSpinner, WView, WTouchable, WText, WTextInput, TabBase, Header, Image };
+export { WButton, WRow, WSpinner, WView, WTouchable, WText, WTextInput, TabBase, Header, Image, Slider };

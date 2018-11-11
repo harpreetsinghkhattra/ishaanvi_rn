@@ -11,27 +11,34 @@ import { InfoCompleteAutoSelect } from '../../components/Select/';
 import { TextInputWithLabel } from '../../components/UI/input';
 import { PlaceSearchHeader } from '../../components/Header';
 import { UserLocation } from '../../model/UserLocation';
+import { User } from '../../model/user';
 import { Storage, StorageKeys } from '../../helper/';
 
 const storage = new Storage();
 
 export default class MyLocation extends Component {
 
-    state = {
-        message: {},
-        isLoadingLocation: false,
-        isLoadingLocationDetail: false,
-        isLoadingZipcode: false
-    }
-
     static propTypes = {
         data: PropTypes.object
     }
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            message: {},
+            isLoadingLocation: false,
+            isLoadingLocationDetail: false,
+            isLoadingZipcode: false
+        }
+
+        this.userLoaction = User.getUserData().location;
+        console.log("this.userlocation mylocation", this.userLoaction);
+    }
+
     /** On change */
     onTextChange = (key, value) => {
-        this.setState({ [key]: value });
-        UserLocation.setUserLocationData({ [key]: value });
+        this.userLoaction[key] = value;
     }
 
     async requestLocationPermission() {
@@ -78,31 +85,58 @@ export default class MyLocation extends Component {
 
     /** Get location detail */
     getLocationDetailViaCurrentLocation = () => {
-        const { latitude, longitude } = UserLocation.getUserLocationData();
+        const { latitude, longitude } = User.getUserData().location;
 
-        console.log('locations data', UserLocation.getUserLocationData())
+        console.log('this.userlocation mylocation', latitude, longitude)
         this.setState({ isLocationDetailLoading: true, isLoadingLocation: false });
         Api.getLocationDetailViaLatLng(["latlng"], { latlng: `${latitude},${longitude}` })
             .then(res => {
-                console.log('locations data server',res);
                 switch (res.status) {
                     case "OK":
                         this.setState({ isLocationDetailLoading: false });
 
-                        alert('before');
-                        if (res && res.results && ( !res.results.length || res.results.length === 0)) return;
-                        alert('after');
+                        if (res && res.results && (!res.results.length || res.results.length === 0)) return;
 
                         this.onTextChange('address', res.results[0].formatted_address);
-                        storage.setUserData(StorageKeys.UserLocation, UserLocation.getUserLocationData());
+                        storage.setUserData(StorageKeys.USER_DATA, User.getUserData());
                         return;
                     default:
                         this.setState({ isLocationDetailLoading: false });
                 }
             })
             .catch(err => {
-                console.log(err)
                 this.setState({ isLocationDetailLoading: false });
+            });
+    }
+
+    /** Get location detail */
+    getLocationDetailViaZipCode = () => {
+        const { zipCode } = User.getUserData().location;
+        alert(zipCode);
+        if (!zipCode) return;
+
+        this.setState({ isLoadingZipcode: true });
+        Api.getLocationDetailViaZipCode(["zipCode"], { zipCode })
+            .then(res => {
+                console.log('zipcode response', res); 
+                switch (res.status) {
+                    case "OK":
+                        this.setState({ isLoadingZipcode: false });
+
+                        if (res && res.results && (!res.results.length || res.results.length === 0)) return;
+
+                        this.onTextChange('address', res.results[0].formatted_address);
+                        storage.setUserData(StorageKeys.USER_DATA, User.getUserData());
+                        return;
+                    case "ZERO_RESULTS":
+                        this.setState({ isLoadingZipcode: false });
+                        alert("No location found with entered zipcode");
+                    default:
+                        this.setState({ isLoadingZipcode: false });
+                }
+            })
+            .catch(err => {
+                this.setState({ isLoadingZipcode: false });
             });
     }
 
@@ -153,13 +187,17 @@ export default class MyLocation extends Component {
                                     flex={1}
                                     containerStyle={textInputContainerStyle}
                                     placeholderName="Enter Zip code"
+                                    onChangeText={(value) => this.onTextChange('zipCode', value)}
+                                    keyboardType={"numeric"}
                                     style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                                     iconTintColor={Palette.border_color}
                                     iconPath={require("../../images/search.png")}
-                                    onSubmitEditing={() => { }}
+                                    onSubmitEditing={this.getLocationDetailViaZipCode.bind(this)}
                                 />
                                 <Large
                                     label={"SEND"}
+                                    isLoading={isLoadingZipcode}
+                                    onPress={this.getLocationDetailViaZipCode.bind(this)}
                                     style={{ marginTop: 10 }}
                                 />
                             </WView>

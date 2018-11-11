@@ -59,20 +59,50 @@ import React, { Component } from 'react'
 import { WRow, WView, WButton, WTextInput, WText, WTouchable } from '../common';
 import { Image } from 'react-native';
 import Palette from '../../Palette';
+import { MyLocation } from '../../scenes/Modal';
+import { User } from '../../model/user';
 
 export default class SearchHeader extends Component {
+
+    state = {
+        isLocationModalVisible: false
+    }
+
+    componentDidMount = () => {
+        const location = User.getUserData().location;
+        if (location && (!location.zipCode || !location.latitude))
+            this.setLocationModalVisible(true);
+    }
+
+
+    /** Set visible */
+    setLocationModalVisible = (isLocationModalVisible, location) => {
+        if (location && typeof location === 'string') {
+        } else this.setState({ isLocationModalVisible })
+    }
+
     render() {
         const { textInputContainer, textInputContainerStyle, btnContainerStyle, btnContainerStyle1, stretch, iconStyle } = styles
+        const { isLocationModalVisible } = this.state;
         const filterIcon = require('../../images/filter.png');
         const { openFilter } = this.props;
+        const location = User.getUserData().location;
 
         return (
             <WRow dial={5} padding={[5, 10]} backgroundColor={Palette.theme_color}>
+                <MyLocation
+                    {...this.props}
+                    isVisible={isLocationModalVisible}
+                    setVisible={this.setLocationModalVisible.bind(this, false)}
+                />
                 <WRow dial={5} padding={[0, 5]} flex style={textInputContainer}>
                     <WTextInput
                         flex={1}
                         containerStyle={textInputContainerStyle}
                         placeholderName="Location"
+                        value={location.address}
+                        onFocus={this.setLocationModalVisible.bind(this, true)}
+                        onChangeText={this.setLocationModalVisible.bind(this, true)}
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                         iconTintColor={Palette.border_color}
                         iconPath={require("../../images/location.png")}

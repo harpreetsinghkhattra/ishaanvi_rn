@@ -28,7 +28,7 @@ export default class UserProfile extends PureComponent {
         this.listenLazyLoadEvent();
     }
 
-    componentWillMount = () => {
+    componentDidMount = () => { 
         const { initialPage } = this.props;
 
         if (initialPage === PAGE_INDEX) this.init();
@@ -42,7 +42,6 @@ export default class UserProfile extends PureComponent {
                 if (data && data.index === PAGE_INDEX)
                     this.setState(prevState => {
 
-                        if (prevState.isLazyLoading) this.init();
                         if (!prevState.isLazyLoading) {
                             this.init();
                             return { isLazyLoading: true };
@@ -58,10 +57,10 @@ export default class UserProfile extends PureComponent {
         this.setState({ userData: User.getUserData() });
     }
 
-    async getUserResponse() {
+    getUserResponse() {
         const { _id: id, userAccessToken: accessToken } = User.getUserData();
-        await Socket.request(get_user_profile.emit, { id, accessToken });
-        await UserApi.getSocketResponseOnce(get_user_profile.on, (res) => {
+        Socket.request(get_user_profile.emit, { id, accessToken });
+        UserApi.getSocketResponseOnce(get_user_profile.on, (res) => { 
             if (res && res.message === "Success") {
                 User.setUserData(res.data);
                 this.setState({ isLoading: false, userData: User.getUserData() });

@@ -250,6 +250,6 @@ export class Api {
                             return Promise.reject(err);
                         })
                 } else return Promise.resolve({ status, response });
-            })
+            }).catch(err => Promise.reject(err))
     }
 }

@@ -33,6 +33,11 @@ const get_product = {
     on: "/socket/api/response/getProduct"
 }
 
+const get_home_items = {
+    emit: "/socket/api/getHomeItems",
+    on: "/socket/api/response/getHomeItems"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -40,5 +45,6 @@ export {
     edit_product,
     get_products,
     get_product,
-    edit_seller_profile
+    edit_seller_profile,
+    get_home_items
 }
