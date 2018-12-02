@@ -316,7 +316,7 @@ export default class Details extends Component {
                                 isError={this.isError('selectType')}
                                 onSelect={value => this.onTextChange("selectType", value)}
                                 value={selectType}
-                                data={['SALE', 'BANDE', 'POPULAR']} />
+                                data={['SALE', 'NEW', 'POPULAR']} />
                             <SelectProductTypeList
                                 heading={"Select Category *"}
                                 isError={this.isError('category')}

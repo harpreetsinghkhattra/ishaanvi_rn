@@ -27,7 +27,7 @@ export class PostOffer {
     }
 
     static resetData() {
-        alert(JSON.stringify(postOfferData));
+        // alert(JSON.stringify(postOfferData));
         this.state = Object.assign({}, postOfferData);
     }
 }

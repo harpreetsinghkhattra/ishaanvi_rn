@@ -46,7 +46,6 @@ export default class MyLocation extends Component {
             const isLocationPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
 
             if (isLocationPermission) {
-                alert('already present');
                 this.getGeoLocation();
             }
             else {
@@ -86,33 +85,36 @@ export default class MyLocation extends Component {
     /** Get location detail */
     getLocationDetailViaCurrentLocation = () => {
         const { latitude, longitude } = User.getUserData().location;
+        const { setVisible } = this.props;
 
         console.log('this.userlocation mylocation', latitude, longitude)
-        this.setState({ isLocationDetailLoading: true, isLoadingLocation: false });
+        this.setState({ isLoadingLocation: false });
         Api.getLocationDetailViaLatLng(["latlng"], { latlng: `${latitude},${longitude}` })
             .then(res => {
                 switch (res.status) {
                     case "OK":
-                        this.setState({ isLocationDetailLoading: false });
+                        this.setState({ isLoadingLocation: false });
 
                         if (res && res.results && (!res.results.length || res.results.length === 0)) return;
 
                         this.onTextChange('address', res.results[0].formatted_address);
-                        storage.setUserData(StorageKeys.USER_DATA, User.getUserData());
-                        return;
+                        storage.setUserData(StorageKeys.USER_DATA, Object.assign(User.getUserData(), this.userLoaction));
+                        setVisible();
+                        return; 
                     default:
-                        this.setState({ isLocationDetailLoading: false });
+                        this.setState({ isLoadingLocation: false });
                 }
             })
             .catch(err => {
-                this.setState({ isLocationDetailLoading: false });
+                this.setState({ isLoadingLocation: false });
             });
     }
 
     /** Get location detail */
     getLocationDetailViaZipCode = () => {
         const { zipCode } = User.getUserData().location;
-        alert(zipCode);
+        const { setVisible } = this.props; 
+        
         if (!zipCode) return;
 
         this.setState({ isLoadingZipcode: true });
@@ -126,7 +128,8 @@ export default class MyLocation extends Component {
                         if (res && res.results && (!res.results.length || res.results.length === 0)) return;
 
                         this.onTextChange('address', res.results[0].formatted_address);
-                        storage.setUserData(StorageKeys.USER_DATA, User.getUserData());
+                        storage.setUserData(StorageKeys.USER_DATA, Object.assign(User.getUserData(), this.userLoaction));
+                        setVisible();
                         return;
                     case "ZERO_RESULTS":
                         this.setState({ isLoadingZipcode: false });

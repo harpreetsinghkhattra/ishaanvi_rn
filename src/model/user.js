@@ -14,7 +14,8 @@ export class User {
         "forgetPassword": 0,
         "filterData": {
             "area": [0, 500],
-            "category": []
+            "category": [],
+            "price": [0, 0]
         },
         "location": {
             "latitude": '',
@@ -45,7 +46,18 @@ export class User {
             "userAccessToken": "",
             "createdTime": "",
             "updatedTime": "",
-            "forgetPassword": 0
+            "forgetPassword": 0,
+            "filterData": {
+                "area": [0, 500],
+                "category": [],
+                "price": [0, 0]
+            },
+            "location": {
+                "latitude": '',
+                "longitude": '',
+                "address": '',
+                "zipCode": ''
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ export default class ProductList extends PureComponent {
             data: []
         }
 
+        this.shopIds = [];
     }
 
     componentDidMount = () => {
@@ -42,29 +43,32 @@ export default class ProductList extends PureComponent {
     }
 
     getUserResponse() {
-        const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
         Socket.request(get_home_items.emit, {
             id,
             accessToken,
-            category: filterData.category && filterData.category.length ? filterData.category : "all",
-            area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            "coordinates": [31.9579623, 75.6282207]
+            category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
+            area: filterData &&filterData.area && filterData.area.length ? filterData.area[1] : 500,
+            "coordinates": location && location.latitude ? [location.latitude, location.longitude] : [31.9579623, 75.6282207]
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
+                this.shopIds = res.data && res.data.length ? Array.from(res.data.map(ele => ele._id)) : [];
                 this.setState({ isLoading: false, isRefreshingList: false, data: res.data });
             } else this.setState({ isLoading: false, isRefreshingList: false });
         });
     }
 
     onBottomPullSocketResponse() {
-        const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+        // alert(JSON.stringify(this.shopIds));
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
         Socket.request(get_home_items.emit, {
             id,
             accessToken,
-            category: filterData.category && filterData.category.length ? filterData.category : "all",
-            area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            "coordinates": [31.9579623, 75.6282207]
+            category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
+            area: filterData && filterData.area && filterData.area.length ? filterData.area[1] : 500,
+            "coordinates": location && location.latitude ? [location.latitude, location.longitude] : [31.9579623, 75.6282207],
+            presentShops: this.shopIds
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
@@ -72,10 +76,11 @@ export default class ProductList extends PureComponent {
                     const { data } = prevState;
                     let tempData = Array.from(data);
                     tempData = tempData.concat(Array.from(res.data));
+                    this.shopIds = Array.from(tempData.map(ele => ele._id));
 
-                    return ({ isLoading: false, isRefreshingList: false, data: tempData });
+                    return ({ isLoading: false, isRequestMoreProducts: false, isRefreshingList: false, data: tempData });
                 });
-            } else this.setState({ isLoading: false, isRefreshingList: false });
+            } else this.setState({ isLoading: false, isRefreshingList: false, isRequestMoreProducts: false });
         });
     }
 
@@ -107,9 +112,19 @@ export default class ProductList extends PureComponent {
         this.getUserResponse();
     }
 
-    onRequestMoreProducts = () => {
-        this.setState({ isRequestMoreProducts: true });
-        this.onBottomPullSocketResponse();
+    onRequestMoreProducts = (e) => {
+        const { isRequestMoreProducts } = this.state;
+        const { distanceFromEnd } = e;
+
+        if (isRequestMoreProducts) return;
+        if (this.shopIds.length === 0) return;
+
+        if (distanceFromEnd >= 0) {
+            this.setState({ isRequestMoreProducts: true });
+            this.onBottomPullSocketResponse();
+        }
+
+        console.log("onrequest more products", distanceFromEnd);
     }
 
     isRequestMoreProducts = (index) => {
@@ -128,7 +143,7 @@ export default class ProductList extends PureComponent {
         console.log("home loading render product list");
 
         return (
-            <WView flex dial={2} padding={[5, 5]} style={[stretch]} >
+            <WView dial={2} padding={[5, 5]} style={[{ width: screenWidth, height: screenHeightWithHeader - 56 }, stretch]} >
                 {
                     isLoading ?
                         <WView dial={5} flex>
@@ -146,7 +161,7 @@ export default class ProductList extends PureComponent {
                                         onRefresh={this.onProductListRefresh.bind(this)}
                                     />
                                 }
-                                onEndReachedThreshold={0.5}
+                                onEndReachedThreshold={0.1}
                                 onEndReached={this.onRequestMoreProducts.bind(this)}
                                 data={data}
                                 renderItem={({ item, index }) =>

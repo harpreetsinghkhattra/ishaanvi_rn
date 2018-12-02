@@ -9,7 +9,7 @@ import {
     ToastAndroid,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { NativeRouter, BackButton } from 'react-router-native'
+import { MemoryRouter, BackButton } from 'react-router-native'
 import { User } from './model/user';
 
 import MainScene from './scenes/MainScene';
@@ -84,11 +84,7 @@ class Rootrn extends Component {
 
     render() {
         return (
-            <NativeRouter
-                getUserConfirmation={(message, cb) => {
-                    console.log("message", message);
-                    cb(false);
-                }}>
+            <MemoryRouter>
                 <View
                     onLayout={(event) => this._onScreenUpdate(event)}
                     style={{
@@ -96,7 +92,7 @@ class Rootrn extends Component {
                         backgroundColor: Palette.white
                     }}
                 >
-                    <BackButton />
+                    <BackButton /> 
                     <StatusBar hidden={false} backgroundColor={Palette.theme_color} />
                     {React.createElement(MainScene, {
                         booted: this.state.booted,
@@ -108,7 +104,7 @@ class Rootrn extends Component {
                         fontScale: this.state.fontScale
                     })}
                 </View>
-            </NativeRouter>
+            </MemoryRouter>
         );
     }
 }

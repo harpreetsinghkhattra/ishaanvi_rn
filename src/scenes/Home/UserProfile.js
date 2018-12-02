@@ -31,6 +31,8 @@ export default class UserProfile extends PureComponent {
     componentDidMount = () => { 
         const { initialPage } = this.props;
 
+        console.log("user profile =====>", User.getUserData());
+
         if (initialPage === PAGE_INDEX) this.init();
     }
 

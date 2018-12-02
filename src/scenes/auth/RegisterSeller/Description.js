@@ -30,7 +30,7 @@ export default class Description extends Component {
 
     componentWillMount = () => {
         const { business_address, business_name, address } = RegisterSellerUser.getData();
-        console.log("description", RegisterSellerUser.getData());
+        console.log("description =====>", RegisterSellerUser.getData());
 
         this.setState({ business_address, business_name, address });
     }
@@ -53,8 +53,11 @@ export default class Description extends Component {
             Api.isValidForm(["business_address", "business_name", "address", "location"], { business_address, business_name, address, location })
                 .then(res => {
                     if (res && res.message === "Success") {
-                        this.setState({ isLoading: false });
-                        history.push(routerNames.registerSellerContactInfo, { screenType });
+                        !location.lat && !location.lng && this.getLocationDetail();
+                        this.setState(() => ({ isLoading: false }), () => {
+                            history.push(routerNames.registerSellerContactInfo, { screenType });
+                        });
+
                     } else if (res && res.response) {
                         const { status, response } = res;
                         this.setState({ isLoading: false, errors: response && response.length ? response : [] });
@@ -74,6 +77,7 @@ export default class Description extends Component {
                 switch (res.status) {
                     case "OK":
                         this.setState({ isLocationDetailLoading: false });
+                        console.log("location ========>", res.candidates);
                         res && res.candidates && res.candidates.length && this.onTextChange("location", res.candidates[0].geometry.location);
                         break;
                     default:
@@ -171,7 +175,7 @@ export default class Description extends Component {
                         <WRow dial={4} padding={[10, 0]} style={{ justifyContent: "space-between" }}>
                             <WithSeprateIcon
                                 isLeftIcon={true}
-                                onPress={(isLocationDetailLoading) ? () => { } : () => history.goBack()} 
+                                onPress={(isLocationDetailLoading) ? () => { } : () => history.goBack()}
                                 label="BACK"
                             />
                             <WithSeprateIcon

@@ -133,7 +133,7 @@ export default class ContactInfo extends Component {
         const { screenWidth, screenHeightWithHeader, history, location } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
         const { isLoading, isVisible, sellerRegisterForm, alertMessageVisible, alertMessage } = this.state;
-        const { name, email, password, confirm_password, mobile_number, category, business_name, business_address } = sellerRegisterForm;
+        const { name, email, password, confirm_password, mobile_number, category, business_name, business_address, address } = sellerRegisterForm;
         const { screenType } = location.state;
 
         return (
@@ -160,8 +160,11 @@ export default class ContactInfo extends Component {
                                 label={"Name"}
                                 value={business_name} />
                             <WithInfo
-                                label={"Address"}
+                                label={"Location"}
                                 value={business_address} />
+                            <WithInfo
+                                label={"Address"}
+                                value={address} />
 
                             <Section
                                 label={"Contact Info"} />

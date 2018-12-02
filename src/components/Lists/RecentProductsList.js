@@ -10,11 +10,16 @@ export default class RecentProductsList extends Component {
     static propTypes = {
         heading: PropTypes.string,
         data: PropTypes.array,
-        isLoading: PropTypes.bool
+        isLoading: PropTypes.bool,
+        isViewMore: PropTypes.bool
+    }
+
+    static defaultProps = {
+        isViewMore: true
     }
 
     render = () => {
-        const { heading, data, isLoading } = this.props;
+        const { heading, data, isLoading, isViewMore } = this.props;
 
         return (
             <WView dial={4} >
@@ -22,9 +27,12 @@ export default class RecentProductsList extends Component {
                     <WView flex={0.7}>
                         <WText fontSize={14} left fontFamily="Muli-Bold">{heading}</WText>
                     </WView>
-                    <WView flex={0.3}>
-                        <WText fontSize={14} right fontFamily="Muli-Bold" color={Palette.theme_color} onPress={() => { alert("comming soon...") }}>{"view more"}</WText>
-                    </WView>
+                    {
+                        isViewMore ?
+                            <WView flex={0.3}>
+                                <WText fontSize={14} right fontFamily="Muli-Bold" color={Palette.theme_color} onPress={() => { alert("comming soon...") }}>{"view more"}</WText>
+                            </WView> : null
+                    }
                 </WRow>
                 <FlatList
                     horizontal={true}
@@ -36,7 +44,7 @@ export default class RecentProductsList extends Component {
                 />
                 {
                     isLoading ?
-                        <WView dial={5} style={{ justifyContent: 'center', alignSelf: 'stretch'}} padding={[5, 5]}>
+                        <WView dial={5} style={{ justifyContent: 'center', alignSelf: 'stretch' }} padding={[5, 5]}>
                             <WSpinner size={"small"} color={Palette.theme_color} />
                         </WView>
                         : null

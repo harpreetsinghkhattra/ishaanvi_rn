@@ -9,7 +9,16 @@ export default class SelectProductTypeItem extends Component {
     render() {
         const { container, image, stretch, leftContainer, rightContainer } = styles;
         const circle = require('../../images/circle.png');
-        const { item } = this.props;
+        let { item } = this.props;
+        item ={
+            size: 1000,
+            color: 'black',
+            material: `akldj akd lakd fakd faklds faklsdf ajsdf \n alsdkfjlakd alkjd falksdfj askdjfasd
+                       alkdsj akd fakldjf aklsdj fakls dfas`,
+            occasion: `lkajsd klajsd fklajsd klfas jdkfa sd`,
+            type: `kajsdf alksdj fkalsd jfkas dfkasjd fkasd jfaksd`,
+            description: `klajsd fklasjd fklasjd fksd jfdsk dl fjdslk d`
+        }
         const { size, color, material, occasion, type, description } = item;
 
         return (

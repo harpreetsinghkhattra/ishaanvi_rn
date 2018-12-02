@@ -108,7 +108,7 @@ export default class Register extends Component {
             this.setState({ isLoading: false });
             if (res && res.data) {
                 if (res.message === "Success") {
-                    alert('editUserResponse', res.data);
+                    // alert('editUserResponse', res.data);
                     history.go(-1);
                 } else if (res.message === "Present") this.setAlertMessageVisible(true, { status: res.message, heading: "User is Present!", message: "Please try with another email id" });
                 else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })

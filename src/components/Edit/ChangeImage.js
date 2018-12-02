@@ -125,6 +125,10 @@ export default class ChangeImage extends Component {
         imageSource: PropTypes.any
     }
 
+    static defaultProps = {
+        imageSource: require('../../images/profile.png')
+    }
+
     state = {
         selectedImage: "",
         percentage: 0,

@@ -2,38 +2,50 @@ import React, { Component } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WTouchable } from '../../components/common';
 import { ScrollView, PixelRatio, Image } from 'react-native';
 import Palette from '../../Palette';
-import { Large } from '../../components/UI/btn';
 import { routerNames } from '../../RouteConfig';
-import { ChangeImage, EditActionView, UserInfo } from '../../components/Edit';
 import { User } from '../../model/user';
 import { Storage, StorageKeys } from '../../helper';
-import { CompleteIndicatorStatus, UploadPhoto } from '../../components/Select/PostOffer';
-import { TextInputWithLabel, MultiTextInputWithLabel } from '../../components/UI/input';
-import { Section } from '../../components/Label';
-import { SelectProductTypeList } from '../../components/Lists';
 import { PostOffer } from '../../model/PostOffer';
 import { Api } from '../../api/Api';
-import { FullImage } from '../../components/ViewPost';
+import { CommentInput } from '../../components/ViewPost'
 
 const UserData = new Storage();
 const BOTTOM_STATUS_BAR = 56;
 
 export default class ViewPost extends Component {
 
+    state = {
+        item: {}
+    }
+
+    openScreen(path, data) {
+        const { history } = this.props;
+
+        history.push(path, data);
+    }
+
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
-        const { stretch, btnStyle, btnContainer, border, backBtn } = styles;
+        const { stretch, btnStyle, btnContainer, border, floatBtn, icon } = styles;
+        const { item } = this.state;
+        const edit = require('../../images/edit.png');
+        const { images } = item;
 
         return (
             <WView dial={2} flex style={stretch}>
+                <Header
+                    onPress={() => history.goBack()}
+                    label={"Comments"}
+                />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start' }, stretch]}>
-                    <FullImage
-                        {...this.props}
-                    />
-                    <WTouchable onPress={() => history.goBack()} dial={5} style={[backBtn]}>
-                        <Image source={require('../../images/back.png')} style={[{ width: 20, height: 20, tintColor: Palette.white }]} />
-                    </WTouchable>
+                    <WView flex dial={2} padding={[5, 5]} style={[stretch, { justifyContent: 'space-between' }]} >
+                        <WView flex dial={2} style={[stretch]}>
+
+                        </WView>
+                    </WView>
                 </ScrollView>
+                <CommentInput />
             </WView >
         )
     }
@@ -57,11 +69,16 @@ const styles = {
         borderBottomWidth: (5 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
         borderColor: Palette.theme_color
     },
-    backBtn: {
+    icon: {
+        width: 20,
+        height: 20,
+        tintColor: Palette.white
+    },
+    floatBtn: {
         position: 'absolute',
-        top: 10,
-        left: 10,
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        bottom: 10,
+        right: 10,
+        backgroundColor: Palette.theme_color,
         width: 50,
         height: 50,
         borderRadius: 25

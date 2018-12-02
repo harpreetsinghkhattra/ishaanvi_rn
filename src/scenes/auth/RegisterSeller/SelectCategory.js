@@ -38,7 +38,7 @@ export default class SelectCategory extends Component {
     init() {
         const { history, location } = this.props;
         const { screenType } = location.state;
-        const { name, createdTime, business_address, business_name, deletedStatus, email, forgetPassword, mobile_number, status, termsAndConditions, updatedTime, userType, category } = User.getUserData();
+        const { name, createdTime, business_address, business_name, deletedStatus, email, forgetPassword, mobile_number, status, termsAndConditions, updatedTime, userType, category, address } = User.getUserData();
 
         if (screenType === "edit") {
             RegisterSellerUser.setData({
@@ -48,7 +48,8 @@ export default class SelectCategory extends Component {
                 name,
                 business_name,
                 business_address,
-                userType
+                userType,
+                address
             });
         }
     }

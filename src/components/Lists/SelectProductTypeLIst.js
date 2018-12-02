@@ -14,7 +14,7 @@ export default class SelectProductTypeList extends Component {
     static propTypes = {
         heading: PropTypes.string,
         data: PropTypes.array,
-        value: PropTypes.string,
+        value: PropTypes.oneOf([PropTypes.array, PropTypes.string]), 
         isError: PropTypes.object,
         isMultiple: PropTypes.bool
     }

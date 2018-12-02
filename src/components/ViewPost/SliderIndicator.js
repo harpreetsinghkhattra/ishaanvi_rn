@@ -73,7 +73,7 @@ export default class SliderIndeicator extends Component {
 //Styels for this component
 const styles = StyleSheet.create({
     container: {
-        height: 50,
+        height: 30,
         position: 'absolute',
         left: 0,
         right: 0,
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.2)'
     },
     itemContainer: {
         flex: 1,

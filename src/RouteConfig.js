@@ -14,7 +14,7 @@ import {
 import Home from './scenes/Home/Home';
 import { EditUserProfile } from './scenes/EditProfile';
 import { UploadImage, Details, Finish } from './scenes/UploadPost';
-import { Posts, ViewPost, FullImage } from './scenes/Post/';
+import { Posts, ViewPost, FullImage, ViewProduct, Comments } from './scenes/Post/';
 
 export const routerNames = {
     selectUserAction: "/",
@@ -36,7 +36,9 @@ export const routerNames = {
     post_offer_finish: '/post_offer/finish',
     post_offer_list: '/post_offer/list',
     view_offer: '/view_offer',
-    view_offer_images: '/post_offer/images'
+    view_offer_images: '/post_offer/images',
+
+    view_product: 'user/product/view'
 }
 
 export const routes = [
@@ -44,7 +46,7 @@ export const routes = [
         path: routerNames.selectUserAction,
         exact: true,
         component: SelectUserAction
-    },
+    }, 
     {
         path: routerNames.register,
         exact: true,

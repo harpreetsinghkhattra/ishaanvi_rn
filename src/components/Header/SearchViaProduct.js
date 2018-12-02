@@ -5,15 +5,15 @@ import Palette from '../../Palette';
 import { MyLocation } from '../../scenes/Modal';
 import { User } from '../../model/user';
 
-export default class SearchHeader extends Component {
+export default class SearchHeaderViaProduct extends Component {
 
     state = {
-        isLocationModalVisible: false
+        isLocationModalVisible: false,
+        searchValue: ''
     }
 
     componentDidMount = () => {
         const location = User.getUserData().location;
-        console.log('search header =====>', User.getUserData());
         if (!location || (location && !location.address))
             this.setLocationModalVisible(true);
     }
@@ -25,11 +25,15 @@ export default class SearchHeader extends Component {
         } else this.setState({ isLocationModalVisible })
     }
 
+    onChangeText = (key, value) => {
+        this.setState({ [key]: value });
+    }
+
     render() {
         const { textInputContainer, textInputContainerStyle, btnContainerStyle, btnContainerStyle1, stretch, iconStyle } = styles
-        const { isLocationModalVisible } = this.state;
+        const { isLocationModalVisible, searchValue } = this.state;
         const filterIcon = require('../../images/filter.png');
-        const { openFilter } = this.props;
+        const { openFilter, onSubmit } = this.props;
         const location = User.getUserData().location;
 
         return (
@@ -44,18 +48,13 @@ export default class SearchHeader extends Component {
                         flex={1}
                         getFocus={ref => this.input1 = ref}
                         containerStyle={textInputContainerStyle}
-                        placeholderName="Location"
-                        value={location && location.address ? location.address : ''}
-                        onFocus={() => {
-                            this.setLocationModalVisible(true);
-                            this.input1.blur();
-                            Keyboard.dismiss();
-                        }}
-                        onChangeText={this.setLocationModalVisible.bind(this, true)}
+                        placeholderName="Product Name"
+                        value={searchValue}
+                        onChangeText={value => this.onChangeText('searchValue', value)}
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                         iconTintColor={Palette.border_color}
-                        iconPath={require("../../images/location.png")}
-                        onSubmitEditing={() => { }}
+                        iconPath={require("../../images/search.png")}
+                        onSubmitEditing={onSubmit.bind(this, searchValue)}
                     />
                     <WTouchable onPress={openFilter} dial={5} padding={[0, 10]} style={btnContainerStyle}>
                         <Image source={filterIcon} style={iconStyle} />

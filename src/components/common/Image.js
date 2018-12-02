@@ -51,12 +51,14 @@ export default class WImage extends Component {
         } else {
             if (this.isStateChange) {
                 if (source && source.uri) {
-                    Image.getSize(source.uri, (width, height) => {
-                        this.setState({
-                            width: containerWidth,
-                            height: containerWidth * height / width
+                    try {
+                        Image.getSize(source.uri, (width, height) => {
+                            this.setState({
+                                width: containerWidth,
+                                height: containerWidth * height / width
+                            });
                         });
-                    });
+                    } catch (error) { console.log('error', error) }
                 } else {
                     const { width, height } = resolveAssetSource(source);
                     this.setState({

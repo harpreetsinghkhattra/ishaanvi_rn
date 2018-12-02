@@ -10,6 +10,7 @@ import { Api } from '../../api/Api';
 import { InfoCompleteAutoSelect } from '../../components/Select/';
 import { TextInputWithLabel } from '../../components/UI/input';
 import { FilterBottomBar, FilterHeader } from '../../components/Header';
+import { PriceRange } from '../../components/Card/Modal';
 import { SelectProductTypeList } from '../../components/Lists';
 import { User } from '../../model/user';
 import { Storage, StorageKeys, Helper } from '../../helper';
@@ -24,7 +25,11 @@ export default class HomeFilter extends PureComponent {
 
     constructor(props) {
         super(props);
-        this.filterData = User.getUserData().filterData;
+        this.filterData = User.getUserData().filterData ? User.getUserData().filterData : {
+            "area": [0, 500],
+            "category": [],
+            "price": [0, 0]
+        };
     }
 
     static propTypes = {
@@ -42,6 +47,10 @@ export default class HomeFilter extends PureComponent {
         let { category } = this.filterData;
         if (category.findIndex(ele => ele === value) > -1) category.splice(category.findIndex(ele => ele === value), 1);
         else category.push(value);
+    }
+
+    onPriceChange = (min, max) => {
+        this.filterData.price = Array.from([min, max]);
     }
 
     addArea = (value) => {
@@ -72,7 +81,6 @@ export default class HomeFilter extends PureComponent {
         const { stretch, btnStyle, btnContainer, border, circleView, image, caretImage, textInputContainerStyle, iconStyle } = styles;
         const icon = require('../../images/location.png');
         const send = require('../../images/send.png');
-        const { category, area } = this.filterData;
 
         return (
             <Modal
@@ -89,10 +97,14 @@ export default class HomeFilter extends PureComponent {
                                 isMultiple={true}
                                 heading={"Select Category "}
                                 onSelect={this.addCategory.bind(this)}
-                                value={category}
-                                data={['Multi-Brand', 'Garments', 'Butique', 'Designer']} />
+                                value={this.filterData ? this.filterData.category : []}
+                                data={['Multi Brand\'s', 'Garments', 'Boutiques', 'Designers \n(men, woman)', 'Cloth \nHouse/Shop']} />
+                            <PriceRange
+                                price={this.filterData.price}
+                                onPriceChange={this.onPriceChange.bind(this)}
+                            />
                             <Slider
-                                value={area}
+                                value={this.filterData ? this.filterData.area : [0, 500]}
                                 onValueChangeFinish={this.addArea.bind(this)}
                             />
                         </WView>

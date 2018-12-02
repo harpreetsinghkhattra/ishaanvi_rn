@@ -9,6 +9,7 @@ import { routerNames } from '../../RouteConfig';
 
 import Index from './Index';
 import UserProfile from './UserProfile';
+import Search from '../Search/Search';
 import EventEmitter from 'events';
 
 import { Api, Socket, User as UserApi } from '../../api';
@@ -47,7 +48,10 @@ export default class Home extends PureComponent {
                 tabEmitter={this._tabEmitter}
                 initialPage={this.getIntialIndex()}
                 {...this.props} />,
-            empty,
+            <Search
+                tabEmitter={this._tabEmitter}
+                initialPage={this.getIntialIndex()}
+                {...this.props} />,
             empty,
             empty,
             <UserProfile
@@ -64,9 +68,7 @@ export default class Home extends PureComponent {
                     iconSource: require('../../images/home.png'),
                 },
                 {
-                    text: '',
-                    onTabPress: () => alert("Comming soon..."),
-                    iconStyle: { width: 20, height: 20 },
+                    text: '', 
                     iconSource: require('../../images/search.png'),
                 },
                 {

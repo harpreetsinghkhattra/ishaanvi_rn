@@ -33,7 +33,6 @@ export default class UserProfile extends Component {
     componentWillMount = () => {
         const { photos, ...rest } = PostOffer.getData();
         this.setState({ formData: { photos }, userData: User.getUserData() });
-        alert(JSON.stringify(photos));
     }
 
     /** On photos select */
