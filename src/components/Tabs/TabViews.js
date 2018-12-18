@@ -94,12 +94,13 @@ export default class IndicatorViewPager extends Component {
 
     //render for header showing in login screen for sign in and sign up
     _renderIndicator() {
-        let { indicator, initialPage } = this.props
+        let { indicator, initialPage, changePageWithAnimation } = this.props
         if (!indicator) return null
         return React.cloneElement(indicator, {
             ref: INDICATOR_REF,
             pager: this,
-            initialPage: initialPage
+            initialPage: initialPage,
+            changePageWithAnimation: changePageWithAnimation
         })
     }
 

@@ -14,7 +14,8 @@ import {
 import Home from './scenes/Home/Home';
 import { EditUserProfile } from './scenes/EditProfile';
 import { UploadImage, Details, Finish } from './scenes/UploadPost';
-import { Posts, ViewPost, FullImage, ViewProduct, Comments } from './scenes/Post/';
+import { Posts, ViewPost, FullImage, ViewProduct, Comments, UserPortal } from './scenes/Post/';
+import ChatRoom from './scenes/Chat/ChatFile'
 
 export const routerNames = {
     selectUserAction: "/",
@@ -29,7 +30,7 @@ export const routerNames = {
     forgetPassword: "/forget_password",
     index: "/home",
     verification: "/verification",
-    
+
     edit_user_profile: "/edit/user_Profile",
     post_offer_detail: '/post_offer/detail',
     post_offer_photos: '/post_offer/photos',
@@ -38,15 +39,19 @@ export const routerNames = {
     view_offer: '/view_offer',
     view_offer_images: '/post_offer/images',
 
-    view_product: 'user/product/view'
+    view_product: '/user/product/view',
+
+    chat_room: '/user/chat_room',
+    comments: '/user/product/comments',
+    viewPortal: '/user/view_portal',
 }
 
 export const routes = [
     {
         path: routerNames.selectUserAction,
         exact: true,
-        component: SelectUserAction
-    }, 
+        component: UserPortal
+    },
     {
         path: routerNames.register,
         exact: true,
@@ -133,8 +138,23 @@ export const routes = [
         component: ViewPost
     },
     {
-        path: routerNames.view_offer_images,
+        path: routerNames.view_product,
         exact: true,
-        component: FullImage
+        component: ViewProduct
+    },
+    {
+        path: routerNames.comments,
+        exact: true,
+        component: Comments
+    },
+    {
+        path: routerNames.chat_room,
+        exact: true,
+        component: ChatRoom
+    },
+    {
+        path: routerNames.viewPortal,
+        exact: true,
+        component: UserPortal
     }
 ];

@@ -38,6 +38,11 @@ const get_home_items = {
     on: "/socket/api/response/getHomeItems"
 }
 
+const search = {
+    emit: "/socket/api/search",
+    on: "/socket/api/response/search"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -46,5 +51,6 @@ export {
     get_products,
     get_product,
     edit_seller_profile,
-    get_home_items
+    get_home_items,
+    search
 }

@@ -10,6 +10,7 @@ import { routerNames } from '../../RouteConfig';
 import Index from './Index';
 import UserProfile from './UserProfile';
 import Search from '../Search/Search';
+import Chat from '../Chat/index';
 import EventEmitter from 'events';
 
 import { Api, Socket, User as UserApi } from '../../api';
@@ -53,7 +54,10 @@ export default class Home extends PureComponent {
                 initialPage={this.getIntialIndex()}
                 {...this.props} />,
             empty,
-            empty,
+            <Chat
+                tabEmitter={this._tabEmitter}
+                initialPage={this.getIntialIndex()}
+                {...this.props} />,
             <UserProfile
                 tabEmitter={this._tabEmitter}
                 initialPage={this.getIntialIndex()}
@@ -68,7 +72,7 @@ export default class Home extends PureComponent {
                     iconSource: require('../../images/home.png'),
                 },
                 {
-                    text: '', 
+                    text: '',
                     iconSource: require('../../images/search.png'),
                 },
                 {
@@ -78,7 +82,6 @@ export default class Home extends PureComponent {
                 },
                 {
                     text: '',
-                    onTabPress: () => alert("Comming soon..."),
                     iconSource: require('../../images/inbox.png'),
                 },
                 {

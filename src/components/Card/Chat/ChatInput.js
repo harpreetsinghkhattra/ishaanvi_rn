@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { WRow, WView, WButton, WTextInput, WText, WTouchable } from '../common';
+import { WRow, WView, WButton, WTextInput, WText, WTouchable } from '../../common';
 import { Image, Keyboard } from 'react-native';
-import Palette from '../../Palette';
-import { User } from '../../model/user';
+import Palette from '../../../Palette';
 
 export default class SearchHeader extends Component {
 
@@ -32,7 +31,7 @@ export default class SearchHeader extends Component {
 
     render() {
         const { container, textInputContainer, textInputContainerStyle, btnContainerStyle, btnContainerStyle1, stretch, iconStyle } = styles
-        const send = require('../../images/send.png');
+        const send = require('../../../images/send.png');
         const { onSend } = this.props;
         const { comment } = this.state;
 
@@ -48,10 +47,10 @@ export default class SearchHeader extends Component {
                         placeholderName="Add a comment..."
                         onChangeText={value => this.onChangeText('comment', value)}
                         value={comment}
-                        style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold', height: 80 }}
+                        style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                         onSubmitEditing={() => { }}
                     />
-                    <WTouchable onPress={onSend.bind(this, comment)} dial={5} padding={[0, 10]} style={btnContainerStyle}>
+                    <WTouchable dial={5} padding={[0, 10]} style={btnContainerStyle}>
                         <Image source={send} style={iconStyle} />
                     </WTouchable>
                 </WRow>
@@ -69,17 +68,20 @@ const styles = {
         right: 0,
         left: 0,
         bottom: 0,
-        height: 60
+        height: 0,
+        minHeight: 40
     },
     textInputContainer: {
-        height: 80,
+        height: 0,
+        minHeight: 40, 
         borderWidth: 1,
         borderRadius: 5,
         borderColor: Palette.white,
         backgroundColor: Palette.white
     },
     textInputContainerStyle: {
-        height: 80,
+        height: 0,
+        minHeight: 40,
         justifyContent: 'center',
         borderBottomWidth: 0,
         alignItems: 'center',

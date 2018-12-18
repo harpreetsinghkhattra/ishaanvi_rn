@@ -10,7 +10,7 @@ import { Storage, StorageKeys } from '../../helper';
 import { User } from '../../model/user';
 import { UserLocation } from '../../model/UserLocation';
 import { MyLocation, HomeFilter } from '../Modal/';
-import { get_home_items } from '../../api/SocketUrls';
+import { get_home_items, search } from '../../api/SocketUrls';
 import { Api, Socket, User as UserApi } from '../../api';
 import { ProductList as RandomProductList } from '../../components/Card/Home';
 import { ProductList } from '../../components/Card/Search';
@@ -29,7 +29,8 @@ export default class Login extends PureComponent {
             isLocationModalVisible: false,
             isLazyLoading: initialPage === PAGE_INDEX ? true : false,
             isLoading: false,
-            data: []
+            data: [],
+            searchedElements: []
         }
 
         this.listenLazyLoadEvent();
@@ -138,14 +139,36 @@ export default class Login extends PureComponent {
     }
 
     onSubmit = (searchValue) => {
-        alert(searchValue);
+        if (!searchValue) return;
+
+        if (filterData && (filterData[0] > filterData[1])) return;
+
+        const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+
+        const searchData = {
+            id,
+            accessToken,
+            category: filterData.category && filterData.category.length === 2 ? filterData.category : "all",
+            area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
+            price: filterData.price && filterData.price[1] ? filterData.price : 'all',
+            searchValue,
+            "coordinates": [31.9579623, 75.6282207]
+        };
+
+        Socket.request(search.emit, searchData);
+        UserApi.getSocketResponseOnce(search.on, (res) => {
+            console.log('get socket response once', JSON.stringify(searchData), JSON.stringify(res));
+            if (res && res.message === "Success") {
+                this.setState({ isLoading: false, isRefreshingList: false, searchedElements: res.data });
+            } else this.setState({ isLoading: false, isRefreshingList: false });
+        });
     }
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
         const { userType } = User.getUserData();
-        const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
+        const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems, searchedElements } = this.state;
         const plus = require('../../images/plus.png');
         const empty = [];
 
@@ -168,11 +191,15 @@ export default class Login extends PureComponent {
                     dial={2}
                     style={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - 56, justifyContent: 'flex-start' }, stretch]}
                 >
-                    {/*<ProductList {...this.props} />*/}
-                    <RandomProductList
-                        ref={ref => this.productListRef = ref}
-                        { ...this.props }
-                    />
+                    {
+                        searchedElements && searchedElements.length ?
+                            <ProductList {...this.props} data={searchedElements} />
+                            :
+                            <RandomProductList
+                                ref={ref => this.productListRef = ref}
+                                { ...this.props }
+                            />
+                    }
                 </WView>
             </WView >);
     }

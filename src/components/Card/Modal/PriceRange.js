@@ -17,13 +17,6 @@ export default class PriceRange extends Component {
         onPriceChange: PropTypes.func
     }
 
-    componentDidMount = () => {
-        const location = User.getUserData().location;
-        console.log('search header =====>', User.getUserData());
-        if (!location || (location && !location.address))
-            this.setLocationModalVisible(true);
-    }
-
 
     /** On text change */
     onChangeText = (key, value) => this.setState(() => ({ [key]: value }), () => {

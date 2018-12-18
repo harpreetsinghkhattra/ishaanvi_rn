@@ -7,7 +7,7 @@ import Palette from '../../../Palette';
 
 const ProductListItem = (props) => {
     const { data, width } = props;
-    const { price, discount, image } = data;
+    const { price, discount, images } = data;
 
     return (
         <TouchableOpacity
@@ -25,7 +25,7 @@ const ProductListItem = (props) => {
             <View>
                 <View style={styles.imageContainer}>
                     <ProductImage
-                        source={image}
+                        source={ images && images.length ? { uri: images[0] } : require('../../../images/profile.png')}
                         width={width} />
                     <View style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', left: 5, bottom: 10, backgroundColor: Palette.line_color }}>
                         <Text style={{ fontSize: 12, paddingVertical: 3, paddingHorizontal: 10 }}>{`${discount}% OFF`}</Text>
