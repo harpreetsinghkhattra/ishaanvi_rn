@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { FlatList } from 'react-native';
-import { WText, WView, WRow, WSpinner } from '../common';
+import { WText, WView, WRow, WSpinner, WTouchable } from '../common';
 import { RecentProductsItem } from '../ListItems/';
 import Palette from '../../Palette';
+import { routerNames } from '../../RouteConfig';
 
 export default class RecentProductsList extends Component {
 
@@ -18,8 +19,14 @@ export default class RecentProductsList extends Component {
         isViewMore: true
     }
 
+    openScreen(path, data) {
+        const { history } = this.props;
+
+        history.push(path, data ? data : {});
+    }
+
     render = () => {
-        const { heading, data, isLoading, isViewMore } = this.props;
+        const { heading, data, isLoading, isViewMore, onPress } = this.props;
 
         return (
             <WView dial={4} >
@@ -29,9 +36,9 @@ export default class RecentProductsList extends Component {
                     </WView>
                     {
                         isViewMore ?
-                            <WView flex={0.3}>
-                                <WText fontSize={14} right fontFamily="Muli-Bold" color={Palette.theme_color} onPress={() => { alert("comming soon...") }}>{"view more"}</WText>
-                            </WView> : null
+                            <WTouchable flex={0.3} onPress={this.openScreen.bind(this, routerNames.viewPortal, { screenType: "home" })}>
+                                <WText fontSize={14} right fontFamily="Muli-Bold" color={Palette.theme_color}>{"view more"}</WText>
+                            </WTouchable> : null
                     }
                 </WRow>
                 <FlatList
@@ -39,7 +46,7 @@ export default class RecentProductsList extends Component {
                     data={data}
                     keyExtractor={(item, index) => (`item-${index}`)}
                     renderItem={({ item, index }) => (
-                        <RecentProductsItem key={`rencet-product-item-${index}`} data={item} spaced />
+                        <RecentProductsItem  {...this.props} onPress={this.openScreen.bind(this, routerNames.view_product, { screenType: "home" })} key={`rencet-product-item-${index}`} data={item} spaced />
                     )}
                 />
                 {

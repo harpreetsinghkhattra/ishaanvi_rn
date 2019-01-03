@@ -24,9 +24,11 @@ export default class ViewPost extends Component {
     }
 
     onBack = () => {
-        const { history } = this.props;
+        const { history, location } = this.props;
 
-        history.go(-1);
+        if (location.state && location.state.screenType === "home")
+            history.replace(routerNames.index, { selectedIndex: 0 })
+        else history.go(-1);
     }
 
     render() {

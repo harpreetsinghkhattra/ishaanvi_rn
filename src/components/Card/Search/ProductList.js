@@ -10,7 +10,7 @@ export default class ProductList extends PureComponent {
         let { screenWidth, data } = this.props;
         const column = 2;
         const width = screenWidth / column;
-        data = data.map(ele => ele.product) 
+        data = data.map(ele => ele.product ? ele.product : ele ) 
 
         return (
             <ScrollView
@@ -20,8 +20,8 @@ export default class ProductList extends PureComponent {
                     {
                         data.map((item, index) => {
                             if (index%2 === 0)
-                                return (<WView>
-                                    <ProductListItem key={`product-searched-item-even-${index}`} width={width} data={item} />
+                                return (<WView key={`product-searched-item-even-${index}`}>
+                                    <ProductListItem width={width} data={item} />
                                 </WView>);
                         })
                     }
@@ -30,8 +30,8 @@ export default class ProductList extends PureComponent {
                     {
                         data.map((item, index) => {
                             if (index%2 !== 0)
-                                return (<WView>
-                                    <ProductListItem key={`product-searched-item-odd-${index}`} width={width} data={item} />
+                                return (<WView key={`product-searched-item-odd-${index}`}>
+                                    <ProductListItem width={width} data={item} />
                                 </WView>);
                         })
                     }

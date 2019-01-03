@@ -43,6 +43,11 @@ const search = {
     on: "/socket/api/response/search"
 }
 
+const userPortal = {
+    emit: "/socket/api/viewPortal",
+    on: "/socket/api/response/viewPortal"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -52,5 +57,6 @@ export {
     get_product,
     edit_seller_profile,
     get_home_items,
-    search
+    search,
+    userPortal
 }

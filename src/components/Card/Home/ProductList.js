@@ -166,6 +166,7 @@ export default class ProductList extends PureComponent {
                                 data={data}
                                 renderItem={({ item, index }) =>
                                     <RecentProductsList
+                                        {...this.props}
                                         key={`products-${index}-${new Date().getTime()}`}
                                         data={item.items}
                                         isLoading={this.isRequestMoreProducts(index)}

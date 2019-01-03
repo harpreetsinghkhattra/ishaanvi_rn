@@ -9,7 +9,7 @@ import {
 import Palette from '../../Palette';
 
 const RecentProductsItem = (props) => {
-    const { data } = props;
+    const { data, onPress } = props;
     const { price, discount, images } = data;
 
     return (
@@ -20,7 +20,7 @@ const RecentProductsItem = (props) => {
                     ? { ...styles.container, ...styles.containerSpacing }
                     : styles.container
             }
-            onPress={() => { }}
+            onPress={onPress}
             underlayColor="#EFF1F5"
         >
             <View>

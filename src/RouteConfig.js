@@ -50,7 +50,7 @@ export const routes = [
     {
         path: routerNames.selectUserAction,
         exact: true,
-        component: UserPortal
+        component: SelectUserAction
     },
     {
         path: routerNames.register,

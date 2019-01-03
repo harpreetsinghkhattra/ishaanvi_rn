@@ -36,6 +36,16 @@ export default class Home extends PureComponent {
         return 0;
     }
 
+    // shouldComponentUpdate = (nextProps, nextState) => {
+    //     const { history } = this.props;
+    //     const { location } = history;
+    //     const state = location && location.state ? location.state : {};
+    //     if (state.selectedIndex) return false;
+
+    //     return true;
+    // } 
+
+
 
     componentWillUnmount() {
         this._tabEmitter.removeAllListeners();

@@ -20,7 +20,7 @@ export default class NotificationsList extends PureComponent {
                     <Image source={require('../../../images/no_product.png')} style={iconStyle} />
                 </WView>
                 <WView dial={4} flex>
-                    <WText fontSize={14} lines={2} fontWeight={'Muli-Bold'}>Flex Formation Fitness & Family Fun uploaded: About my work 2016-2017 Where i teach bootcamps Behind the scenes</WText>
+                    <WText fontSize={14} lines={2} fontFamily={'Muli-Bold'}>Flex Formation Fitness & Family Fun uploaded: About my work 2016-2017 Where i teach bootcamps Behind the scenes</WText>
                     <WText fontFamily={'Muli-Bold'}>1 minute ago</WText>
                 </WView>
             </WRow>
