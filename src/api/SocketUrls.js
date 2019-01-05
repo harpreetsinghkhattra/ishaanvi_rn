@@ -48,6 +48,16 @@ const userPortal = {
     on: "/socket/api/response/viewPortal"
 }
 
+const userPortalProducts = {
+    emit: "/socket/api/getProductViaType",
+    on: "/socket/api/response/getProductViaType"
+}
+
+const followUser = {
+    emit: "/socket/api/followUser",
+    on: "/socket/api/response/followUser"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -58,5 +68,7 @@ export {
     edit_seller_profile,
     get_home_items,
     search,
-    userPortal
+    userPortal,
+    userPortalProducts,
+    followUser
 }

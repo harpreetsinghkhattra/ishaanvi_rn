@@ -26,7 +26,7 @@ export default class RecentProductsList extends Component {
     }
 
     render = () => {
-        const { heading, data, isLoading, isViewMore, onPress } = this.props;
+        const { heading, data, isLoading, isViewMore, onPress, userId } = this.props;
 
         return (
             <WView dial={4} >
@@ -36,7 +36,7 @@ export default class RecentProductsList extends Component {
                     </WView>
                     {
                         isViewMore ?
-                            <WTouchable flex={0.3} onPress={this.openScreen.bind(this, routerNames.viewPortal, { screenType: "home" })}>
+                            <WTouchable flex={0.3} onPress={this.openScreen.bind(this, routerNames.viewPortal, { screenType: "home", userId: userId })}>
                                 <WText fontSize={14} right fontFamily="Muli-Bold" color={Palette.theme_color}>{"view more"}</WText>
                             </WTouchable> : null
                     }

@@ -25,4 +25,7 @@ export class User {
         socket.once(on, cb);
     }
 
+    static getSocketResponse = (on, cb) => {
+        socket.once(on, cb);
+    }
 }

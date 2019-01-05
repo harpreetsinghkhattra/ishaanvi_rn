@@ -33,14 +33,12 @@ const ProductListItem = (props) => {
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={styles.price}>
-                        10
-                        {/*{`₹ ${parseFloat(price).toFixed(2)} `}*/}
+                        {`₹ ${parseFloat(price).toFixed(2)} `}
                         <Text style={[{
                             textDecorationLine: 'line-through', paddingHorizontal: 10,
                             color: Palette.border_color
                         }]}>
-                            100
-                            {/*{`₹ ${parseFloat((parseFloat(price) - (parseFloat(discount) / 100) * parseFloat(price))).toFixed(2)}`}*/}
+                            {`₹ ${parseFloat((parseFloat(price) - (parseFloat(discount) / 100) * parseFloat(price))).toFixed(2)}`}
                         </Text>
                     </Text>
                     {/*<Text numberOfLines={2} style={styles.title}>

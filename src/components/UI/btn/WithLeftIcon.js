@@ -14,10 +14,15 @@ export default WithLeftIcon = ({ isLoading, onPress, style, label, iconStyle, ic
             onPress={isLoading ? () => { } : onPress}
             fontSize={16}
             component={() =>
-                <WRow flex dial={5}>
-                    <Image source={iconPath} style={iconStyle} />
-                    <WText fontSize={16} fontFamily="Muli-Bold" color={Palette.white} fontWeight="bold" padding={[0, 10]}>{label}</WText>
-                </WRow>}
+                isLoading ?
+                    <WRow flex={5}>
+                        <WSpinner size="small" color={Palette.white} />
+                    </WRow>
+                    : <WRow flex dial={5}>
+                        <Image source={iconPath} style={iconStyle} />
+                        <WText fontSize={16} fontFamily="Muli-Bold" color={Palette.white} fontWeight="bold" padding={[0, 10]}>{label}</WText>
+                    </WRow>
+            }
             containerStyle={[container, style]} />
     )
 }

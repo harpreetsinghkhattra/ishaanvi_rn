@@ -251,14 +251,18 @@ export default class App extends Component {
 
   getUserResponse() {
     const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+    const { type, location } = this.props;
+    const { state } = location;
+
     Socket.request(userPortal.emit, {
       id,
       accessToken,
-      "userId": id
+      "userId": state.userId
     });
 
     UserApi.getSocketResponseOnce(userPortal.on, (res) => {
       if (res && res.message === "Success") {
+        console.log("USER PORTAL DATA ===> data", res.data);
         this._setState({ isLoading: false, userData: res.data && res.data.length ? res.data[0] : {} });
       } else this._setState({ isLoading: false });
     });
@@ -286,6 +290,7 @@ export default class App extends Component {
     return (
       <WView dial={2} flex style={stretch}>
         <Header
+          {...this.props}
           isLoading={isLoading}
           data={userData}
           onBack={this.onBack.bind(this)} />

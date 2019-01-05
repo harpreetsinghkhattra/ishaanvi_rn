@@ -169,6 +169,7 @@ export default class ProductList extends PureComponent {
                                         {...this.props}
                                         key={`products-${index}-${new Date().getTime()}`}
                                         data={item.items}
+                                        userId={item._id}
                                         isLoading={this.isRequestMoreProducts(index)}
                                         heading={item.business_name} />}
                             />
