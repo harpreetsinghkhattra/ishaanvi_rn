@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Image } from 'react-native'
+import { Image, Alert, Linking } from 'react-native'
 import { WView, WRow, WTouchable, WText } from '../../components/common'
 import { WithLeftIcon } from '../../components/UI/btn'
 import Palette from '../../Palette'
 import { followUser } from '../../api/SocketUrls';
 import { Api, Socket, User as UserApi } from '../../api';
 import { User } from '../../model/user';
+import { routerNames } from '../../RouteConfig';
 
 export default class Header extends PureComponent {
 
@@ -19,7 +20,8 @@ export default class Header extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: true
+            isLoading: false,
+            data: {}
         }
 
         this._isMounted = true;
@@ -38,7 +40,7 @@ export default class Header extends PureComponent {
 
     componentDidMount = () => {
         const { data } = this.props;
-        console.log("USER PORTAL DATA ===> ", JSON.stringify(data));
+        this._setState({ data });
     }
 
     followUser() {
@@ -56,23 +58,56 @@ export default class Header extends PureComponent {
         });
 
         UserApi.getSocketResponseOnce(followUser.on, (res) => {
+            console.log("USER PORTAL DATA ===> ", JSON.stringify(res.data));
+
             if (res && res.message === "Success") {
+
+                this._setState({
+                    isLoading: false,
+                    data: res.data[0]
+                });
+            } else if (res && res.message === "NoChange") {
                 this._setState({
                     isLoading: false
                 });
-                alert("Success")
-            } else if(res && res.message === "Present") {
-                    this._setState({
-                        isLoading: false
-                    });
-                    alert("Present")
-            } else if(res && res.message === "NoChange") {
-                    this._setState({
-                        isLoading: false
-                    });
-                    alert("No Change")
+                alert("No Change")
             } else this._setState({ isLoading: false });
         });
+    }
+
+    getFollowers = () => {
+        const { data } = this.state;
+        return data && data.otherData && data.otherData.length ?
+            data.otherData.filter(ele => data.otherData.findIndex(ele => ele.followers ? true : false) > -1).length : 0;
+    }
+
+    getFollowing = () => {
+        const { data } = this.state;
+        return data && data.otherData && data.otherData.length ?
+            data.otherData.filter(ele => data.otherData.findIndex(ele => ele.following ? true : false) > -1).length : 0;
+    }
+
+    isFollowing = () => {
+        const { data } = this.state;
+        return data && data.isFollow && data.isFollow.length ?
+            data.isFollow[0].isFollow : 0;
+    }
+
+    isIAM = () => {
+        const { _id } = User.getUserData();
+        return this.state.data && _id === this.state.data._id
+    }
+
+    dialNumber = () => {
+        const { data } = this.state;
+        if (data && data.mobile_number) {
+            Linking.openURL(`tel:+91${user.mobile_number}`);
+        } else Alert.alert("", "Number not Found");
+    }
+
+    openScreen = () => {
+        const { history } = this.props;
+        history.push(routerNames.chat_room);
     }
 
     Btn = ({ iconPath, onPress }) =>
@@ -85,7 +120,8 @@ export default class Header extends PureComponent {
         const message = require('../../images/message.png');
         const phone = require('../../images/phone.png');
         const share = require('../../images/share1.png');
-        const { onBack, isLoading, data } = this.props;
+        const { onBack, isLoading } = this.props;
+        const { data } = this.state;
 
         return (
             <WView dial={5} style={{ alignItems: 'stretch' }} padding={[5, 10]}>
@@ -99,26 +135,27 @@ export default class Header extends PureComponent {
                 </WRow>
                 <WRow dial={5}>
                     <WView dial={5} flex>
-                        <Image source={require("../../images/no_product.png")} style={{ width: 80, height: 80, borderRadius: 40 }} />
+                        <Image source={data && data.imageUrl ? { uri: data.imageUrl } : require("../../images/profile.png")} style={{ width: 80, height: 80, borderRadius: 40 }} />
                         <WText>{data && data.name ? data.name : ''}</WText>
                     </WView>
                     <WView dial={5} flex={2}>
                         <WRow dial={5}>
                             <WView dial={5} flex>
-                                <WText center>754</WText>
+                                <WText center>{this.getFollowers()}</WText>
                                 <WText center>Followers</WText>
                             </WView>
                             <WView dial={5} flex>
-                                <WText center>966</WText>
+                                <WText center>{this.getFollowing()}</WText>
                                 <WText center>Following</WText>
                             </WView>
                         </WRow>
                         <WithLeftIcon
-                            label="Follow"
+                            label={this.isIAM() ? "I AM" : this.isFollowing() ? "Unfollow" : "Follow"}
                             isLoading={isLoading}
-                            onPress={this.followUser.bind(this)}
+                            isLoadingLoader={isLoading}
+                            onPress={this.isIAM() ? () => { } : this.followUser.bind(this)}
                             iconStyle={{ width: 18, height: 18, tintColor: Palette.white }}
-                            iconPath={require("../../images/followUser.png")}
+                            iconPath={this.isFollowing() ? require("../../images/unfollowUser.png") : require("../../images/followUser.png")}
                             style={{ marginBottom: 10, flex: 1 }}
                         />
                     </WView>
@@ -129,9 +166,9 @@ export default class Header extends PureComponent {
                         <WText lines={3}>{data && data.business_address ? data.business_address : ''}</WText>
                     </WRow>
                     <WRow dial={6} flex>
-                        <this.Btn onPress={() => { }} iconPath={phone} />
-                        <this.Btn onPress={() => { }} iconPath={message} />
-                        <this.Btn onPress={() => { }} iconPath={share} />
+                        <this.Btn onPress={this.dialNumber.bind(this)} iconPath={phone} />
+                        <this.Btn onPress={this.openScreen.bind(this)} iconPath={message} />
+                        <this.Btn onPress={() => Alert.alert("", "It will be cover with web page link.")} iconPath={share} />
                     </WRow>
                 </WRow>
             </WView>

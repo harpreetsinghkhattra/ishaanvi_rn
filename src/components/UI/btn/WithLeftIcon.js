@@ -4,7 +4,7 @@ import { WView, WText, WTouchable, WSpinner, WButton, WRow } from '../../common'
 import { TouchableNativeFeedback, Image } from 'react-native'
 import Palette from '../../../Palette'
 
-export default WithLeftIcon = ({ isLoading, onPress, style, label, iconStyle, iconPath }) => {
+export default WithLeftIcon = ({ isLoading, isLoadingLoader, onPress, style, label, iconStyle, iconPath }) => {
 
     const { container } = styles;
 
@@ -14,7 +14,7 @@ export default WithLeftIcon = ({ isLoading, onPress, style, label, iconStyle, ic
             onPress={isLoading ? () => { } : onPress}
             fontSize={16}
             component={() =>
-                isLoading ?
+                isLoadingLoader ?
                     <WRow flex={5}>
                         <WSpinner size="small" color={Palette.white} />
                     </WRow>
@@ -33,7 +33,8 @@ WithLeftIcon.propTypes = {
     style: PropTypes.any,
     label: PropTypes.string,
     iconPath: PropTypes.any,
-    iconStyle: PropTypes.any
+    iconStyle: PropTypes.any,
+    isLoadingLoader: PropTypes.bool
 }
 
 WithLeftIcon.defaultProps = {
@@ -41,7 +42,8 @@ WithLeftIcon.defaultProps = {
         width: 16,
         height: 16,
         tintColor: Palette.white
-    }
+    },
+    isLoadingLoader: true
 }
 
 const styles = {

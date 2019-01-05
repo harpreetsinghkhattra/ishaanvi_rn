@@ -108,13 +108,13 @@ const styles = {
     container: {
         alignItems: 'stretch',
         alignSelf: "stretch",
-        height: 31,
+        minHeight: 31,
         borderBottomWidth: 1,
         borderStyle: "solid",
         justifyContent: "space-between",
     },
     inputText: {
-        height: 31,
+        minHeight: 31,
         padding: 0,
         fontFamily: "Muli",
         fontSize: 14,
