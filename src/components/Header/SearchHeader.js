@@ -16,7 +16,7 @@ export default class SearchHeader extends Component {
         console.log('search header =====>', User.getUserData());
         if (!location || (location && !location.address))
             this.setLocationModalVisible(true);
-    }
+    }      
 
 
     /** Set visible */

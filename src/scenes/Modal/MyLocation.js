@@ -41,6 +41,11 @@ export default class MyLocation extends Component {
         this.userLoaction[key] = value;
     }
 
+    defaultLocation = () => {
+        this.onTextChange('zipCode', 144211);
+        this.getLocationDetailViaZipCode();
+    }
+
     async requestLocationPermission() {
         try {
             const isLocationPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
@@ -59,11 +64,15 @@ export default class MyLocation extends Component {
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     this.getGeoLocation();
                 } else {
-                    alert("Camera permission denied");
+                    Alert.alert("You have Denied Location Permission!", "Currently Ishaanvi is using default location", [{
+                        text: "Okay",
+                        onPress: this.defaultLocation.bind(this)
+                    }]);
                 }
             }
         } catch (err) {
-            console.warn(err)
+            console.warn(err);
+            this.setState({ isLoadingLocation: false });
         }
     }
 
@@ -77,7 +86,15 @@ export default class MyLocation extends Component {
 
                 this.getLocationDetailViaCurrentLocation();
             },
-            (error) => alert(JSON.stringify(error)),
+            (error) => {
+                Alert.alert(
+                    "Unable to get your current location",
+                    `NOTE:\n1.) Your device GPS must be enable\n2.) Please check your wifi connection\n\nPlease try again\n\nFor Now, ISHAANVI is using default location`,
+                    [{
+                        text: "Okay",
+                        onPress: this.defaultLocation.bind(this)
+                    }]);
+            },
             {},
         );
     }
@@ -100,7 +117,7 @@ export default class MyLocation extends Component {
                         this.onTextChange('address', res.results[0].formatted_address);
                         storage.setUserData(StorageKeys.USER_DATA, Object.assign(User.getUserData(), this.userLoaction));
                         setVisible();
-                        return; 
+                        return;
                     default:
                         this.setState({ isLoadingLocation: false });
                 }
@@ -113,14 +130,14 @@ export default class MyLocation extends Component {
     /** Get location detail */
     getLocationDetailViaZipCode = () => {
         const { zipCode } = User.getUserData().location;
-        const { setVisible } = this.props; 
-        
+        const { setVisible } = this.props;
+
         if (!zipCode) return;
 
-        this.setState({ isLoadingZipcode: true });
+        this.setState({ isLoadingZipcode: true, isLoadingLocation: false });
         Api.getLocationDetailViaZipCode(["zipCode"], { zipCode })
             .then(res => {
-                console.log('zipcode response', res); 
+                console.log('zipcode response', res);
                 switch (res.status) {
                     case "OK":
                         this.setState({ isLoadingZipcode: false });
@@ -159,7 +176,24 @@ export default class MyLocation extends Component {
                 <WView dial={8} flex style={{ minWidth: screenWidth, minHeight: screenHeight, backgroundColor: "rgba(0, 0, 0, 0.7)" }}>
                     <WView dial={8} style={[stretch, { position: 'absolute', bottom: 0 }]}>
                         <WRow dial={6} style={[stretch]}>
-                            <WText onPress={setVisible} fontSize={16} padding={[10, 10]} fontFamily={"Muli-Bold"} color={Palette.white} right>Done</WText>
+                            <WText onPress={() => {
+                                const { location } = User.getUserData();
+                                const { isLoadingZipcode, isLoadingLocation } = this.state;
+
+                                if (isLoadingLocation || isLoadingLocationDetail || isLoadingZipcode) return;
+                                if (location.latitude) {
+                                    setVisible();
+                                    return; 
+                                }
+
+                                Alert.alert(
+                                    "No Selected Location Found",
+                                    `ISHAANVI is using default location.`,
+                                    [{
+                                        text: "Okay",
+                                        onPress: this.defaultLocation.bind(this)
+                                    }]);
+                            }} fontSize={16} padding={[10, 10]} fontFamily={"Muli-Bold"} color={Palette.white} right>Done</WText>
                         </WRow>
                         <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: 200, backgroundColor: 'green', alignItems: 'flex-end', justifyContent: 'flex-end' }, stretch]}>
                             <WView dial={8} padding={[10, 10]} style={[stretch]} backgroundColor={Palette.white}>
@@ -200,7 +234,7 @@ export default class MyLocation extends Component {
                                 <Large
                                     label={"SEND"}
                                     isLoading={isLoadingZipcode}
-                                    onPress={this.getLocationDetailViaZipCode.bind(this)}
+                                    onPress={(isLoadingLocation || isLoadingLocationDetail || isLoadingZipcode) ? () => { } : this.getLocationDetailViaZipCode.bind(this)}
                                     style={{ marginTop: 10 }}
                                 />
                             </WView>

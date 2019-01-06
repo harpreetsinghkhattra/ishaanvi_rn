@@ -64,7 +64,8 @@ export default class UserProfile extends PureComponent {
         Socket.request(get_user_profile.emit, { id, accessToken });
         UserApi.getSocketResponseOnce(get_user_profile.on, (res) => { 
             if (res && res.message === "Success") {
-                User.setUserData(res.data);
+                const { location, ...rest } = res.data;
+                User.setUserData({ ...rest });
                 this.setState({ isLoading: false, userData: User.getUserData() });
                 // UserData.setUserData(StorageKeys.USER_DATA, res.data);
             }

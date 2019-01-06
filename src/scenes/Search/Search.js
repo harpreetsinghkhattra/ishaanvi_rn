@@ -64,13 +64,13 @@ export default class Login extends PureComponent {
     }
 
     getUserResponse() {
-        const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
         Socket.request(get_home_items.emit, {
             id,
             accessToken,
             category: filterData.category && filterData.category.length === 0 ? filterData.category : "all",
             area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            "coordinates": [31.9579623, 75.6282207]
+            coordinates: [location.latitude, location.longitude]
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
@@ -80,13 +80,13 @@ export default class Login extends PureComponent {
     }
 
     onBottomPullSocketResponse() {
-        const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
         Socket.request(get_home_items.emit, {
             id,
             accessToken,
             category: filterData.category && filterData.category.length ? filterData.category : "all",
             area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            "coordinates": [31.9579623, 75.6282207]
+            coordinates: [location.latitude, location.longitude]
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
@@ -143,7 +143,7 @@ export default class Login extends PureComponent {
 
         if (filterData && (filterData[0] > filterData[1])) return;
 
-        const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
 
         const searchData = {
             id,
@@ -152,8 +152,10 @@ export default class Login extends PureComponent {
             area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
             price: filterData.price && filterData.price[1] ? filterData.price : 'all',
             searchValue,
-            "coordinates": [31.9579623, 75.6282207]
+            coordinates: [location.latitude, location.longitude]
         };
+
+        // "coordinates": [31.9579623, 75.6282207]
 
         Socket.request(search.emit, searchData);
         UserApi.getSocketResponseOnce(search.on, (res) => {

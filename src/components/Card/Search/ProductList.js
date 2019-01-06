@@ -66,7 +66,7 @@ export default class ProductList extends PureComponent {
                         data.map((item, index) => {
                             if (index % 2 === 0)
                                 return (<WView key={`product-searched-item-even-${index}`}>
-                                    <ProductListItem width={width} data={item} />
+                                    <ProductListItem {...this.props} width={width} data={item} />
                                 </WView>);
                         })
                     }
@@ -76,7 +76,7 @@ export default class ProductList extends PureComponent {
                         data.map((item, index) => {
                             if (index % 2 !== 0)
                                 return (<WView key={`product-searched-item-odd-${index}`}>
-                                    <ProductListItem width={width} data={item} />
+                                    <ProductListItem {...this.props} width={width} data={item} />
                                 </WView>);
                         })
                     }

@@ -49,7 +49,7 @@ export default class ProductList extends PureComponent {
             accessToken,
             category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
             area: filterData &&filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            "coordinates": location && location.latitude ? [location.latitude, location.longitude] : [31.9579623, 75.6282207]
+            coordinates: [location.latitude, location.longitude]
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
@@ -67,7 +67,7 @@ export default class ProductList extends PureComponent {
             accessToken,
             category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
             area: filterData && filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            "coordinates": location && location.latitude ? [location.latitude, location.longitude] : [31.9579623, 75.6282207],
+            coordinates: [location.latitude, location.longitude],
             presentShops: this.shopIds
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {

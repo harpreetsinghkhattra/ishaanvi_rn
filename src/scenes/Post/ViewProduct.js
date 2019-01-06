@@ -63,9 +63,9 @@ export default class ViewPost extends Component {
     }
 
     getProductViaId = () => {
-        const { location } = this.props;
-        const { state } = location;
-        const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+        const { location: LocationRN } = this.props;
+        const { state } = LocationRN;
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
         const { isLoading } = this.state;
 
         Socket.request(getProductViaId.emit, {
@@ -73,7 +73,7 @@ export default class ViewPost extends Component {
             accessToken,
             productId: state.productId,
             area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            "coordinates": [31.9579623, 75.6282207]
+            coordinates: [location.latitude, location.longitude]
         });
 
         UserApi.getSocketResponseOnce(getProductViaId.on, (res) => {

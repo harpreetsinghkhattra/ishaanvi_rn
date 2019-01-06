@@ -4,10 +4,17 @@ import { WView, WRow, WTouchable, WText } from '../../common'
 import { ProductImage } from '.';
 import { Image, TouchableOpacity, View, StyleSheet, Text } from 'react-native';
 import Palette from '../../../Palette';
+import { routerNames } from '../../../RouteConfig';
 
 const ProductListItem = (props) => {
     const { data, width } = props;
-    const { price, discount, images } = data;
+    const { price, discount, images, _id } = data;
+
+    const openScreen = (path, data) => {
+        const { history } = props;
+
+        history.push(path, data ? data : {});
+    }
 
     return (
         <TouchableOpacity
@@ -19,13 +26,13 @@ const ProductListItem = (props) => {
                 { width }
                 ]
             }
-            onPress={() => { }}
+            onPress={() => openScreen(routerNames.view_product, { productId: _id })}
             underlayColor="#EFF1F5"
         >
             <View>
                 <View style={styles.imageContainer}>
                     <ProductImage
-                        source={ images && images.length ? { uri: images[0] } : require('../../../images/profile.png')}
+                        source={images && images.length ? { uri: images[0] } : require('../../../images/profile.png')}
                         width={width} />
                     <View style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', left: 5, bottom: 10, backgroundColor: Palette.line_color }}>
                         <Text style={{ fontSize: 12, paddingVertical: 3, paddingHorizontal: 10 }}>{`${discount}% OFF`}</Text>
