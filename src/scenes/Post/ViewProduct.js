@@ -1,26 +1,92 @@
 import React, { Component } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WTouchable } from '../../components/common';
-import { ScrollView, PixelRatio, Image } from 'react-native';
+import { ScrollView, PixelRatio, Image, Platform, PermissionsAndroid } from 'react-native';
 import Palette from '../../Palette';
 import { routerNames } from '../../RouteConfig';
 import { User } from '../../model/user';
 import { Storage, StorageKeys } from '../../helper';
 import { Section } from '../../components/Label';
 import { PostOffer } from '../../model/PostOffer';
-import { Api } from '../../api/Api';
 import { HeadingDetail, OtherInfo, ImageSlider, BottomBar, ShareAndCommentBar, ProductUserData } from '../../components/ViewPost';
 import { RecentProductsList } from '../../components/Lists';
+import { Api, Socket, User as UserApi } from '../../api';
+import { markProductAsViewed, getProductViaId } from '../../api/SocketUrls';
 
 const UserData = new Storage();
 const BOTTOM_STATUS_BAR = 50;
 
 export default class ViewPost extends Component {
 
-    state = {
-        item: {}
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            item: {},
+            isLoading: true,
+            productData: {}
+        }
+
+        this._isMounted = true;
+    }
+
+    componentWillUnMount = () => {
+        this._isMounted = false;
+    }
+
+    _setState = (value, cb) => {
+        if (cb) this.setState(value, cb);
+        else this.setState(value);
+    }
+
+    getMarkedAsViewedProductResponse = () => {
+        const { location } = this.props;
+        const { state } = location;
+        const { _id: id, userAccessToken: accessToken } = User.getUserData();
+        const { isLoading } = this.state;
+
+        Socket.request(markProductAsViewed.emit, {
+            id,
+            accessToken,
+            productId: state.productId
+        });
+
+        UserApi.getSocketResponseOnce(markProductAsViewed.on, (res) => {
+            console.log("VIEW PRODUCT DATA ===> ", JSON.stringify(res.data));
+
+            if (res && res.message === "Success") {
+                this.getProductViaId();
+            } else if (res && res.message === "NoChange") {
+                alert("No Change")
+                this._setState({ isLoading: false });
+            } else this._setState({ isLoading: false });
+        });
+    }
+
+    getProductViaId = () => {
+        const { location } = this.props;
+        const { state } = location;
+        const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
+        const { isLoading } = this.state;
+
+        Socket.request(getProductViaId.emit, {
+            id,
+            accessToken,
+            productId: state.productId,
+            area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
+            "coordinates": [31.9579623, 75.6282207]
+        });
+
+        UserApi.getSocketResponseOnce(getProductViaId.on, (res) => {
+            console.log("VIEW PRODUCT DATA ===> ", res.data);
+
+            if (res && res.message === "Success") {
+                this._setState({ productData: res.data && res.data.length ? res.data[0] : {}, isLoading: false })
+            } else this._setState({ isLoading: false, productData: {} });
+        });
     }
 
     componentDidMount = () => {
+        this.getMarkedAsViewedProductResponse();
     }
 
     onBack = () => {
@@ -34,8 +100,11 @@ export default class ViewPost extends Component {
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, floatBtn, icon } = styles;
-        const { item } = this.state;
+        const { item, productData, isLoading } = this.state;
         const back = require('../../images/back.png');
+        const similarProducts = productData && productData.user && productData.user.length ?
+            productData.user.map(ele => ele.items) : [];
+
         // const { images } = item;
         const images = [
             'https://medias.utsavfashion.com/media/catalog/product/cache/1/image/1000x/040ec09b1e35df139433887a97daa66f/b/l/block-printed-modal-satin-dress-in-pastel-blue-v1-tqm153.jpg',
@@ -45,35 +114,43 @@ export default class ViewPost extends Component {
             'https://medias.utsavfashion.com/media/catalog/product/cache/1/image/1000x/040ec09b1e35df139433887a97daa66f/b/l/block-printed-modal-satin-dress-in-pastel-blue-v1-tqm153.jpg'
         ];
 
+        if (isLoading)
+            return (
+                <WView dial={5} flex style={stretch}>
+                    <WView dial={5}>
+                        <WSpinner color={Palette.theme_color} />
+                        <WText color={Palette.theme_color} padding={[5, 0]} fontFamily="Muli-Bold">Please wait...</WText>
+                    </WView>
+                </WView >
+            );
+
         return (
             <WView dial={2} flex style={stretch}>
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start', paddingBottom: BOTTOM_STATUS_BAR }, stretch]}>
                     {
-                        images && images.length ?
+                        productData && productData.images && productData.images.length ?
                             <ImageSlider
                                 {...this.props}
-                                data={images} />
+                                data={productData.images} />
                             : null
                     }
                     <WView flex dial={2} padding={[5, 5]} style={[stretch, { justifyContent: 'space-between' }]} >
                         <WView flex dial={2} style={[stretch]}>
                             <HeadingDetail
-                                item={item} />
+                                item={productData} />
                             <OtherInfo
-                                item={item} />
+                                item={productData} />
                             <ShareAndCommentBar />
-                            <ProductUserData />
-                            <RecentProductsList
-                                data={[
-                                    { price: '100', discount: '10' },
-                                    { price: '100', discount: '10' },
-                                    { price: '100', discount: '10' },
-                                    { price: '100', discount: '10' },
-                                    { price: '100', discount: '10' },
-                                    { price: '100', discount: '10' }
-                                ]}
-                                isViewMore={false}
-                                heading={"Similar Products"} />
+                            <ProductUserData
+                                item={productData} />
+                            {
+                                similarProducts && similarProducts.length ?
+                                    <RecentProductsList
+                                        {...this.props}
+                                        data={similarProducts}
+                                        isViewMore={false}
+                                        heading={"Similar Products"} /> : null
+                            }
                         </WView>
                     </WView>
                 </ScrollView>

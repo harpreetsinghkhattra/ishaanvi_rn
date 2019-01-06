@@ -10,7 +10,7 @@ import Palette from '../../Palette';
 
 const RecentProductsItem = (props) => {
     const { data, onPress } = props;
-    const { price, discount, images } = data;
+    const { price, discount, images, views } = data;
 
     return (
         <TouchableOpacity
@@ -98,7 +98,7 @@ const RecentProductsItem = (props) => {
                                 <Text style={{
                                     fontSize: 12,
                                     color: Palette.text_color
-                                }}>1000</Text>
+                                }}>{views ? views : 0}</Text>
                             </View>
                             <View style={{ paddingRight: 5 }}>
                                 <Image

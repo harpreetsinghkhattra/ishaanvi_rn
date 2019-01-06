@@ -58,6 +58,16 @@ const followUser = {
     on: "/socket/api/response/followUser"
 }
 
+const markProductAsViewed = {
+    emit: "/socket/api/addProductCount",
+    on: "/socket/api/response/addProductCount"
+}
+
+const getProductViaId = {
+    emit: "/socket/api/viewProduct",
+    on: "/socket/api/response/viewProduct"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -70,5 +80,7 @@ export {
     search,
     userPortal,
     userPortalProducts,
-    followUser
+    followUser,
+    markProductAsViewed,
+    getProductViaId
 }

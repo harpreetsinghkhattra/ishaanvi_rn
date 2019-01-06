@@ -156,5 +156,10 @@ export const routes = [
         path: routerNames.viewPortal,
         exact: true,
         component: UserPortal
+    },
+    {
+        path: routerNames.view_offer_images,
+        exact: true,
+        component: FullImage
     }
 ];

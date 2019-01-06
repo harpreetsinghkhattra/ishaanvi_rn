@@ -46,7 +46,7 @@ export default class RecentProductsList extends Component {
                     data={data}
                     keyExtractor={(item, index) => (`item-${index}`)}
                     renderItem={({ item, index }) => (
-                        <RecentProductsItem  {...this.props} onPress={this.openScreen.bind(this, routerNames.view_product, { screenType: "home" })} key={`rencet-product-item-${index}`} data={item} spaced />
+                        <RecentProductsItem  {...this.props} onPress={this.openScreen.bind(this, routerNames.view_product, { screenType: "home", productId: item._id })} key={`rencet-product-item-${index}`} data={item} spaced />
                     )}
                 />
                 {

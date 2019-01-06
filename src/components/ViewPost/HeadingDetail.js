@@ -10,13 +10,7 @@ export default class SelectProductTypeItem extends Component {
         const { container, image, stretch, leftContainer, rightContainer } = styles;
         let { item } = this.props;
 
-        item = {
-            name: "hello one",
-            price: "100",
-            discount: "10"
-        }
-
-        const { name, price, discount } = item;
+        const { name, price, discount, views } = item;
         const star = require('../../images/star.png');
         const next = require('../../images/next.png');
         const view = require('../../images/show_password.png');
@@ -33,7 +27,7 @@ export default class SelectProductTypeItem extends Component {
                         <Image source={next} style={[image, { tintColor: Palette.text_color }]} />
                     </WRow>
                     <WRow dial={4}>
-                        <WText color={Palette.text_color} padding={[5, 5, 5, 0]}>1000</WText>
+                        <WText color={Palette.text_color} padding={[5, 5, 5, 0]}>{views ? views : 0}</WText>
                         <Image source={view} style={[image, { tintColor: Palette.text_color }]} />
                     </WRow>
                 </WView>
