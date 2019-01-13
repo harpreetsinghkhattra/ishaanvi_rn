@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WTouchable } from '../../components/common';
-import { ScrollView, PixelRatio, Image, Platform, PermissionsAndroid } from 'react-native';
+import { ScrollView, PixelRatio, Image, Platform, PermissionsAndroid, Linking } from 'react-native';
 import Palette from '../../Palette';
 import { routerNames } from '../../RouteConfig';
 import { User } from '../../model/user';
@@ -11,11 +11,12 @@ import { HeadingDetail, OtherInfo, ImageSlider, BottomBar, ShareAndCommentBar, P
 import { RecentProductsList } from '../../components/Lists';
 import { Api, Socket, User as UserApi } from '../../api';
 import { markProductAsViewed, getProductViaId } from '../../api/SocketUrls';
+import { Rating } from '../../scenes/Modal';
 
 const UserData = new Storage();
 const BOTTOM_STATUS_BAR = 50;
 
-export default class ViewPost extends Component {
+export default class ViewProduct extends Component {
 
     constructor(props) {
         super(props);
@@ -23,10 +24,17 @@ export default class ViewPost extends Component {
         this.state = {
             item: {},
             isLoading: true,
-            productData: {}
+            productData: {},
+            isRatingModalVisible: false
         }
 
         this._isMounted = true;
+    }
+
+    openScreen(path, data) {
+        const { history } = this.props;
+
+        history.push(path, data ? data : {});
     }
 
     componentWillUnMount = () => {
@@ -97,11 +105,19 @@ export default class ViewPost extends Component {
         else history.go(-1);
     }
 
+    /** Set visible */
+    setRatingModalVisible = (isRatingModalVisible) => {
+        this.ratingModalRef.init();
+        this._setState({ isRatingModalVisible })
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
-        const { stretch, btnStyle, btnContainer, border, floatBtn, icon } = styles;
-        const { item, productData, isLoading } = this.state;
+        const { stretch, btnStyle, btnContainer, border, floatBtn, icon, userPortalFloatBtn, directionFloatBtn } = styles;
+        const { item, productData, isLoading, isRatingModalVisible } = this.state;
         const back = require('../../images/back.png');
+        const directionIcon = require('../../images/location_direction.png');
+        const userPortalIcon = require('../../images/userPortal.png');
         const similarProducts = productData && productData.user && productData.user.length ?
             productData.user.map(ele => ele.items) : [];
 
@@ -126,6 +142,16 @@ export default class ViewPost extends Component {
 
         return (
             <WView dial={2} flex style={stretch}>
+                <Rating
+                    {...this.props}
+                    ref={ref=> this.ratingModalRef = ref}
+                    isVisible={isRatingModalVisible}
+                    data={{
+                        name: productData.name,
+                        image: productData && productData.images && productData.images.length ? productData.images[0] : ""
+                    }}
+                    setVisible={this.setRatingModalVisible.bind(this, false)}
+                />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start', paddingBottom: BOTTOM_STATUS_BAR }, stretch]}>
                     {
                         productData && productData.images && productData.images.length ?
@@ -140,7 +166,10 @@ export default class ViewPost extends Component {
                                 item={productData} />
                             <OtherInfo
                                 item={productData} />
-                            <ShareAndCommentBar />
+                            <ShareAndCommentBar
+                                onCommentPress={this.openScreen.bind(this, routerNames.comments, { productId: productData._id })}
+                                onChatPress={this.openScreen.bind(this, routerNames.chat_room, {})}
+                            />
                             <ProductUserData
                                 item={productData} />
                             {
@@ -161,7 +190,14 @@ export default class ViewPost extends Component {
                 <BottomBar
                     leftBtnLabel={"Add to Wish List"}
                     rightBtnLabel={"Rate Us"}
+                    rightBtnPress={this.setRatingModalVisible.bind(this, true)}
                 />
+                <WTouchable onPress={() => Linking.openURL(`google.navigation:q=${productData.userInfo.location.lat},${productData.userInfo.location.lng}`)} dial={5} style={directionFloatBtn}>
+                    <Image source={directionIcon} style={icon} />
+                </WTouchable>
+                <WTouchable onPress={this.openScreen.bind(this, routerNames.viewPortal, { userId: productData.userId })} dial={5} style={userPortalFloatBtn}>
+                    <Image source={userPortalIcon} style={icon} />
+                </WTouchable>
             </WView >
         )
     }
@@ -195,6 +231,24 @@ const styles = {
         top: 10,
         left: 10,
         backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        width: 50,
+        height: 50,
+        borderRadius: 25
+    },
+    userPortalFloatBtn: {
+        position: 'absolute',
+        right: 10,
+        bottom: 60,
+        backgroundColor: Palette.theme_color,
+        width: 50,
+        height: 50,
+        borderRadius: 25
+    },
+    directionFloatBtn: {
+        position: 'absolute',
+        right: 10,
+        bottom: 115,
+        backgroundColor: Palette.theme_color,
         width: 50,
         height: 50,
         borderRadius: 25

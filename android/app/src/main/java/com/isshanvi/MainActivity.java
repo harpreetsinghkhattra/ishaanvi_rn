@@ -35,4 +35,6 @@ public class MainActivity extends ReactActivity {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ishaanvi_status_bar_color));
         }
     }
+
+
 }

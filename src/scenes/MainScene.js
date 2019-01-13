@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { InteractionManager, ToastAndroid, Alert } from 'react-native'
 import PropTypes from "prop-types";
-import { Route, Switch } from 'react-router-native'
+import { Route, Switch, Router } from 'react-router-native'
 import { routes } from '../RouteConfig';
+import { createMemoryHistory } from 'history';
 
 import {
     TouchableOpacity,
@@ -12,8 +13,13 @@ import {
     Image,
     StatusBar,
     ScrollView,
-    BackHandler
+    BackHandler,
+    AppState
 } from 'react-native'
+
+const history = createMemoryHistory({
+    keyLength: 24
+});
 
 /**
  * Auth purpose
@@ -28,55 +34,37 @@ class Main extends Component {
 
     componentDidMount() {
         this.is_mounted = true;
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        AppState.addEventListener('change', this._handleStateChange);
     }
 
     componentWillUnmount() {
         this.is_mounted = false;
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        AppState.removeEventListener('change', this._handleStateChange);
     }
 
-    handleBackPress(state) {
-        // if (!state) {
-        //     Alert.alert("App", "Do you really want to exit?", [
-        //         {
-        //             text: "Cancel"
-        //         }, {
-        //             text: "OK",
-        //             onPress: () => {
-        //                 BackHandler.exitApp();
-        //             }
-        //         }
-        //     ]);
-        //     return true;
-        // } 
+    _handleStateChange = (value) => {
+        console.log("STATE CHANGE INFO ===> ", value);
     }
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-      console.log("shouldUpdate", this.routes);
-
-      return true;
-    }
-    
 
     render() {
         return (
-            <Switch>
-                {
-                    routes.map((route, i) => {
-                        const { component: Component, path, exact } = route;
-                        return (<Route
-                            key={`Router-${i}`}
-                            exact={exact}
-                            path={path}
-                            component={(rest) => {
-                                this.routes = rest; 
-                                this.handleBackPress(rest);
-                                return (<Component {...rest} {...this.props} />);
-                            }} />);
-                    })
-                }
-            </Switch>
+            <Router history={history}>
+                <Switch>
+                    {
+                        routes.map((route, i) => {
+                            const { component: Component, path, exact } = route;
+                            return (<Route
+                                key={`Router-${i}`}
+                                exact={exact}
+                                path={path}
+                                component={(rest) => {
+                                    this.routes = rest;
+                                    return (<Component {...rest} {...this.props} />);
+                                }} />);
+                        })
+                    }
+                </Switch>
+            </Router>
         )
     }
 }

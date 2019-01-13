@@ -68,6 +68,16 @@ const getProductViaId = {
     on: "/socket/api/response/viewProduct"
 }
 
+const createComments = {
+    emit: "/socket/api/createComment",
+    on: "/socket/api/response/createComment"
+}
+
+const getComments = {
+    emit: "/socket/api/getProductComments",
+    on: "/socket/api/response/getProductComments"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -82,5 +92,7 @@ export {
     userPortalProducts,
     followUser,
     markProductAsViewed,
-    getProductViaId
+    getProductViaId,
+    createComments,
+    getComments
 }

@@ -19,10 +19,10 @@ export default class BottomBar extends PureComponent {
 
         return (
             <WRow dial={5} style={container}>
-                <WTouchable dial={5} style={leftBtnStyle}>
+                <WTouchable onPress={leftBtnPress} dial={5} style={leftBtnStyle}>
                     <WText fontSize={18} fontFamily={"Muli-Bold"} color={Palette.white}>{leftBtnLabel}</WText>
                 </WTouchable>
-                <WTouchable dial={5} style={rightBtnStyle}>
+                <WTouchable dial={5} style={rightBtnStyle} onPress={rightBtnPress}>
                     <WText fontSize={18} fontFamily={"Muli-Bold"} color={Palette.text_color}>{rightBtnLabel}</WText>
                 </WTouchable>
             </WRow>

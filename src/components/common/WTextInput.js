@@ -23,7 +23,8 @@ export default class WTextInput extends Component {
         iconPath: PropTypes.any,
         isLoading: PropTypes.bool,
         containerStyle: PropTypes.any,
-        flex: PropTypes.number
+        flex: PropTypes.number,
+        loading: PropTypes.bool
     }
 
     static defaultProps = {
@@ -66,6 +67,7 @@ export default class WTextInput extends Component {
             containerStyle,
             flex,
             iconTintColor,
+            loading,
             ...rest
         } = this.props;
 
@@ -96,6 +98,13 @@ export default class WTextInput extends Component {
                         <WTouchable dial={5} padding={[0, 5]} onPress={isLoading ? () => { } : this.toggle.bind(this)}>
                             <Image source={isSecureTextEntry ? require("../../images/show_password.png") : require("../../images/hide_password.png")} style={[iconStyle, isError.status ? error : success]} />
                         </WTouchable>
+                    }
+                    {
+                        // Only to show right side loader
+                        loading &&
+                        <WView dial={5} padding={[0, 5]}>
+                            <WSpinner size={"small"} color={Palette.theme_color} />
+                        </WView>
                     }
                 </WRow>
                 {isError.status && isError.message !== '' && <WText dial={6} fontSize={10} right color={Palette.red}>{isError.message}</WText>}

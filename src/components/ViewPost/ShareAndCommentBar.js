@@ -21,14 +21,14 @@ export default class ShareAndCommentBar extends PureComponent {
         const { container, iconStyle } = styles;
 
         return (
-            <WRow dial={5} margin={[10, 0]} style={container}> 
-                <WTouchable dial={5}>
+            <WRow dial={5} margin={[10, 0]} style={container}>
+                <WTouchable onPress={onChatPress} dial={5}>
                     <WRow dial={5}>
                         <Image source={chat} style={iconStyle} />
-                        <WText padding={[5, 10]} color={Palette.text_color} fontSize={14}>Chat</WText> 
+                        <WText padding={[5, 10]} color={Palette.text_color} fontSize={14}>Chat</WText>
                     </WRow>
                 </WTouchable>
-                <WTouchable dial={5}>
+                <WTouchable onPress={onCommentPress} dial={5}>
                     <WRow dial={5}>
                         <Image source={comment} style={iconStyle} />
                         <WText padding={[5, 10]} color={Palette.text_color} fontSize={14}>Comments</WText>
@@ -52,7 +52,7 @@ const styles = {
         borderTopWidth: StyleSheet.hairlineWidth,
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderStyle: 'solid',
-        borderColor: Palette.border_color 
+        borderColor: Palette.border_color
     },
     iconStyle: {
         width: 20,

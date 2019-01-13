@@ -60,12 +60,12 @@ export default class HomeFilter extends PureComponent {
     onApply = () => {
         const { setVisible } = this.props;
         const { filterData } = User.getUserData();
-        // User.setUserData({ filterData: this.filterData });
+        User.setUserData({ filterData: this.filterData });
         // UserData.setUserData(StorageKeys.USER_DATA, User.getUserData());
 
         // /** Close the modals */
-        // setVisible();
-        alert(JSON.stringify(this.filterData));
+        setVisible(false, 'refresh');
+        // alert(JSON.stringify(this.filterData));
     }
 
     onClearAll = () => {
@@ -111,7 +111,7 @@ export default class HomeFilter extends PureComponent {
                         </WView>
                     </ScrollView>
                     <FilterBottomBar
-                        onClose={setVisible}
+                        onClose={setVisible.bind(this, false, '')}
                         onApply={this.onApply.bind(this)}
                     />
                 </WView >

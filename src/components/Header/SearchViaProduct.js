@@ -26,14 +26,17 @@ export default class SearchHeaderViaProduct extends Component {
     }
 
     onChangeText = (key, value) => {
+        const { onSubmit } = this.props;
+
         this.setState({ [key]: value });
+        value.length && onSubmit(value);
     }
 
     render() {
         const { textInputContainer, textInputContainerStyle, btnContainerStyle, btnContainerStyle1, stretch, iconStyle } = styles
         const { isLocationModalVisible, searchValue } = this.state;
         const filterIcon = require('../../images/filter.png');
-        const { openFilter, onSubmit } = this.props;
+        const { openFilter, onSubmit, isLoading } = this.props;
         const location = User.getUserData().location;
 
         return (
@@ -46,6 +49,7 @@ export default class SearchHeaderViaProduct extends Component {
                 <WRow dial={5} padding={[0, 5]} flex style={textInputContainer}>
                     <WTextInput
                         flex={1}
+                        loading={isLoading}
                         getFocus={ref => this.input1 = ref}
                         containerStyle={textInputContainerStyle}
                         placeholderName="Product Name"

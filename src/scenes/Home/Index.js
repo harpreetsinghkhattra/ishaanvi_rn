@@ -27,7 +27,7 @@ export default class Login extends PureComponent {
             isHomeFilterVisible: false,
             isLocationModalVisible: false,
             isLazyLoading: initialPage === PAGE_INDEX ? true : false,
-            isLoading: false,
+            isLoading: true,
             data: []
         }
 
@@ -56,9 +56,7 @@ export default class Login extends PureComponent {
     }
 
     init = () => {
-        this.setState({ isLoading: true });
-        this.getUserResponse();
-        this.setState({ userData: User.getUserData() });
+        // this.getUserResponse();
     }
 
     getUserResponse() {
@@ -155,7 +153,7 @@ export default class Login extends PureComponent {
                 <HomeFilter
                     {...this.props}
                     isVisible={isHomeFilterVisible}
-                    setVisible={this.setFilterModalVisible.bind(this, false, 'refresh')}
+                    setVisible={this.setFilterModalVisible.bind(this)}
                 />
                 <WView
                     flex

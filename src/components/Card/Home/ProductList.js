@@ -25,7 +25,7 @@ export default class ProductList extends PureComponent {
         this.state = {
             isHomeFilterVisible: false,
             isLocationModalVisible: false,
-            isLoading: false,
+            isLoading: true,
             data: []
         }
 
@@ -37,9 +37,7 @@ export default class ProductList extends PureComponent {
     }
 
     init = () => {
-        this.setState({ isLoading: true });
         this.getUserResponse();
-        this.setState({ userData: User.getUserData() });
     }
 
     getUserResponse() {

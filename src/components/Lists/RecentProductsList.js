@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { FlatList } from 'react-native';
 import { WText, WView, WRow, WSpinner, WTouchable } from '../common';
@@ -6,7 +6,7 @@ import { RecentProductsItem } from '../ListItems/';
 import Palette from '../../Palette';
 import { routerNames } from '../../RouteConfig';
 
-export default class RecentProductsList extends Component {
+export default class RecentProductsList extends PureComponent {
 
     static propTypes = {
         heading: PropTypes.string,

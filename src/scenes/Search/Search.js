@@ -28,12 +28,23 @@ export default class Login extends PureComponent {
             isHomeFilterVisible: false,
             isLocationModalVisible: false,
             isLazyLoading: initialPage === PAGE_INDEX ? true : false,
-            isLoading: false,
+            isLoading: true,
             data: [],
+            isSearchLoading: false,
             searchedElements: []
         }
 
         this.listenLazyLoadEvent();
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    _setState = (value, cb) => {
+        if (cb) this.setState(value, cb);
+        else this.setState(value);
     }
 
     componentDidMount = () => {
@@ -47,7 +58,7 @@ export default class Login extends PureComponent {
         if (tabEmitter.addListener) {
             tabEmitter.addListener('home_lazy_load', (data) => {
                 if (data && data.index === PAGE_INDEX)
-                    this.setState(prevState => {
+                    this._setState(prevState => {
                         if (!prevState.isLazyLoading) {
                             // this.init()
                             return { isLazyLoading: true };
@@ -58,9 +69,7 @@ export default class Login extends PureComponent {
     }
 
     init = () => {
-        this.setState({ isLoading: true });
         this.getUserResponse();
-        this.setState({ userData: User.getUserData() });
     }
 
     getUserResponse() {
@@ -74,8 +83,8 @@ export default class Login extends PureComponent {
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
-                this.setState({ isLoading: false, isRefreshingList: false, data: res.data });
-            } else this.setState({ isLoading: false, isRefreshingList: false });
+                this._setState({ isLoading: false, isRefreshingList: false, data: res.data });
+            } else this._setState({ isLoading: false, isRefreshingList: false });
         });
     }
 
@@ -90,14 +99,14 @@ export default class Login extends PureComponent {
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
-                this.setState(prevState => {
+                this._setState(prevState => {
                     const { data } = prevState;
                     let tempData = Array.from(data);
                     tempData = tempData.concat(Array.from(res.data));
 
                     return ({ isLoading: false, isRefreshingList: false, data: tempData });
                 });
-            } else this.setState({ isLoading: false, isRefreshingList: false });
+            } else this._setState({ isLoading: false, isRefreshingList: false });
         });
     }
 
@@ -106,14 +115,14 @@ export default class Login extends PureComponent {
         if (location && typeof location === 'string') {
             this.onTextChange("userLocation", location);
             this.setState(() => ({ isVisible }), this.getLocationDetail.bind(this));
-        } else this.setState({ isLocationModalVisible })
+        } else this._setState({ isLocationModalVisible })
     }
 
     /** Set visible */
     setFilterModalVisible = (isHomeFilterVisible, refresh) => {
         if (refresh === "refresh") this.productListRef && this.productListRef.init();
 
-        this.setState({ isHomeFilterVisible });
+        this._setState({ isHomeFilterVisible });
     }
 
     openScreen(path, data) {
@@ -123,13 +132,13 @@ export default class Login extends PureComponent {
     }
 
     onProductListRefresh = () => {
-        this.setState({ isRefreshingList: true });
+        this._setState({ isRefreshingList: true });
         this.getUserResponse();
     }
 
     onRequestMoreProducts = () => {
         console.log("home loading render");
-        this.setState({ isRequestMoreProducts: true });
+        this._setState({ isRequestMoreProducts: true });
         this.onBottomPullSocketResponse();
     }
 
@@ -157,12 +166,16 @@ export default class Login extends PureComponent {
 
         // "coordinates": [31.9579623, 75.6282207]
 
+        this._setState(prevState => {
+            if (prevState.isSearchLoading) return;
+            return ({ isSearchLoading: true });
+        })
         Socket.request(search.emit, searchData);
         UserApi.getSocketResponseOnce(search.on, (res) => {
             console.log('get socket response once', JSON.stringify(searchData), JSON.stringify(res));
             if (res && res.message === "Success") {
-                this.setState({ isLoading: false, isRefreshingList: false, searchedElements: res.data });
-            } else this.setState({ isLoading: false, isRefreshingList: false });
+                this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: res.data });
+            } else this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: [] });
         });
     }
 
@@ -170,7 +183,7 @@ export default class Login extends PureComponent {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
         const { userType } = User.getUserData();
-        const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems, searchedElements } = this.state;
+        const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems, searchedElements, isSearchLoading } = this.state;
         const plus = require('../../images/plus.png');
         const empty = [];
 
@@ -180,13 +193,14 @@ export default class Login extends PureComponent {
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <SearchViaProduct
+                    isLoading={isSearchLoading}
                     openFilter={this.setFilterModalVisible.bind(this, true)}
                     onSubmit={this.onSubmit.bind(this)}
                 />
                 <HomeFilter
                     {...this.props}
                     isVisible={isHomeFilterVisible}
-                    setVisible={this.setFilterModalVisible.bind(this, false, 'refresh')}
+                    setVisible={this.setFilterModalVisible.bind(this)}
                 />
                 <WView
                     flex

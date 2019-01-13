@@ -30,6 +30,13 @@ export default class SearchHeader extends Component {
         this._setState({ [key]: value });
     }
 
+    onSend = () => {
+        const { onSend } = this.props;
+        const { comment } = this.state;
+        Keyboard.dismiss();
+        onSend(comment);
+    }
+
     render() {
         const { container, textInputContainer, textInputContainerStyle, btnContainerStyle, btnContainerStyle1, stretch, iconStyle } = styles
         const send = require('../../images/send.png');
@@ -51,7 +58,7 @@ export default class SearchHeader extends Component {
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold', height: 80 }}
                         onSubmitEditing={() => { }}
                     />
-                    <WTouchable onPress={onSend.bind(this, comment)} dial={5} padding={[0, 10]} style={btnContainerStyle}>
+                    <WTouchable onPress={this.onSend.bind(this)} dial={5} padding={[0, 10]} style={btnContainerStyle}>
                         <Image source={send} style={iconStyle} />
                     </WTouchable>
                 </WRow>
