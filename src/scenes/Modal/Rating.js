@@ -8,7 +8,7 @@ import { CheckBox } from '../../components/UI/checkbox';
 import { routerNames } from '../../RouteConfig';
 import { Api } from '../../api/Api';
 import { InfoCompleteAutoSelect } from '../../components/Select/';
-import { TextInputWithLabel } from '../../components/UI/input';
+import { MultiTextInputWithLabel } from '../../components/UI/input';
 import { PlaceSearchHeader } from '../../components/Header';
 
 export default class Rating extends Component {
@@ -20,6 +20,8 @@ export default class Rating extends Component {
             isLoading: false,
             isRating: true,
             ratingValue: 0,
+            review: "",
+            errors: [],
             response: {
                 status: "",
                 message: ""
@@ -47,6 +49,8 @@ export default class Rating extends Component {
             isLoading: false,
             isRating: true,
             ratingValue: 0,
+            review: "",
+            errors: [],
             response: {
                 status: "",
                 message: ""
@@ -70,6 +74,40 @@ export default class Rating extends Component {
         }
     }
 
+    /** On submit */
+    submit = (btnStatus) => {
+        const { setVisible } = this.props;
+        const { review, ratingValue } = this.state;
+
+        Api.isValidForm(Object.keys({ review }), { review })
+            .then(res => {
+                if (res && res.message) {
+                    if (res.message === "Success") {
+                        this.onAccept();
+                    } else Alert.alert("", res.message);
+                } else if (res && res.response) {
+                    const { status, response } = res;
+                    this.setState({ isLoading: false, errors: response && response.length ? response : [] });
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
+    /** On change */
+    onTextChange = (key, value) => {
+        this._setState({ [key]: value })
+    }
+
+    /** On error */
+    isError = (key) => {
+        const { errors } = this.state;
+        console.log(errors);
+
+        if (errors && errors.length) {
+            return errors.findIndex(ele => (ele.fieldName === key)) > -1 ? { status: true, message: errors[errors.findIndex(ele => (ele.fieldName === key))].message } : { status: false, message: "" };
+        } else return { status: false, message: "" }
+    }
+
     onAccept = () => {
         const { isVisible, setVisible, data, onDecline, label1, label2 } = this.props;
         this._setState({ response: { message: "Accepted", status: "Success" }, isRating: false });
@@ -82,12 +120,12 @@ export default class Rating extends Component {
 
         if (isRating) {
             return (
-                <WRow dial={5} margin={[0, 10]} style={[stretch]}>
-                    <WTouchable dial={5} onPress={setVisible} style={[btnStyle]} margin={[30, 10, 0, 0]} backgroundColor={"green"}>
-                        <WText fontSize={14} padding={[0, 60]} color={Palette.white} fontFamily={"Muli-Bold"} center>Cancel</WText>
+                <WRow dial={5} style={[stretch]}>
+                    <WTouchable dial={5} flex onPress={setVisible} style={[btnStyle]} margin={[30, 5]} backgroundColor={"green"}>
+                        <WText fontSize={14} padding={[0, 30]} color={Palette.white} fontFamily={"Muli-Bold"} center>Cancel</WText>
                     </WTouchable>
-                    <WTouchable dial={5} onPress={this.onAccept.bind(this)} style={[btnStyle]} margin={[30, 0]} backgroundColor={"green"}>
-                        <WText fontSize={14} padding={[0, 60]} color={Palette.white} fontFamily={"Muli-Bold"} center>Send</WText>
+                    <WTouchable dial={5} flex onPress={this.submit.bind(this)} style={[btnStyle]} margin={[30, 5]} backgroundColor={"green"}>
+                        <WText fontSize={14} padding={[0, 30]} color={Palette.white} fontFamily={"Muli-Bold"} center>Send</WText>
                     </WTouchable>
                 </WRow>
             );
@@ -125,12 +163,13 @@ export default class Rating extends Component {
     _renderRating = () => {
         const { data } = this.props;
         const { name } = data;
-        const { ratingValue } = this.state;
+        const { ratingValue, review } = this.state;
         const star = [1, 2, 3, 4, 5];
+        const { stretch } = styles;
 
         return (
-            <WView dial={5}>
-                <WText fontSize={16} fontFamily={"Muli-Bold"} color={Palette.theme_color}>Rate Us: {ratingValue}</WText>
+            <WView dial={5} style={[stretch]} margin={[0, 20]}> 
+                <WText fontSize={16} fontFamily={"Muli-Bold"} color={Palette.theme_color} center>Rate Us: {ratingValue}</WText>
                 <WRow dial={5}>
                     {
                         star.map(ele =>
@@ -139,6 +178,16 @@ export default class Rating extends Component {
                                 onPress={this._setRatingValue.bind(this, ele)} />)
                     }
                 </WRow>
+                <MultiTextInputWithLabel
+                    margin={[10, 0]}
+                    label="Review *"
+                    placeholderName={"e.g. Great!, Product."}
+                    isError={this.isError('review')}
+                    value={review}
+                    onChangeText={value => this.onTextChange("review", value)}
+                    getFocus={ref => this.input9 = ref}
+                    onSubmitEditing={() => { }}
+                />
             </WView>
         );
     }
