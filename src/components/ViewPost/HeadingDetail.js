@@ -20,10 +20,10 @@ export default class SelectProductTypeItem extends Component {
                 <WView flex dial={4} style={[leftContainer]}>
                     <WText fontFamily={'Muli-Bold'} fontSize={16} lines={2} style={{ textTransform: 'uppercase' }}>{name}</WText>
                     <WRow dial={4}>
-                        <WText color={Palette.ratingColor} padding={[5, 5, 5, 0]}>4.3</WText>
+                        <WText color={Palette.ratingColor} padding={[5, 5, 5, 0]}>{item.rating ? item.rating : 0}</WText>
                         <Image source={star} style={[image, { tintColor: Palette.ratingColor }]} />
 
-                        <WText padding={[5, 5, 5, 10]}>3026 Reviews</WText>
+                        <WText padding={[5, 5, 5, 10]}>{item.reviews ? item.reviews : 0} Reviews</WText>
                         <Image source={next} style={[image, { tintColor: Palette.text_color }]} />
                     </WRow>
                     <WRow dial={4}>

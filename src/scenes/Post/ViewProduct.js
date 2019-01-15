@@ -108,13 +108,15 @@ export default class ViewProduct extends Component {
     /** Set visible */
     setRatingModalVisible = (isRatingModalVisible) => {
         this.ratingModalRef.init();
-        this._setState({ isRatingModalVisible })
+        this._setState({ isRatingModalVisible });
+        this.getProductViaId();
     }
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, floatBtn, icon, userPortalFloatBtn, directionFloatBtn } = styles;
         const { item, productData, isLoading, isRatingModalVisible } = this.state;
+        console.log("VIEW PRODUCT DATA ========> ", productData);
         const back = require('../../images/back.png');
         const directionIcon = require('../../images/location_direction.png');
         const userPortalIcon = require('../../images/userPortal.png');
@@ -144,9 +146,10 @@ export default class ViewProduct extends Component {
             <WView dial={2} flex style={stretch}>
                 <Rating
                     {...this.props}
-                    ref={ref=> this.ratingModalRef = ref}
+                    ref={ref => this.ratingModalRef = ref}
                     isVisible={isRatingModalVisible}
                     data={{
+                        id: productData._id,
                         name: productData.name,
                         image: productData && productData.images && productData.images.length ? productData.images[0] : ""
                     }}

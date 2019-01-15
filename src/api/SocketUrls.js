@@ -78,6 +78,26 @@ const getComments = {
     on: "/socket/api/response/getProductComments"
 }
 
+const submitRating = {
+    emit: "/socket/api/rateProduct",
+    on: "/socket/api/response/rateProduct"
+}
+
+const addProductToWish = {
+    emit: "/socket/api/addWishProduct",
+    on: "/socket/api/response/addWishProduct"
+}
+
+const clearWishProducts = {
+    emit: "/socket/api/clearWishProducts",
+    on: "/socket/api/response/addWishProduct"
+}
+
+const removeWishProduct = {
+    emit: "/socket/api/removeWishProduct",
+    on: "/socket/api/response/removeWishProduct"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -94,5 +114,8 @@ export {
     markProductAsViewed,
     getProductViaId,
     createComments,
-    getComments
+    getComments,
+    submitRating,
+    clearWishProducts,
+    removeWishProduct
 }

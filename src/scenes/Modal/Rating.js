@@ -6,10 +6,12 @@ import Palette from '../../Palette';
 import { Large, WithSeprateIcon } from '../../components/UI/btn';
 import { CheckBox } from '../../components/UI/checkbox';
 import { routerNames } from '../../RouteConfig';
-import { Api } from '../../api/Api';
 import { InfoCompleteAutoSelect } from '../../components/Select/';
 import { MultiTextInputWithLabel } from '../../components/UI/input';
 import { PlaceSearchHeader } from '../../components/Header';
+import { Api, Socket, User as UserApi } from '../../api';
+import { submitRating } from '../../api/SocketUrls';
+import { User } from '../../model/user';
 
 export default class Rating extends Component {
 
@@ -74,6 +76,33 @@ export default class Rating extends Component {
         }
     }
 
+    sendRating = () => {
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
+        const { isLoading, ratingValue, review } = this.state;
+        const { data, setVisible } = this.props
+
+        if (isLoading) return;
+
+        this._setState({ isLoading: true, response: { message: "", status: "" } })
+        Socket.request(submitRating.emit, {
+            id,
+            accessToken,
+            userId: id,
+            rating: `${ratingValue}`,
+            review,
+            productId: data.id,
+
+        });
+
+        UserApi.getSocketResponseOnce(submitRating.on, (res) => {
+            console.log("VIEW PRODUCT DATA ===> ", res);
+
+            if (res && res.message === "Success") {
+                this._setState({ isLoading: false, response: { message: "Thanks to Rate Us.", status: "Success" }, isRating: false })
+            } else this._setState({ isLoading: false, response: { message: "Something Went Wrong, Please Try Again.", status: "Error" }, isRating: false });
+        });
+    }
+
     /** On submit */
     submit = (btnStatus) => {
         const { setVisible } = this.props;
@@ -83,7 +112,7 @@ export default class Rating extends Component {
             .then(res => {
                 if (res && res.message) {
                     if (res.message === "Success") {
-                        this.onAccept();
+                        this.sendRating();
                     } else Alert.alert("", res.message);
                 } else if (res && res.response) {
                     const { status, response } = res;
@@ -108,14 +137,14 @@ export default class Rating extends Component {
         } else return { status: false, message: "" }
     }
 
-    onAccept = () => {
-        const { isVisible, setVisible, data, onDecline, label1, label2 } = this.props;
-        this._setState({ response: { message: "Accepted", status: "Success" }, isRating: false });
-    }
+    // onAccept = () => {
+    //     const { isVisible, setVisible, data, onDecline, label1, label2 } = this.props;
+    //     this._setState({ response: { message: "Accepted", status: "Success" }, isRating: false });
+    // }
 
     _renderButton = () => {
         const { isVisible, setVisible, data, onDecline, label1, label2 } = this.props;
-        const { isRating } = this.state;
+        const { isRating, isLoading } = this.state;
         const { stretch, btnStyle, btnContainer, border, circleView, image, caretImage } = styles;
 
         if (isRating) {
@@ -124,8 +153,13 @@ export default class Rating extends Component {
                     <WTouchable dial={5} flex onPress={setVisible} style={[btnStyle]} margin={[30, 5]} backgroundColor={"green"}>
                         <WText fontSize={14} padding={[0, 30]} color={Palette.white} fontFamily={"Muli-Bold"} center>Cancel</WText>
                     </WTouchable>
-                    <WTouchable dial={5} flex onPress={this.submit.bind(this)} style={[btnStyle]} margin={[30, 5]} backgroundColor={"green"}>
-                        <WText fontSize={14} padding={[0, 30]} color={Palette.white} fontFamily={"Muli-Bold"} center>Send</WText>
+                    <WTouchable dial={5} flex onPress={isLoading ? () => { } : this.submit.bind(this)} style={[btnStyle]} margin={[30, 5]} backgroundColor={"green"}>
+                        {
+                            isLoading ?
+                                <WSpinner color={Palette.white} size={"small"} />
+                                :
+                                <WText fontSize={14} padding={[0, 30]} color={Palette.white} fontFamily={"Muli-Bold"} center>Send</WText>
+                        }
                     </WTouchable>
                 </WRow>
             );
@@ -168,7 +202,7 @@ export default class Rating extends Component {
         const { stretch } = styles;
 
         return (
-            <WView dial={5} style={[stretch]} margin={[0, 20]}> 
+            <WView dial={5} style={[stretch]} margin={[0, 20]}>
                 <WText fontSize={16} fontFamily={"Muli-Bold"} color={Palette.theme_color} center>Rate Us: {ratingValue}</WText>
                 <WRow dial={5}>
                     {
