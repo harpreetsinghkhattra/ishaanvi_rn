@@ -102,6 +102,8 @@ export default class ViewProduct extends Component {
 
         if (location.state && location.state.screenType === "home")
             history.replace(routerNames.index, { selectedIndex: 0 })
+        else if (location.state && location.state.screenType === "search")
+            history.replace(routerNames.index, { selectedIndex: 1 })
         else history.go(-1);
     }
 
@@ -191,8 +193,10 @@ export default class ViewProduct extends Component {
                     <Image source={back} style={icon} />
                 </WTouchable>
                 <BottomBar
+                    {...this.props}
                     leftBtnLabel={"Add to Wish List"}
                     rightBtnLabel={"Rate Us"}
+                    item={productData}
                     rightBtnPress={this.setRatingModalVisible.bind(this, true)}
                 />
                 <WTouchable onPress={() => Linking.openURL(`google.navigation:q=${productData.userInfo.location.lat},${productData.userInfo.location.lng}`)} dial={5} style={directionFloatBtn}>

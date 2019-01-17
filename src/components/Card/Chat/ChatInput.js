@@ -36,7 +36,7 @@ export default class SearchHeader extends Component {
         const { comment } = this.state;
 
         return (
-            <WRow dial={5} padding={[5, 10]} styles={container} backgroundColor={Palette.theme_color}>
+            <WRow dial={5} padding={[5, 10]} styles={container} backgroundColor={Palette.line_color}>
                 <WRow dial={5} padding={[0, 5]} flex style={textInputContainer}>
                     <WTextInput
                         flex={1}
@@ -44,7 +44,7 @@ export default class SearchHeader extends Component {
                         numberOfLines={3}
                         getFocus={ref => this.input1 = ref}
                         containerStyle={textInputContainerStyle}
-                        placeholderName="Add a comment..."
+                        placeholderName="Say something"
                         onChangeText={value => this.onChangeText('comment', value)}
                         value={comment}
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}

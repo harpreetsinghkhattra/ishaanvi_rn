@@ -8,7 +8,7 @@ import { Storage, StorageKeys } from '../../helper';
 import { PostOffer } from '../../model/PostOffer';
 import { Api } from '../../api/Api';
 import { ChatInput } from '../../components/Card/Chat'
-import { CommentsList } from '../../components/Card/Chat'
+import { ChatMessagesList } from '../../components/Card/Chat'
 
 const UserData = new Storage();
 const BOTTOM_STATUS_BAR = 80;
@@ -41,7 +41,8 @@ export default class ViewPost extends Component {
                 />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={2} padding={[5, 5]} style={[stretch, { justifyContent: 'space-between' }]} >
-                        <CommentsList />
+                        <ChatMessagesList
+                            item={[1, 2, 3, 4, 5]} />
                     </WView>
                 </ScrollView>
                 <ChatInput

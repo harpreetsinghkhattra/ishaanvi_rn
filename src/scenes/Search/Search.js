@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
-import { WView, WText, WRow, Header, WTextInput, WTouchable, WSpinner } from '../../components/common';
-import { ScrollView, PixelRatio, Image, FlatList, RefreshControl } from 'react-native';
+import { WView, WText, WRow, Header, WTextInput, WTouchable, WSpinner, Image } from '../../components/common';
+import { ScrollView, PixelRatio, FlatList, RefreshControl } from 'react-native';
 import Palette from '../../Palette';
 import { Large } from '../../components/UI/btn';
 import { routerNames } from '../../RouteConfig';
@@ -209,12 +209,19 @@ export default class Login extends PureComponent {
                 >
                     {
                         searchedElements && searchedElements.length ?
-                            <ProductList {...this.props} data={searchedElements} />
-                            :
-                            <RandomProductList
-                                ref={ref => this.productListRef = ref}
-                                { ...this.props }
+                            <ProductList
+                                {...this.props}
+                                data={searchedElements}
+                                onItemPress={productId => this.openScreen(routerNames.view_product, { screenType: 'search', productId })}
                             />
+                            :
+                            <WView dial={5}>
+                                <WText fontSize={16} fontFamily={"Muli-Bold"}>Search Your Product</WText>
+                                <Image
+                                    source={require('../../images/search_view.png')}
+                                    containerStyle={{ width: screenWidth, height: screenWidth }}
+                                />
+                            </WView>
                     }
                 </WView>
             </WView >);

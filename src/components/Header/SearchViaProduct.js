@@ -29,7 +29,6 @@ export default class SearchHeaderViaProduct extends Component {
         const { onSubmit } = this.props;
 
         this.setState({ [key]: value });
-        value.length && onSubmit(value);
     }
 
     render() {

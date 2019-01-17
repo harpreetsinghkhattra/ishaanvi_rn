@@ -14,7 +14,7 @@ import {
 import Home from './scenes/Home/Home';
 import { EditUserProfile } from './scenes/EditProfile';
 import { UploadImage, Details, Finish } from './scenes/UploadPost';
-import { Posts, ViewPost, FullImage, ViewProduct, Comments, UserPortal } from './scenes/Post/';
+import { Posts, ViewPost, FullImage, ViewProduct, Comments, UserPortal, WishProducts } from './scenes/Post/';
 import ChatRoom from './scenes/Chat/ChatFile'
 
 export const routerNames = {
@@ -44,6 +44,7 @@ export const routerNames = {
     chat_room: '/user/chat_room',
     comments: '/user/product/comments',
     viewPortal: '/user/view_portal',
+    wishedProducts: '/wish/products'
 }
 
 export const routes = [
@@ -161,5 +162,10 @@ export const routes = [
         path: routerNames.view_offer_images,
         exact: true,
         component: FullImage
+    },
+    {
+        path: routerNames.wishedProducts,
+        exact: true,
+        component: WishProducts
     }
 ];

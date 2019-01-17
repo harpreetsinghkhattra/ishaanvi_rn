@@ -90,12 +90,17 @@ const addProductToWish = {
 
 const clearWishProducts = {
     emit: "/socket/api/clearWishProducts",
-    on: "/socket/api/response/addWishProduct"
+    on: "/socket/api/response/clearWishProducts"
 }
 
 const removeWishProduct = {
     emit: "/socket/api/removeWishProduct",
     on: "/socket/api/response/removeWishProduct"
+}
+
+const getAddedWishProducts = {
+    emit: "/socket/api/getAddedWishProducts",
+    on: "/socket/api/response/getAddedWishProducts"
 }
 
 export {
@@ -117,5 +122,7 @@ export {
     getComments,
     submitRating,
     clearWishProducts,
-    removeWishProduct
+    removeWishProduct,
+    getAddedWishProducts,
+    addProductToWish
 }

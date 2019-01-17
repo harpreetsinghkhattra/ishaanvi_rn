@@ -43,7 +43,7 @@ WithLeftIcon.defaultProps = {
         height: 16,
         tintColor: Palette.white
     },
-    isLoadingLoader: true
+    isLoadingLoader: false
 }
 
 const styles = {

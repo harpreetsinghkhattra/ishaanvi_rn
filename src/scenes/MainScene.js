@@ -48,23 +48,21 @@ class Main extends Component {
 
     render() {
         return (
-            <Router history={history}>
-                <Switch>
-                    {
-                        routes.map((route, i) => {
-                            const { component: Component, path, exact } = route;
-                            return (<Route
-                                key={`Router-${i}`}
-                                exact={exact}
-                                path={path}
-                                component={(rest) => {
-                                    this.routes = rest;
-                                    return (<Component {...rest} {...this.props} />);
-                                }} />);
-                        })
-                    }
-                </Switch>
-            </Router>
+            <Switch>
+                {
+                    routes.map((route, i) => {
+                        const { component: Component, path, exact } = route;
+                        return (<Route
+                            key={`Router-${i}`}
+                            exact={exact}
+                            path={path}
+                            component={(rest) => {
+                                this.routes = rest;
+                                return (<Component {...rest} {...this.props} />);
+                            }} />);
+                    })
+                }
+            </Switch>
         )
     }
 }

@@ -46,11 +46,13 @@ export default class ProductList extends PureComponent {
             id,
             accessToken,
             category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
-            area: filterData &&filterData.area && filterData.area.length ? filterData.area[1] : 500,
+            area: filterData && filterData.area && filterData.area.length ? filterData.area[1] : 500,
             coordinates: [location.latitude, location.longitude]
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
+                console.log("VIEW PRODUCT home DATA ========> ", res);
+
                 this.shopIds = res.data && res.data.length ? Array.from(res.data.map(ele => ele._id)) : [];
                 this.setState({ isLoading: false, isRefreshingList: false, data: res.data });
             } else this.setState({ isLoading: false, isRefreshingList: false });

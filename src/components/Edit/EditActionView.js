@@ -78,6 +78,9 @@ export default class EditActionView extends Component {
                         label={"View Portal"} />
                 }
                 <LabelWithRightBtn
+                    onPress={this.openScreen.bind(this, routerNames.wishedProducts, { screenType: "edit" })}
+                    label={"Wish List"} />
+                <LabelWithRightBtn
                     label={"Notifications"} />
                 <LabelWithRightBtn
                     onPress={this.setAlertMessageVisible.bind(this, true, { status: "logout", heading: "Logout", message: "Do you really want to logout?" })}

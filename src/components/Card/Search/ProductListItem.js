@@ -7,7 +7,7 @@ import Palette from '../../../Palette';
 import { routerNames } from '../../../RouteConfig';
 
 const ProductListItem = (props) => {
-    const { data, width } = props;
+    const { data, width, onItemPress } = props;
     const { price, discount, images, _id } = data;
 
     const openScreen = (path, data) => {
@@ -26,7 +26,7 @@ const ProductListItem = (props) => {
                 { width }
                 ]
             }
-            onPress={() => openScreen(routerNames.view_product, { productId: _id })}
+            onPress={() => onItemPress(_id)}
             underlayColor="#EFF1F5"
         >
             <View>

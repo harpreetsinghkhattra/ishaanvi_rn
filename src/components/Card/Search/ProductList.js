@@ -13,7 +13,8 @@ export default class ProductList extends PureComponent {
     static propTypes = {
         type: PropTypes.string,
         onNewProductsResponse: PropTypes.func,
-        onSaleProductsResponse: PropTypes.func
+        onSaleProductsResponse: PropTypes.func,
+        onItemPress: PropTypes.func
     }
 
     constructor(props) {
