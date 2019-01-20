@@ -28,4 +28,12 @@ export class User {
     static getSocketResponse = (on, cb) => {
         socket.once(on, cb);
     }
+
+    static getSocketResponseOn = (on, cb) => {
+        socket.on(on, cb);
+    }
+
+    static removeSocketResponseOnListner = (on, cb) => {
+        socket.removeListener(on, cb);
+    }
 }

@@ -27,6 +27,13 @@ export default class Home extends PureComponent {
         this._tabEmitter = new EventEmitter();
     }
 
+    componentDidMount = () => {
+        Socket.request("/socket/api/saveUser", {
+            id: User.getUserData()._id
+        });
+    }
+
+
     getIntialIndex = () => {
         const { history } = this.props;
         const { location } = history;

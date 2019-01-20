@@ -103,6 +103,16 @@ const getAddedWishProducts = {
     on: "/socket/api/response/getAddedWishProducts"
 }
 
+const sendRealTimeP2PMessage = {
+    emit: "/socket/api/sendRealTimeP2PMessage",
+    on: "/socket/api/response/sendRealTimeP2PMessage"
+}
+
+const saveUser = {
+    emit: "/socket/api/saveUser",
+    on: "/socket/api/updateUserList"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -124,5 +134,7 @@ export {
     clearWishProducts,
     removeWishProduct,
     getAddedWishProducts,
-    addProductToWish
+    addProductToWish,
+    saveUser,
+    sendRealTimeP2PMessage
 }

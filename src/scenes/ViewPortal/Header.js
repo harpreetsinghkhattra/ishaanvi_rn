@@ -107,7 +107,11 @@ export default class Header extends PureComponent {
 
     openScreen = () => {
         const { history } = this.props;
-        history.push(routerNames.chat_room);
+        const { data } = this.state;
+
+        history.push(routerNames.chat_room, {
+            receiverId: data._id
+        });
     }
 
     Btn = ({ iconPath, onPress }) =>

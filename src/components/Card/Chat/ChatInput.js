@@ -48,9 +48,9 @@ export default class SearchHeader extends Component {
                         onChangeText={value => this.onChangeText('comment', value)}
                         value={comment}
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
-                        onSubmitEditing={() => { }}
+                        onSubmitEditing={onSend.bind(this, comment)}
                     />
-                    <WTouchable dial={5} padding={[0, 10]} style={btnContainerStyle}>
+                    <WTouchable onPress={onSend.bind(this, comment)} dial={5} padding={[0, 10]} style={btnContainerStyle}>
                         <Image source={send} style={iconStyle} />
                     </WTouchable>
                 </WRow>
@@ -73,7 +73,7 @@ const styles = {
     },
     textInputContainer: {
         height: 0,
-        minHeight: 40, 
+        minHeight: 40,
         borderWidth: 1,
         borderRadius: 5,
         borderColor: Palette.white,

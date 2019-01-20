@@ -1,22 +1,89 @@
 import React, { Component } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WTouchable } from '../../components/common';
-import { ScrollView, PixelRatio, Image } from 'react-native';
+import { ScrollView, PixelRatio, Image, Keyboard } from 'react-native';
 import Palette from '../../Palette';
 import { routerNames } from '../../RouteConfig';
 import { User } from '../../model/user';
 import { Storage, StorageKeys } from '../../helper';
 import { PostOffer } from '../../model/PostOffer';
-import { Api } from '../../api/Api';
 import { ChatInput } from '../../components/Card/Chat'
 import { ChatMessagesList } from '../../components/Card/Chat'
+import { Api, Socket, User as UserApi } from '../../api';
+import { sendRealTimeP2PMessage } from '../../api/SocketUrls';
 
 const UserData = new Storage();
 const BOTTOM_STATUS_BAR = 80;
 
 export default class ViewPost extends Component {
 
-    state = {
-        item: {}
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            items: [],
+            isLoading: true
+        }
+
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+
+        // UserApi.removeSocketResponseOnListner(sendRealTimeP2PMessage.on, () => {
+        //     console.log("MESSAGE DATA ===> ", "CHAT LISTNER REMOVED");
+        // });
+    }
+
+    componentDidMount = () => {
+        this.getSendMessageResponse();
+    }
+
+
+    _setState = (value, cb) => {
+        if (!this._isMounted) return;
+
+        if (cb) this.setState(value, cb);
+        else this.setState(value);
+    }
+
+    sendMessage = (message) => {
+
+        if (!message) return null;
+
+        Keyboard.dismiss();
+
+        const { location } = this.props;
+        const { state } = location;
+        const { _id: id, userAccessToken: accessToken } = User.getUserData();
+        const { isLoading } = this.state;
+
+        Socket.request(sendRealTimeP2PMessage.emit, {
+            id,
+            accessToken,
+            senderId: id,
+            receiverId: state.receiverId,
+            productId: state.productId ? state.productId : '',
+            message
+        });
+
+        console.log("CHAT MESSAGE ===> ", JSON.stringify({
+            id,
+            accessToken,
+            senderId: id,
+            receiverId: state.receiverId,
+            productId: state.productId ? state.productId : '',
+            message
+        }));
+    }
+
+    getSendMessageResponse = () => {
+        UserApi.getSocketResponseOn(sendRealTimeP2PMessage.on, (res) => {
+            console.log("MESSAGE DATA ===> ", JSON.stringify(res.data));
+
+            if (res && res.message === "Success") {
+            }
+        });
     }
 
     openScreen(path, data) {
@@ -31,7 +98,6 @@ export default class ViewPost extends Component {
         const { stretch, btnStyle, btnContainer, border, floatBtn, icon } = styles;
         const { item } = this.state;
         const edit = require('../../images/edit.png');
-        const { images } = item;
 
         return (
             <WView dial={2} flex style={stretch}>
@@ -46,7 +112,7 @@ export default class ViewPost extends Component {
                     </WView>
                 </ScrollView>
                 <ChatInput
-                    onSend={(value) => alert(`${value}`)} />
+                    onSend={this.sendMessage.bind(this)} />
             </WView >
         )
     }
