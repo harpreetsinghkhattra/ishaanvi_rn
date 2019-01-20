@@ -110,7 +110,8 @@ export default class Header extends PureComponent {
         const { data } = this.state;
 
         history.push(routerNames.chat_room, {
-            receiverId: data._id
+            receiverId: data._id,
+            image: data && data.imageUrl ? { uri: data.imageUrl } : require("../../images/profile.png")
         });
     }
 

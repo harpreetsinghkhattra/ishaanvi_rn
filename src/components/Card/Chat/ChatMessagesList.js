@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { FlatList, Image, SectionList } from 'react-native'
 import Palette from '../../../Palette'
 import { WRow, WView, WTouchable, WText } from '../../common'
 import moment from 'moment'
 
-export default class ChatMessagesList extends PureComponent {
+export default class ChatMessagesList extends Component {
 
     static propTypes = {
         loading: PropTypes.bool,
@@ -14,17 +14,19 @@ export default class ChatMessagesList extends PureComponent {
     }
 
     renderItem = ({ item, index }) => {
-        return item.isSender ? this.renderSenderItem(item.data, index) : this.renderReceiverItem(item.data, index);
+        return item.isSender ? this.renderSenderItem(item, index) : this.renderReceiverItem(item, index);
     }
 
     renderReceiverItem = (item, index) => {
         const { userImage, messageContainer } = styles;
         const { message, time, image } = item;
+        const { location } = this.props;
+        const { state } = location;
 
         return (
             <WRow dial={1} padding={[0, 5]}>
                 <WView dial={2}>
-                    <Image source={image ? { uri: image } : require('../../../images/profile.png')} style={userImage} />
+                    <Image source={state.image} style={userImage} />
                 </WView>
                 <WView dial={4} flex={0.8}>
                     <WView dial={4} padding={[10, 10]} margin={[0, 5]} flex style={[messageContainer]} backgroundColor={Palette.line_color}>
@@ -57,49 +59,49 @@ export default class ChatMessagesList extends PureComponent {
     }
 
     render() {
-        const { loading, items, getCommentListRef } = this.props;
-        const messages = [
-            {
-                date: 'Today', data: [
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' }
-                ]
-            },
-            {
-                date: 'Yesterday', data: [
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
-                    { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' }
-                ]
-            },
-        ];
+        const { loading, items, getCommentListRef, messages } = this.props;
+        // const messages = [
+        //     {
+        //         date: 'Today', data: [
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' }
+        //         ]
+        //     },
+        //     {
+        //         date: 'Yesterday', data: [
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: false, data: { message: "Hello, hi are you bro." }, time: '11 AM' },
+        //             { isSender: true, data: { message: "Hello, hi are you bro." }, time: '11 AM' }
+        //         ]
+        //     },
+        // ];
 
         if (loading)
             return (
@@ -116,7 +118,7 @@ export default class ChatMessagesList extends PureComponent {
                         <WText color={Palette.border_color} fontSize={14}>{date}</WText>
                     </WView>
                 )}
-                sections={messages.reverse()}
+                sections={messages && messages.length ? messages.reverse() : []}
                 ref={getCommentListRef}
                 style={{ flex: 1 }}
                 keyExtractor={(item, index) => `comment-list-${index}`}
