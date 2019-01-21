@@ -100,7 +100,7 @@ export default class ViewPost extends Component {
                     }
 
                     if (tempData && tempData.length - 1 === index) {
-                        this._setState({ isLoading: false, messages: Array.from(tempArr) });
+                        this._setState({ isLoading: false, messages: Array.from(tempArr).reverse() });
                         console.log("MESSAGE DATA ===> ", tempArr.length);
                     }
                 });
@@ -113,7 +113,15 @@ export default class ViewPost extends Component {
 
         this._setState(prevState => {
             const index = prevState.messages.findIndex(ele => ele.date === "today");
-            if (index === -1) return;
+            if (index === -1) {
+                console.log("MESSAGE DATA ===> DATA DATE NOT FOUND", message, index);
+                message.isSender = message.senderId === id ? true : false;
+                prevState.messages.push({
+                    date: "today",
+                    data: [message]
+                })
+                return { messages: prevState.messages, isMessage: prevState.isMessage ? false : true };
+            };
 
             console.log("MESSAGE DATA ===> DATA ", message, index);
             message.isSender = message.senderId === id ? true : false;
@@ -168,6 +176,17 @@ export default class ViewPost extends Component {
         history.push(path, data);
     }
 
+    goBack = () => {
+        const { history, location } = this.props;
+        const { state } = location;
+
+        if (state.screenType === "ChatList") {
+            history.replace(routerNames.index, {
+                selectedIndex: 3,
+                tab: 1
+            })
+        } else history.go(-1);
+    }
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
@@ -178,7 +197,7 @@ export default class ViewPost extends Component {
         return (
             <WView dial={2} flex style={stretch}>
                 <Header
-                    onPress={() => history.goBack()}
+                    onPress={this.goBack.bind(this)}
                     label={"Product Chat"}
                 />
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start' }, stretch]}>

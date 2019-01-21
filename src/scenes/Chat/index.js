@@ -17,7 +17,7 @@ import { get_user_profile } from '../../api/SocketUrls';
 import { Storage, StorageKeys, Helper } from '../../helper';
 const UserData = new Storage();
 
-const PAGE_INDEX = 0;
+const PAGE_INDEX = 3;
 
 export default class Home extends PureComponent {
 
@@ -36,7 +36,7 @@ export default class Home extends PureComponent {
         const { tabEmitter } = this.props;
         if (tabEmitter.addListener) {
             tabEmitter.addListener('home_lazy_load', (data) => {
-                if (data && data.index === 0)
+                if (data && data.index === PAGE_INDEX)
                     this.setState(prevState => {
                         if (!prevState.isLazyLoading) {
                             // this.init()
@@ -49,18 +49,19 @@ export default class Home extends PureComponent {
 
     render() {
         const empty = [];
-        
+
         const { isLazyLoading } = this.state;
         if (!isLazyLoading) return empty;
+        const { location } = this.props;
 
         const views = [
             <Notifications
-                {...this.props} />, 
+                {...this.props} />,
             <Chat
                 {...this.props} />
         ];
         const { screenWidth, screenHeight, history } = this.props;
- 
+
         const _renderHeader = () => {
             let tabs = [
                 {
@@ -83,7 +84,7 @@ export default class Home extends PureComponent {
                     <TabViews
                         tabPosition="top"
                         indicator={_renderHeader()}
-                        initialPage={0}
+                        initialPage={location && location.state && location.state.tab ? location.state.tab : 0}
                         horizontalScroll={true}
                         changePageWithAnimation={true}
                         style={{ flex: 1 }}

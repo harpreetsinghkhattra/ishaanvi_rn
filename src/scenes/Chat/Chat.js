@@ -9,7 +9,8 @@ export default class Chat extends PureComponent {
 
     render() {
         return (
-            <ChatList />
+            <ChatList
+                {...this.props} />
         )
     }
 }

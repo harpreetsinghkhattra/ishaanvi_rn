@@ -118,7 +118,7 @@ export default class ChatMessagesList extends Component {
                         <WText color={Palette.border_color} fontSize={14}>{date}</WText>
                     </WView>
                 )}
-                sections={messages && messages.length ? messages.reverse() : []}
+                sections={messages && messages.length ? messages : []}
                 ref={getCommentListRef}
                 style={{ flex: 1 }}
                 keyExtractor={(item, index) => `comment-list-${index}`}
