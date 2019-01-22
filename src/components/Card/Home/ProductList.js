@@ -42,6 +42,16 @@ export default class ProductList extends PureComponent {
 
     getUserResponse() {
         const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
+
+        console.log("const { _id: id, userAccessToken: accessToken ===> ", {
+            id,
+            accessToken,
+            category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
+            area: filterData && filterData.area && filterData.area.length ? filterData.area[1] : 500,
+            coordinates: [location.latitude, location.longitude]
+        });
+
+        this.setState({ isLoading: true });
         Socket.request(get_home_items.emit, {
             id,
             accessToken,
@@ -115,6 +125,7 @@ export default class ProductList extends PureComponent {
     onRequestMoreProducts = (e) => {
         const { isRequestMoreProducts } = this.state;
         const { distanceFromEnd } = e;
+        console.log("onrequest more products", distanceFromEnd); 
 
         if (isRequestMoreProducts) return;
         if (this.shopIds.length === 0) return;
@@ -123,8 +134,6 @@ export default class ProductList extends PureComponent {
             this.setState({ isRequestMoreProducts: true });
             this.onBottomPullSocketResponse();
         }
-
-        console.log("onrequest more products", distanceFromEnd);
     }
 
     isRequestMoreProducts = (index) => {

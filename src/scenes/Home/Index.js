@@ -56,7 +56,7 @@ export default class Login extends PureComponent {
     }
 
     init = () => {
-        // this.getUserResponse();
+        this.getUserResponse();
     }
 
     getUserResponse() {
@@ -149,6 +149,7 @@ export default class Login extends PureComponent {
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <SearchHeader
                     openFilter={this.setFilterModalVisible.bind(this, true)}
+                    searchProducts={() => this.productListRef && this.productListRef.init()}
                 />
                 <HomeFilter
                     {...this.props}

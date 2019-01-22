@@ -115,8 +115,9 @@ export default class MyLocation extends Component {
                         if (res && res.results && (!res.results.length || res.results.length === 0)) return;
 
                         this.onTextChange('address', res.results[0].formatted_address);
+                        User.setUserData({ location: this.userLoaction });
                         storage.setUserData(StorageKeys.USER_DATA, Object.assign(User.getUserData(), this.userLoaction));
-                        setVisible();
+                        setVisible(false, true);
                         return;
                     default:
                         this.setState({ isLoadingLocation: false });
@@ -145,8 +146,12 @@ export default class MyLocation extends Component {
                         if (res && res.results && (!res.results.length || res.results.length === 0)) return;
 
                         this.onTextChange('address', res.results[0].formatted_address);
+                        this.onTextChange('latitude', res.results[0].geometry.location.lat);
+                        this.onTextChange('longitude', res.results[0].geometry.location.lng);
+                        User.setUserData({ location: this.userLoaction });
+                        console.log("this.userlocation mylocation", User.getUserData());
                         storage.setUserData(StorageKeys.USER_DATA, Object.assign(User.getUserData(), this.userLoaction));
-                        setVisible();
+                        setVisible(false, true);
                         return;
                     case "ZERO_RESULTS":
                         this.setState({ isLoadingZipcode: false });
@@ -182,8 +187,8 @@ export default class MyLocation extends Component {
 
                                 if (isLoadingLocation || isLoadingLocationDetail || isLoadingZipcode) return;
                                 if (location.latitude) {
-                                    setVisible();
-                                    return; 
+                                    setVisible(false);
+                                    return;
                                 }
 
                                 Alert.alert(

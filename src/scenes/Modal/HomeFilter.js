@@ -61,7 +61,7 @@ export default class HomeFilter extends PureComponent {
         const { setVisible } = this.props;
         const { filterData } = User.getUserData();
         User.setUserData({ filterData: this.filterData });
-        // UserData.setUserData(StorageKeys.USER_DATA, User.getUserData());
+        UserData.setUserData(StorageKeys.USER_DATA, User.getUserData());
 
         // /** Close the modals */
         setVisible(false, 'refresh');

@@ -16,12 +16,15 @@ export default class SearchHeader extends Component {
         console.log('search header =====>', User.getUserData());
         if (!location || (location && !location.address))
             this.setLocationModalVisible(true);
-    }      
+    }
 
 
     /** Set visible */
-    setLocationModalVisible = (isLocationModalVisible, location) => {
-        if (location && typeof location === 'string') {
+    setLocationModalVisible = (isLocationModalVisible, isRefresh) => {
+        const { searchProducts } = this.props;
+        if (isRefresh) {
+            searchProducts();
+            this.setState({ isLocationModalVisible })
         } else this.setState({ isLocationModalVisible })
     }
 
@@ -37,7 +40,7 @@ export default class SearchHeader extends Component {
                 <MyLocation
                     {...this.props}
                     isVisible={isLocationModalVisible}
-                    setVisible={this.setLocationModalVisible.bind(this, false)}
+                    setVisible={this.setLocationModalVisible.bind(this)}
                 />
                 <WRow dial={5} padding={[0, 5]} flex style={textInputContainer}>
                     <WTextInput
