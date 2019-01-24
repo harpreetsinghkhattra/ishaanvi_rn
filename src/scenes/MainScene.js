@@ -46,6 +46,14 @@ class Main extends Component {
         console.log("STATE CHANGE INFO ===> ", value);
     }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (!nextProps.isSocketConnected) {
+            return false;
+        }
+
+        return true;
+    }
+
     render() {
         return (
             <Switch>

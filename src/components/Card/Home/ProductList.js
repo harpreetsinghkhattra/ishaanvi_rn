@@ -125,7 +125,7 @@ export default class ProductList extends PureComponent {
     onRequestMoreProducts = (e) => {
         const { isRequestMoreProducts } = this.state;
         const { distanceFromEnd } = e;
-        console.log("onrequest more products", distanceFromEnd); 
+        console.log("onrequest more products", distanceFromEnd);
 
         if (isRequestMoreProducts) return;
         if (this.shopIds.length === 0) return;
@@ -154,39 +154,41 @@ export default class ProductList extends PureComponent {
         return (
             <WView dial={2} padding={[5, 5]} style={[{ width: screenWidth, height: screenHeightWithHeader - 56 }, stretch]} >
                 {
-                    isLoading ?
-                        <WView dial={5} flex>
-                            <WSpinner size={"small"} color={Palette.theme_color} />
-                            <WText fontSize={16} fontFamily={"Muli-Bold"}>Looking for shops...</WText>
-                        </WView>
-                        :
-                        data && data.length ?
-                            <FlatList
-                                contentContainerStyle={{ flexGrow: 1 }}
-                                keyExtractor={(item, index) => `products-${index}-${new Date().getTime()}`}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={isRefreshingList}
-                                        onRefresh={this.onProductListRefresh.bind(this)}
-                                    />
-                                }
-                                onEndReachedThreshold={0.1}
-                                onEndReached={this.onRequestMoreProducts.bind(this)}
-                                data={data}
-                                renderItem={({ item, index }) =>
-                                    <RecentProductsList
-                                        {...this.props}
-                                        key={`products-${index}-${new Date().getTime()}`}
-                                        data={item.items}
-                                        userId={item._id}
-                                        isLoading={this.isRequestMoreProducts(index)}
-                                        heading={item.business_name} />}
+
+                    <FlatList
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        keyExtractor={(item, index) => `products-${index}-${new Date().getTime()}`}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={isRefreshingList}
+                                onRefresh={this.onProductListRefresh.bind(this)}
                             />
-                            :
-                            <WView dial={5}>
-                                <WText fontSize={16} fontFamily={"Muli-Bold"}>No product found</WText>
-                                <Image source={require('../../../images/no_product.png')} resizeMode="cover" style={{ height: 200 }} />
-                            </WView>
+                        }
+                        onEndReachedThreshold={0.1}
+                        ListHeaderComponent={
+                            isLoading ?
+                                <WView dial={5} flex>
+                                    <WSpinner size={"small"} color={Palette.theme_color} />
+                                    <WText fontSize={16} fontFamily={"Muli-Bold"}>Looking for shops...</WText>
+                                </WView>
+                                : data && data.length ?
+                                    null :
+                                    <WView dial={5}>
+                                        <WText fontSize={16} fontFamily={"Muli-Bold"}>No product found</WText>
+                                        <Image source={require('../../../images/no_product.png')} resizeMode="cover" style={{ height: 200 }} />
+                                    </WView>
+                        }
+                        onEndReached={this.onRequestMoreProducts.bind(this)}
+                        data={data}
+                        renderItem={({ item, index }) =>
+                            <RecentProductsList
+                                {...this.props}
+                                key={`products-${index}-${new Date().getTime()}`}
+                                data={item.items}
+                                userId={item._id}
+                                isLoading={this.isRequestMoreProducts(index)}
+                                heading={item.business_name} />}
+                    />
                 }
             </WView>);
     }

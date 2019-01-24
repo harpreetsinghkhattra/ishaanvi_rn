@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { View, Text, Image } from 'react-native';
 import Palette from '../../Palette';
 import TabsView from '../../components/Tabs/TabsView';
@@ -19,7 +19,7 @@ import { get_user_profile } from '../../api/SocketUrls';
 import { Storage, StorageKeys, Helper } from '../../helper';
 const UserData = new Storage();
 
-export default class Home extends PureComponent {
+export default class Home extends Component {
 
     constructor(props) {
         super(props);
@@ -32,7 +32,6 @@ export default class Home extends PureComponent {
             id: User.getUserData()._id
         });
     }
-
 
     getIntialIndex = () => {
         const { history } = this.props;

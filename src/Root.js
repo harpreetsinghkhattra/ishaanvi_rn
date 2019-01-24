@@ -1,23 +1,27 @@
 import Palette from './Palette';
 import EventEmitter from 'EventEmitter';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
     View,
     Dimensions,
     Platform,
     StatusBar,
     ToastAndroid,
+    Alert,
+    AsyncStorage
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { MemoryRouter, BackButton } from 'react-router-native'
 import { User } from './model/user';
+import { ConnectionInfoBar } from './components/Card/Home'
+import firebase from 'react-native-firebase';
 
 import MainScene from './scenes/MainScene';
 
 const PORTRAIT = 0;
 const LANDSCAPE = 1;
 
-class Rootrn extends Component {
+class Rootrn extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -32,6 +36,7 @@ class Rootrn extends Component {
             screenHeight: null,
             scale: null,
             fontScale: null,
+            isSocketConnected: true,
             userHasActivatedCallback: null
         };
     }
@@ -52,6 +57,99 @@ class Rootrn extends Component {
             scale: scale,
             fontScale: fontScale
         });
+    }
+
+    //1
+    async checkPermission() {
+        const enabled = await firebase.messaging().hasPermission();
+        if (enabled) {
+            this.getToken();
+        } else {
+            this.requestPermission();
+        }
+    }
+
+    //3
+    async getToken() {
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        console.log("requestBody ===> fcm token", fcmToken);
+        if (!fcmToken) {
+            fcmToken = await firebase.messaging().getToken();
+            if (fcmToken) {
+                // user has a device token
+                await AsyncStorage.setItem('fcmToken', fcmToken);
+            }
+        }
+    }
+
+    //2
+    async requestPermission() {
+        try {
+            await firebase.messaging().requestPermission();
+            // User has authorised
+            this.getToken();
+        } catch (error) {
+            // User has rejected permissions
+            console.log('permission rejected');
+        }
+    }
+
+
+    async componentDidMount() {
+        this.checkPermission();
+        this.createNotificationListeners(); //add this line
+    }
+
+    ////////////////////// Add these methods //////////////////////
+
+    //Remove listeners allocated in createNotificationListeners()
+    componentWillUnmount() {
+        // this.notificationListener();
+        // this.notificationOpenedListener();
+    }
+
+    async createNotificationListeners() {
+        /*
+        * Triggered when a particular notification has been received in foreground
+        * */
+        this.notificationListener = firebase.notifications().onNotification((notification) => {
+            const { title, body } = notification;
+            this.showAlert(title, body);
+        });
+
+        /*
+        * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
+        * */
+        this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+            const { title, body } = notificationOpen.notification;
+            this.showAlert(title, body);
+        });
+
+        /*
+        * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
+        * */
+        const notificationOpen = await firebase.notifications().getInitialNotification();
+        if (notificationOpen) {
+            const { title, body } = notificationOpen.notification;
+            this.showAlert(title, body);
+        }
+        /*
+        * Triggered for data only payload in foreground
+        * */
+        this.messageListener = firebase.messaging().onMessage((message) => {
+            //process data message
+            console.log("requestBody ===>", JSON.stringify(message));
+        });
+    }
+
+    showAlert(title, body) {
+        Alert.alert(
+            title, body,
+            [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+            { cancelable: false },
+        );
     }
 
     _onScreenUpdate(event) {
@@ -82,6 +180,10 @@ class Rootrn extends Component {
         return Platform.OS === 'ios' ? 64 : 56;
     }
 
+    isSocketConnected = (isSocketConnected) => {
+        this.setState({ isSocketConnected });
+    }
+
     render() {
         return (
             <MemoryRouter>
@@ -92,10 +194,11 @@ class Rootrn extends Component {
                         backgroundColor: Palette.white
                     }}
                 >
-                    <BackButton /> 
+                    <BackButton />
                     <StatusBar hidden={false} backgroundColor={Palette.theme_color} />
                     {React.createElement(MainScene, {
                         booted: this.state.booted,
+                        isSocketConnected: this.state.isSocketConnected,
                         screenWidth: this.state.viewableScreenWidth,
                         screenHeight: this.state.viewableScreenHeight,
                         screenHeightWithHeader: this.state.viewableScreenHeightWithHeader,
@@ -103,6 +206,9 @@ class Rootrn extends Component {
                         scale: this.state.scale,
                         fontScale: this.state.fontScale
                     })}
+                    <ConnectionInfoBar
+                        onSocketConnectionStatusChange={v => this.isSocketConnected(v)}
+                    />
                 </View>
             </MemoryRouter>
         );

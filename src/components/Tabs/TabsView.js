@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View, Image, Text, TouchableOpacity, PixelRatio } from 'react-native'
 import TabViews from './TabViews';
 import Palette from '../../Palette';
+import { ConnectionInfoBar } from '../../components/Card/Home'
 
 import { WView, WRow } from '../../components/common/';
 
@@ -83,20 +84,23 @@ export default class PagerTabIndicator extends Component {
             )
         })
         return (
-            <View style={[styles.container, style]} >
-                {tabsView}
-            </View>
+            <WView style={{ alignItems: 'stretch' }} dial={5}>
+                <View style={[styles.container, style]} >
+                    {tabsView}
+                </View>
+                <ConnectionInfoBar />
+            </WView>
         )
-    } 
+    }
 
     onPageSelected(e) {
         this.props.tabEmitter.emit('home_lazy_load', { index: e.position });
         this.setState({ selectedIndex: e.position })
     }
- 
+
     onPageScroll(e) {
     }
-}  
+}
 
 //Styels for this component
 const styles = StyleSheet.create({

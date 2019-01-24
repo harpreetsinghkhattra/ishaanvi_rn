@@ -13,7 +13,7 @@ const socket = IO('http://13.127.188.164', {
 
 socket.on("connect", () => {
     console.log("CHAT CONNECTED HIt");
-    alert(User.getUserData()._id);
+    // alert(User.getUserData()._id);
     if (User.getUserData()._id)
         socket.emit("/socket/api/saveUser", {
             id: User.getUserData()._id

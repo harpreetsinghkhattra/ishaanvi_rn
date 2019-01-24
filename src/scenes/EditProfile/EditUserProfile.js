@@ -43,20 +43,20 @@ export default class Register extends Component {
         const { screenType } = location.state;
 
         this.setState(prevState => {
-            const { email, mobile_number, location, address, name, _id, userAccessToken } = User.getUserData();
+            const { email, mobile_number, mobileNumber, location, address, name, _id, userAccessToken } = User.getUserData();
 
             const requestBody = {
                 id: _id,
                 accessToken: userAccessToken,
                 email,
-                mobile_number,
+                mobile_number: mobile_number ? mobile_number : mobileNumber,
                 name,
                 address: address ? address : '',
                 location: location && location.lat ? location : { lat: null, lng: null }
             }
 
             return ({ requestBody });
-        });
+        }, this.getLocationDetail.bind(this));
     }
 
 
@@ -108,8 +108,9 @@ export default class Register extends Component {
             this.setState({ isLoading: false });
             if (res && res.data) {
                 if (res.message === "Success") {
-                    // alert('editUserResponse', res.data);
-                    history.go(-1);
+                    history.replace(routerNames.index, {
+                        selectedIndex: 4
+                    });
                 } else if (res.message === "Present") this.setAlertMessageVisible(true, { status: res.message, heading: "User is Present!", message: "Please try with another email id" });
                 else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
             } else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" })
@@ -155,7 +156,7 @@ export default class Register extends Component {
     onBack = () => {
         const { history } = this.props;
 
-        history.replace(routerNames.index, { selectedIndex: 4})
+        history.replace(routerNames.index, { selectedIndex: 4 })
     }
 
     render() {
@@ -164,7 +165,7 @@ export default class Register extends Component {
         const { isLoading, alertMessage, alertMessageVisible, isVisible, requestBody, isLocationDetailLoading } = this.state;
         const { address, email, name, mobile_number } = requestBody;
 
-        console.log(this.props);
+        console.log("requestBody ===>", User.getUserData());
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <Header
