@@ -114,6 +114,7 @@ class Rootrn extends PureComponent {
         * */
         this.notificationListener = firebase.notifications().onNotification((notification) => {
             const { title, body } = notification;
+            console.log("NOTIFICATION ===> FOURGROUND", notification);
             this.showAlert(title, body);
         });
 
@@ -122,6 +123,7 @@ class Rootrn extends PureComponent {
         * */
         this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
             const { title, body } = notificationOpen.notification;
+            console.log("NOTIFICATION ===> BACKGROUND", notificationOpen);
             this.showAlert(title, body);
         });
 
@@ -130,6 +132,7 @@ class Rootrn extends PureComponent {
         * */
         const notificationOpen = await firebase.notifications().getInitialNotification();
         if (notificationOpen) {
+            console.log("NOTIFICATION ===> CLOSED", notificationOpen);
             const { title, body } = notificationOpen.notification;
             this.showAlert(title, body);
         }
@@ -140,6 +143,8 @@ class Rootrn extends PureComponent {
             //process data message
             console.log("requestBody ===>", JSON.stringify(message));
         });
+
+        firebase.messaging().subscribeToTopic("ishaanvi_events");
     }
 
     showAlert(title, body) {

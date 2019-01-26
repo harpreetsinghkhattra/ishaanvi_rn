@@ -215,11 +215,14 @@ export default class Login extends PureComponent {
                                 onItemPress={productId => this.openScreen(routerNames.view_product, { screenType: 'search', productId })}
                             />
                             :
-                            <WView dial={5}>
-                                <WText fontSize={16} fontFamily={"Muli-Bold"}>Search Your Product</WText>
+                            <WView dial={5} flex backgroundColor={"#DBDBDB"}>
                                 <Image
-                                    source={require('../../images/search_view.png')}
-                                    containerStyle={{ width: screenWidth, height: screenWidth }}
+                                    source={require('../../images/search1.jpg')}
+                                    containerStyle={{ width: screenWidth }}
+                                />
+                                <Image
+                                    source={require('../../images/search.jpg')}
+                                    containerStyle={{ width: screenWidth }}
                                 />
                             </WView>
                     }

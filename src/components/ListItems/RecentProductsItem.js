@@ -10,8 +10,8 @@ import Palette from '../../Palette';
 
 const RecentProductsItem = (props) => {
     const { data, onPress } = props;
-    const { price, discount, images, views } = data;
-
+    const { price, discount, images, views, rating } = data;
+    console.log("RECET PRODUCTS ITEM ===> ", data);
     return (
         <TouchableOpacity
             activeOpacity={1}
@@ -64,7 +64,7 @@ const RecentProductsItem = (props) => {
                                 <Text style={{
                                     fontSize: 12,
                                     color: Palette.white
-                                }}>4.3</Text>
+                                }}>{rating ? rating : 0}</Text> 
                             </View>
                             <View style={{ paddingRight: 5 }}>
                                 <Image

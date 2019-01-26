@@ -10,7 +10,9 @@ export default class Notifications extends PureComponent {
 
     render() {
         return (
-            <NotficationsList />
+            <NotficationsList 
+                {...this.props}
+                />
         )
     }
 }

@@ -19,12 +19,19 @@ import { get_user_profile } from '../../api/SocketUrls';
 import { Storage, StorageKeys, Helper } from '../../helper';
 const UserData = new Storage();
 
+import { Hacks } from '../../scenes/Modal/'
+
 export default class Home extends Component {
 
     constructor(props) {
         super(props);
 
         this._tabEmitter = new EventEmitter();
+    }
+
+    state = {
+        isLoading: false,
+        alertMessageVisible: false   
     }
 
     componentDidMount = () => {
@@ -51,10 +58,12 @@ export default class Home extends Component {
     //     return true;
     // } 
 
-
-
     componentWillUnmount() {
         this._tabEmitter.removeAllListeners();
+    }
+
+    setAlertMessageVisible(alertMessageVisible) {
+        this.setState({ alertMessageVisible });
     }
 
     render() {
@@ -79,7 +88,9 @@ export default class Home extends Component {
                 initialPage={this.getIntialIndex()}
                 {...this.props} />
         ];
+
         const { screenWidth, screenHeight, history } = this.props;
+        const { alertMessageVisible } = this.state;
 
         const _renderHeader = () => {
             let tabs = [
@@ -93,7 +104,7 @@ export default class Home extends Component {
                 },
                 {
                     text: '',
-                    onTabPress: () => alert("Comming soon..."),
+                    onTabPress: this.setAlertMessageVisible.bind(this, true), 
                     iconSource: require('../../images/trending.png'),
                 },
                 {
@@ -117,6 +128,10 @@ export default class Home extends Component {
         return (
             <WView dial={2} flex={1} style={[{ width: screenWidth, minHeight: screenHeight }]}>
                 <WView dial={2} flex style={{ alignSelf: 'stretch', alignItems: 'stretch' }}>
+                    <Hacks
+                        {...this.props}
+                        isVisible={alertMessageVisible}
+                        setVisible={this.setAlertMessageVisible.bind(this, false)} />
                     <TabViews
                         tabPosition="bottom"
                         indicator={_renderHeader()}
