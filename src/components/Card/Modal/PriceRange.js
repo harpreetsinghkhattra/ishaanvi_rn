@@ -7,9 +7,13 @@ import { User } from '../../../model/user';
 
 export default class PriceRange extends Component {
 
-    state = {
-        minPrice: 0,
-        maxPrice: 0
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            minPrice: props.price && parseFloat(props.price[0]) ? props.price[0] : 0,
+            maxPrice: props.price && parseFloat(props.price[1]) ? props.price[1] : 0,
+        }
     }
 
     static propTypes = {
@@ -50,10 +54,10 @@ export default class PriceRange extends Component {
                         onChangeText={value => this.onChangeText('minPrice', value)}
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                         onSubmitEditing={() => { this.input2 && this.input2.focus() }}
-                    /> 
+                    />
                     <WTextInput
                         getFocus={ref => this.input2 = ref}
-                        containerStyle={textInputContainerStyle} 
+                        containerStyle={textInputContainerStyle}
                         placeholderName="Max"
                         value={`${maxPrice}`}
                         keyboardType={"numeric"}

@@ -61,10 +61,11 @@ export default class CommentsList extends PureComponent {
 
         return (
             <FlatList
-                data={items.reverse()}
-                ref={getCommentListRef}
-                style={{flex:1}}
-                inverted={-1}
+                data={items}
+                ref={ref => this.commentList = ref}
+                onContentSizeChange={() => this.commentList.scrollToEnd({ animated: true })}
+                onLayout={() => this.commentList.scrollToEnd({ animated: true })}
+                style={{ flex: 1 }}
                 keyExtractor={(item, index) => `comment-list-${index}`}
                 renderItem={this.renderItem.bind(this)}
             />

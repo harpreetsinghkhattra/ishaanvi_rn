@@ -123,6 +123,11 @@ const getAllProductChatUsersList = {
     on: "/socket/api/response/getAllChatUsers"
 }
 
+const getAllNotifications = {
+    emit: "/socket/api/getAllNotifications",
+    on: "/socket/api/response/getAllNotifications"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -148,5 +153,6 @@ export {
     saveUser,
     sendRealTimeP2PMessage,
     getAllProductChatUsersList,
-    getProductChatMessage
+    getProductChatMessage,
+    getAllNotifications
 }

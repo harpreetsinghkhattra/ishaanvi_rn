@@ -30,6 +30,8 @@ export default class ProductList extends PureComponent {
         }
 
         this.shopIds = [];
+        this.isFetchedWholeData = false;
+        this.isRequestMoreProducts1 = false;
     }
 
     componentDidMount = () => {
@@ -67,6 +69,9 @@ export default class ProductList extends PureComponent {
                 this.setState({ isLoading: false, isRefreshingList: false, data: res.data });
             } else this.setState({ isLoading: false, isRefreshingList: false });
         });
+
+
+        this.isFetchedWholeData = false;
     }
 
     onBottomPullSocketResponse() {
@@ -82,6 +87,12 @@ export default class ProductList extends PureComponent {
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
+
+                this.isRequestMoreProducts1 = false;
+                if (res && res.data && (!res.data.length || res.data.length <= 5)) {
+                    this.isFetchedWholeData = true;
+                }
+
                 this.setState(prevState => {
                     const { data } = prevState;
                     let tempData = Array.from(data);
@@ -127,11 +138,16 @@ export default class ProductList extends PureComponent {
         const { distanceFromEnd } = e;
         console.log("onrequest more products", distanceFromEnd);
 
-        if (isRequestMoreProducts) return;
+        if (this.isFetchedWholeData) {
+            return;
+        }
+
+        if (isRequestMoreProducts || this.isRequestMoreProducts1) return;
         if (this.shopIds.length === 0) return;
 
         if (distanceFromEnd >= 0) {
             this.setState({ isRequestMoreProducts: true });
+            this.isRequestMoreProducts1 = true;
             this.onBottomPullSocketResponse();
         }
     }
@@ -164,7 +180,6 @@ export default class ProductList extends PureComponent {
                                 onRefresh={this.onProductListRefresh.bind(this)}
                             />
                         }
-                        onEndReachedThreshold={0.1}
                         ListHeaderComponent={
                             isLoading ?
                                 <WView dial={5} flex>
@@ -179,6 +194,7 @@ export default class ProductList extends PureComponent {
                                     </WView>
                         }
                         onEndReached={this.onRequestMoreProducts.bind(this)}
+                        onEndReachedThreshold={0.5}
                         data={data}
                         renderItem={({ item, index }) =>
                             <RecentProductsList

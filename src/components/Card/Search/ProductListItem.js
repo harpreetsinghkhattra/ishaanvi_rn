@@ -8,7 +8,7 @@ import { routerNames } from '../../../RouteConfig';
 
 const ProductListItem = (props) => {
     const { data, width, onItemPress } = props;
-    const { price, discount, images, _id } = data;
+    const { price, discount, images, _id, views, rating } = data;
 
     const openScreen = (path, data) => {
         const { history } = props;
@@ -68,7 +68,7 @@ const ProductListItem = (props) => {
                                 <Text style={{
                                     fontSize: 12,
                                     color: Palette.white
-                                }}>4.3</Text>
+                                }}>{rating ? rating : 0}</Text>
                             </View>
                             <View style={{ paddingRight: 5 }}>
                                 <Image
@@ -102,7 +102,7 @@ const ProductListItem = (props) => {
                                 <Text style={{
                                     fontSize: 12,
                                     color: Palette.text_color
-                                }}>1000</Text>
+                                }}>{views ? views : 0}</Text>
                             </View>
                             <View style={{ paddingRight: 5 }}>
                                 <Image

@@ -160,12 +160,14 @@ export default class Login extends PureComponent {
         const searchData = {
             id,
             accessToken,
-            category: filterData.category && filterData.category.length === 2 ? filterData.category : "all",
+            category: filterData.category && filterData.category.length ? filterData.category : "all",
             area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            price: filterData.price && filterData.price[1] ? filterData.price : 'all',
+            price: filterData.price && filterData.price[1] ? [parseFloat(filterData.price[0]), parseFloat(filterData.price[1])] : 'all',
             searchValue,
             coordinates: [location.latitude, location.longitude]
         };
+
+        console.log("searchDatasearchData", searchData, filterData);
 
         // "coordinates": [31.9579623, 75.6282207]
 
@@ -177,7 +179,7 @@ export default class Login extends PureComponent {
         UserApi.getSocketResponseOnce(search.on, (res) => {
             console.log('get socket response once', JSON.stringify(searchData), JSON.stringify(res));
             if (res && res.message === "Success") {
-                this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: res.data, isNoProduct: false });
+                this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: res.data, isNoProduct: true });
             } else this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: [], isNoProduct: true });
         });
     }
@@ -221,6 +223,7 @@ export default class Login extends PureComponent {
                             :
                             isNoProduct ?
                                 <WView dial={5} flex backgroundColor={Palette.white}>
+                                    <WText color={Palette.theme_color} fontSize={14} fontFamily={"Muli-Bold"}>No Product Found</WText>
                                     <Image
                                         source={require('../../images/no_product.png')}
                                         containerStyle={{ width: screenWidth }}

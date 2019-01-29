@@ -110,14 +110,14 @@ export default class ViewPost extends Component {
                     onPress={() => history.goBack()}
                     label={"Comments"}
                 />
-                <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start' }, stretch]}>
+                <WView flex style={[{ minWidth: screenWidth, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={2} padding={[5, 5]} style={[stretch, { justifyContent: 'space-between' }]} >
                         <CommentsList
                             getCommentListRef={ref => this.commentListRef = ref}
                             loading={isLoading}
                             items={items} />
                     </WView>
-                </ScrollView>
+                </WView>
                 <CommentInput
                     onSend={this.createComments.bind(this)} />
             </WView >

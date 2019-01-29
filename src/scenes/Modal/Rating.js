@@ -206,8 +206,9 @@ export default class Rating extends Component {
                 <WText fontSize={16} fontFamily={"Muli-Bold"} color={Palette.theme_color} center>Rate Us: {ratingValue}</WText>
                 <WRow dial={5}>
                     {
-                        star.map(ele =>
+                        star.map((ele, index) =>
                             <this.RatingBtn
+                                key={`star-${index}`}
                                 iconPath={this._starIcon(ele)}
                                 onPress={this._setRatingValue.bind(this, ele)} />)
                     }

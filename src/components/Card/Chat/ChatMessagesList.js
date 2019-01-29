@@ -58,6 +58,12 @@ export default class ChatMessagesList extends Component {
         );
     }
 
+    getItemLayout = (data, index) => ({
+        length: 50,
+        offset: 50 * index,
+        index,
+    });
+
     render() {
         const { loading, items, getCommentListRef, messages } = this.props;
         // const messages = [
@@ -119,10 +125,23 @@ export default class ChatMessagesList extends Component {
                     </WView>
                 )}
                 sections={messages && messages.length ? messages : []}
-                ref={getCommentListRef}
+                ref={ref => this.ChatMessagesListRef = ref}
+                onContentSizeChange={() => messages && messages.length ? this.ChatMessagesListRef.scrollToLocation({
+                    animated: true,
+                    sectionIndex: messages.length - 1,
+                    itemIndex: messages[messages.length - 1].data.length - 1,
+                    viewOffset: -1
+                }) : null}
+                onLayout={() => messages && messages.length ? this.ChatMessagesListRef.scrollToLocation({
+                    animated: true,
+                    sectionIndex: messages.length - 1,
+                    itemIndex: messages[messages.length - 1].data.length - 1,
+                    viewOffset: -1
+                }) : null}
                 style={{ flex: 1 }}
                 keyExtractor={(item, index) => `comment-list-${index}`}
                 renderItem={this.renderItem.bind(this)}
+                getItemLayout={this.getItemLayout}
             />
         )
     }

@@ -14,11 +14,6 @@ export default class SliderIndeicator extends Component {
         ...View.propTypes,
         initialPage: PropTypes.number,
         pager: PropTypes.instanceOf(TabViews),
-        tabs: PropTypes.arrayOf(PropTypes.shape({
-            text: PropTypes.string,
-            iconSource: Image.propTypes.source,
-            selectedIconSource: Image.propTypes.source
-        })).isRequired,
         changePageWithAnimation: PropTypes.bool,
     }
 

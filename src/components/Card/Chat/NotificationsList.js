@@ -4,6 +4,10 @@ import { FlatList, StyleSheet, Image } from 'react-native'
 import { WRow, WView, WText, WSpinner, WTouchable } from '../../common'
 import Palette from '../../../Palette'
 import { EventNotificationinfo } from '../../../scenes/Modal'
+import { User } from '../../../model/user';
+import { getAllNotifications } from '../../../api/SocketUrls';
+import { Api, Socket, User as UserApi } from '../../../api';
+import moment from 'moment';
 
 export default class NotificationsList extends PureComponent {
 
@@ -11,31 +15,72 @@ export default class NotificationsList extends PureComponent {
 
     }
 
-    state = {
-        data: [1, 2, 3, 4, 5, 6],
-        isLoading: false,
-        alertMessageVisible: false
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            notifications: [],
+            isLoading: true,
+            selectedNotification: {},
+            alertMessageVisible: false
+        }
+
+        this._isMounted = true;
     }
 
-    setAlertMessageVisible(alertMessageVisible) {
-        this.setState({ alertMessageVisible });
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    componentWillMount = () => {
+        this.init();
+    }
+
+
+    _setState = (value, cb) => {
+        if (!this._isMounted) return;
+
+        if (cb) this.setState(value, cb);
+        else this.setState(value);
+    }
+
+    setAlertMessageVisible(alertMessageVisible, selectedNotification) {
+        this._setState({ alertMessageVisible, selectedNotification });
+    }
+
+    init = () => {
+
+        const { _id: id, userAccessToken: accessToken, createdTime } = User.getUserData();
+
+        const searchData = {
+            id,
+            accessToken,
+            createdTime
+        };
+
+        Socket.request(getAllNotifications.emit, searchData);
+        UserApi.getSocketResponseOnce(getAllNotifications.on, (res) => {
+            if (res && res.message === "Success") {
+                this._setState({ isLoading: false, notifications: res.data });
+            } else this._setState({ isLoading: false, notifications: [] });
+        });
     }
 
     /** Render item */
-    renderItem = () => {
+    renderItem = ({ item, index }) => {
         const { container, iconStyle, iconContainer } = styles;
         const { screenWidth } = this.props;
 
         return (
-            <WTouchable dial={5} style={{ width: screenWidth, height: 80 }} onPress={this.setAlertMessageVisible.bind(this, true)}>
+            <WTouchable dial={5} style={{ width: screenWidth, height: 80 }} onPress={this.setAlertMessageVisible.bind(this, true, item)}>
                 <WRow dial={5} margin={[0, 5, 5, 5]} padding={[5, 0]} style={container}>
                     <WView dial={5} style={iconContainer} backgroundColor={Palette.theme_color}>
                         <Image source={require('../../../images/speaker.png')} style={iconStyle} />
                     </WView>
                     <WView dial={4} flex>
-                        <WText fontSize={14} color={Palette.black} fontFamily={'Muli-Bold'}>Flex Formation Fitness & Family Fun uploaded: About my work 2016-2017 Where i teach bootcamps Behind the scenes</WText>
-                        <WText fontSize={14} color={Palette.border_color}>Flex Formation Fitness & Family Fun uploaded: About my work 2016-2017 Where i teach bootcamps Behind the scenes</WText>
-                        <WText fontFamily={'Muli-Bold'} color={Palette.black} >1 minute ago</WText>
+                        <WText fontSize={14} color={Palette.black} fontFamily={'Muli-Bold'}>{item && item.title ? item.title : ""}</WText>
+                        <WText fontSize={14} color={Palette.border_color}>{item && item.description ? item.description : ''}</WText>
+                        <WText fontFamily={'Muli-Bold'} color={Palette.black} >{moment(item.createdTime).fromNow()}</WText>
                     </WView>
                 </WRow>
             </WTouchable>
@@ -43,15 +88,15 @@ export default class NotificationsList extends PureComponent {
     }
 
     render() {
-        const { data, isLoading, alertMessageVisible } = this.state;
+        const { notifications, isLoading, alertMessageVisible, selectedNotification } = this.state;
         const { screenWidth } = this.props;
 
-        if (!isLoading && data && !data.length)
+        if (!isLoading && notifications && !notifications.length)
             return (
                 <WView dial={5} flex>
                     <Image
                         source={require("../../../images/noNotifications.png")}
-                        containerStyle={{ width: screenWidth / 2 }}
+                        style={{ width: 100, height: 100 }}
                     />
                 </WView>
             );
@@ -70,12 +115,12 @@ export default class NotificationsList extends PureComponent {
                     <EventNotificationinfo
                         {...this.props}
                         isVisible={alertMessageVisible}
-                        title={"Hello one title"}
-                        description={"Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd, Description lkajdf klaj dfkaldsjfakld jfaklsdj faklsd fjaklsdj fkalsdj fklasdj fklasdj fakld jfkalsdj fsakd fjaskldjfslkdjf dasdsd"}
+                        title={selectedNotification && selectedNotification.title ? selectedNotification.title : ''}
+                        description={selectedNotification && selectedNotification.description ? selectedNotification.description : ''}
                         setVisible={this.setAlertMessageVisible.bind(this, false)}
                     />
                 }
-                data={data}
+                data={notifications}
                 style={{ flexGrow: 1, marginBottom: 60 }}
                 renderItem={this.renderItem} />
         )

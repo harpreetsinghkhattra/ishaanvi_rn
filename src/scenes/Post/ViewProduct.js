@@ -173,7 +173,10 @@ export default class ViewProduct extends Component {
                                 item={productData} />
                             <ShareAndCommentBar
                                 onCommentPress={this.openScreen.bind(this, routerNames.comments, { productId: productData._id })}
-                                onChatPress={this.openScreen.bind(this, routerNames.chat_room, {})}
+                                onChatPress={this.openScreen.bind(this, routerNames.chat_room, {
+                                    receiverId: productData.userInfo._id,
+                                    image: productData.userInfo && productData.userInfo.imageUrl ? { uri: productData.userInfo.imageUrl } : require("../../images/profile.png")
+                                })}
                             />
                             <ProductUserData
                                 item={productData} />

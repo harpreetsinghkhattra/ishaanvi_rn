@@ -89,6 +89,7 @@ export default class ViewPost extends Component {
                 });
 
                 let tempArr = [];
+                if (!tempData || tempData && !tempData.length) this._setState({ isLoading: false, messages: [] });
                 tempData.forEach((ele, index) => {
                     if (!this.isDatePresentInField(tempArr, ele.date)) {
                         let tempArr1 = Array.from(tempData).filter(message => message.date === ele.date);
@@ -116,6 +117,7 @@ export default class ViewPost extends Component {
             if (index === -1) {
                 console.log("MESSAGE DATA ===> DATA DATE NOT FOUND", message, index);
                 message.isSender = message.senderId === id ? true : false;
+                message.time = message.createdTime ? moment(message.createdTime).format('hh:mm A') : '';
                 prevState.messages.push({
                     date: "today",
                     data: [message]
@@ -125,6 +127,7 @@ export default class ViewPost extends Component {
 
             console.log("MESSAGE DATA ===> DATA ", message, index);
             message.isSender = message.senderId === id ? true : false;
+            message.time = message.createdTime ? moment(message.createdTime).format('hh:mm A') : '';
             prevState.messages[index].data.push(message);
             return { messages: prevState.messages, isMessage: prevState.isMessage ? false : true };
         });
@@ -200,7 +203,7 @@ export default class ViewPost extends Component {
                     onPress={this.goBack.bind(this)}
                     label={"Product Chat"}
                 />
-                <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start' }, stretch]}>
+                <WView flex style={[{ minWidth: screenWidth, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={2} padding={[5, 5]} style={[stretch, { justifyContent: 'space-between' }]} >
                         {
                             isLoading ?
@@ -211,7 +214,7 @@ export default class ViewPost extends Component {
                                     messages={messages} />
                         }
                     </WView>
-                </ScrollView>
+                </WView>
                 <ChatInput
                     onSend={this.sendMessage.bind(this)} />
             </WView >

@@ -105,13 +105,13 @@ export default class HomeFilter extends PureComponent {
                                 onSelect={this.addCategory.bind(this)}
                                 value={this.filterData ? this.filterData.category : []}
                                 data={['Multi Brand\'s', 'Garments', 'Boutiques', 'Designers \n(men, woman)', 'Cloth \nHouse/Shop']} />
-                            {/*{
+                            {
                                 isPrice ?
                                     <PriceRange
                                         price={this.filterData.price}
                                         onPriceChange={this.onPriceChange.bind(this)}
                                     /> : null
-                            }*/}
+                            }
                             <Slider
                                 value={this.filterData ? this.filterData.area : [0, 500]}
                                 onValueChangeFinish={this.addArea.bind(this)}
