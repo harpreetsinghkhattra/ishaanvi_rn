@@ -33,7 +33,12 @@ export default class HomeFilter extends PureComponent {
     }
 
     static propTypes = {
-        data: PropTypes.object
+        data: PropTypes.object,
+        isPrice: PropTypes.bool
+    }
+
+    static defaultProps = {
+        isPrice: false
     }
 
     loadToRender = () => {
@@ -78,7 +83,7 @@ export default class HomeFilter extends PureComponent {
     }
 
     render() {
-        const { screenWidth, screenHeight, screenHeightWithHeader, history, isVisible, setVisible, data } = this.props;
+        const { screenWidth, screenHeight, screenHeightWithHeader, history, isVisible, setVisible, data, isPrice } = this.props;
         const { stretch, btnStyle, btnContainer, border, circleView, image, caretImage, textInputContainerStyle, iconStyle } = styles;
         const icon = require('../../images/location.png');
         const send = require('../../images/send.png');
@@ -100,10 +105,13 @@ export default class HomeFilter extends PureComponent {
                                 onSelect={this.addCategory.bind(this)}
                                 value={this.filterData ? this.filterData.category : []}
                                 data={['Multi Brand\'s', 'Garments', 'Boutiques', 'Designers \n(men, woman)', 'Cloth \nHouse/Shop']} />
-                            <PriceRange
-                                price={this.filterData.price}
-                                onPriceChange={this.onPriceChange.bind(this)}
-                            />
+                            {/*{
+                                isPrice ?
+                                    <PriceRange
+                                        price={this.filterData.price}
+                                        onPriceChange={this.onPriceChange.bind(this)}
+                                    /> : null
+                            }*/}
                             <Slider
                                 value={this.filterData ? this.filterData.area : [0, 500]}
                                 onValueChangeFinish={this.addArea.bind(this)}

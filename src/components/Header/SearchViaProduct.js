@@ -4,12 +4,13 @@ import { Image, Keyboard } from 'react-native';
 import Palette from '../../Palette';
 import { MyLocation } from '../../scenes/Modal';
 import { User } from '../../model/user';
+import { Search } from '../../model/search';
 
 export default class SearchHeaderViaProduct extends Component {
 
     state = {
         isLocationModalVisible: false,
-        searchValue: ''
+        searchValue: Search.getSearchData().search ? Search.getSearchData().search : ""
     }
 
     componentDidMount = () => {
@@ -29,6 +30,7 @@ export default class SearchHeaderViaProduct extends Component {
         const { onSubmit } = this.props;
 
         this.setState({ [key]: value });
+        if (key === "searchValue") Search.setSearchData({ search: value });
     }
 
     render() {

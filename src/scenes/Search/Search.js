@@ -14,6 +14,7 @@ import { get_home_items, search } from '../../api/SocketUrls';
 import { Api, Socket, User as UserApi } from '../../api';
 import { ProductList as RandomProductList } from '../../components/Card/Home';
 import { ProductList } from '../../components/Card/Search';
+import { Search } from '../../model/search';
 
 const UserData = new Storage();
 const PAGE_INDEX = 1;
@@ -31,6 +32,7 @@ export default class Login extends PureComponent {
             isLoading: true,
             data: [],
             isSearchLoading: false,
+            isNoProduct: false,
             searchedElements: []
         }
 
@@ -50,6 +52,7 @@ export default class Login extends PureComponent {
     componentDidMount = () => {
         const { initialPage } = this.props;
 
+        if (Search.getSearchData().search) this.onSubmit(Search.getSearchData().search);
         // if (initialPage === PAGE_INDEX) this.init();
     }
 
@@ -174,8 +177,8 @@ export default class Login extends PureComponent {
         UserApi.getSocketResponseOnce(search.on, (res) => {
             console.log('get socket response once', JSON.stringify(searchData), JSON.stringify(res));
             if (res && res.message === "Success") {
-                this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: res.data });
-            } else this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: [] });
+                this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: res.data, isNoProduct: false });
+            } else this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: [], isNoProduct: true });
         });
     }
 
@@ -183,7 +186,7 @@ export default class Login extends PureComponent {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
         const { userType } = User.getUserData();
-        const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems, searchedElements, isSearchLoading } = this.state;
+        const { isNoProduct, isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems, searchedElements, isSearchLoading } = this.state;
         const plus = require('../../images/plus.png');
         const empty = [];
 
@@ -199,6 +202,7 @@ export default class Login extends PureComponent {
                 />
                 <HomeFilter
                     {...this.props}
+                    isPrice
                     isVisible={isHomeFilterVisible}
                     setVisible={this.setFilterModalVisible.bind(this)}
                 />
@@ -215,16 +219,25 @@ export default class Login extends PureComponent {
                                 onItemPress={productId => this.openScreen(routerNames.view_product, { screenType: 'search', productId })}
                             />
                             :
-                            <WView dial={5} flex backgroundColor={"#DBDBDB"}>
-                                <Image
-                                    source={require('../../images/search1.jpg')}
-                                    containerStyle={{ width: screenWidth }}
-                                />
-                                <Image
+                            isNoProduct ?
+                                <WView dial={5} flex backgroundColor={Palette.white}>
+                                    <Image
+                                        source={require('../../images/no_product.png')}
+                                        containerStyle={{ width: screenWidth }}
+                                    />
+                                </WView>
+                                :
+
+                                <WView dial={5} flex backgroundColor={Palette.white}>
+                                    <Image
+                                        source={require('../../images/search_view.png')}
+                                        containerStyle={{ width: screenWidth }}
+                                    />
+                                    {/*<Image
                                     source={require('../../images/search.jpg')}
                                     containerStyle={{ width: screenWidth }}
-                                />
-                            </WView>
+                                />*/}
+                                </WView>
                     }
                 </WView>
             </WView >);
