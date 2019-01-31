@@ -75,13 +75,15 @@ export default class EditActionView extends Component {
                 {
                     userType === 1 &&
                     <LabelWithRightBtn
+                        onPress={this.openScreen.bind(this, routerNames.viewPortal, { screenType: "edit", userId: User.getUserData()._id })}
                         label={"View Portal"} />
                 }
                 <LabelWithRightBtn
                     onPress={this.openScreen.bind(this, routerNames.wishedProducts, { screenType: "edit" })}
                     label={"Wish List"} />
-                <LabelWithRightBtn
-                    label={"Notifications"} />
+                {/*<LabelWithRightBtn
+                    onPress={this.setAlertMessageVisible.bind(this, true, { status: "warning", heading: "Alert", message: "Comming soon..." })}
+                    label={"Notifications"} />*/}
                 <LabelWithRightBtn
                     onPress={this.setAlertMessageVisible.bind(this, true, { status: "logout", heading: "Logout", message: "Do you really want to logout?" })}
                     label={"Logout"} />

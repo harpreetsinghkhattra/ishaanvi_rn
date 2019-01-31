@@ -129,6 +129,7 @@ export default class ViewPost extends Component {
             message.isSender = message.senderId === id ? true : false;
             message.time = message.createdTime ? moment(message.createdTime).format('hh:mm A') : '';
             prevState.messages[index].data.push(message);
+
             return { messages: prevState.messages, isMessage: prevState.isMessage ? false : true };
         });
     }
@@ -194,7 +195,7 @@ export default class ViewPost extends Component {
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, floatBtn, icon } = styles;
-        const { item, isLoading, messages } = this.state;
+        const { item, isLoading, messages, isMessage } = this.state;
         const edit = require('../../images/edit.png');
 
         return (
@@ -211,6 +212,7 @@ export default class ViewPost extends Component {
                                 :
                                 <ChatMessagesList
                                     {...this.props}
+                                    isData={isMessage}
                                     messages={messages} />
                         }
                     </WView>

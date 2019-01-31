@@ -146,7 +146,7 @@ export default class ProductList extends PureComponent {
         if (this.shopIds.length === 0) return;
 
         if (distanceFromEnd >= 0) {
-            this.setState({ isRequestMoreProducts: true });
+            // this.setState({ isRequestMoreProducts: true });
             this.isRequestMoreProducts1 = true;
             this.onBottomPullSocketResponse();
         }
@@ -194,7 +194,6 @@ export default class ProductList extends PureComponent {
                                     </WView>
                         }
                         onEndReached={this.onRequestMoreProducts.bind(this)}
-                        onEndReachedThreshold={0.5}
                         data={data}
                         renderItem={({ item, index }) =>
                             <RecentProductsList
@@ -202,7 +201,6 @@ export default class ProductList extends PureComponent {
                                 key={`products-${index}-${new Date().getTime()}`}
                                 data={item.items}
                                 userId={item._id}
-                                isLoading={this.isRequestMoreProducts(index)}
                                 heading={item.business_name} />}
                     />
                 }
@@ -243,3 +241,6 @@ const styles = {
         borderRadius: 25
     }
 }
+
+// onEndReachedThreshold = { 0.5}
+// isLoading = { this.isRequestMoreProducts(index) }

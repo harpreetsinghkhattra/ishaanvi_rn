@@ -65,7 +65,8 @@ export default class ChatMessagesList extends Component {
     });
 
     render() {
-        const { loading, items, getCommentListRef, messages } = this.props;
+        const { loading, items, getCommentListRef, messages, isData } = this.props;
+
         // const messages = [
         //     {
         //         date: 'Today', data: [

@@ -71,6 +71,7 @@ export default class UserProfile extends Component {
         formData.append('itemCode', itemCode);
         formData.append('status', status ? status : 1);
 
+        console.log("UPLOAD PRODUCT REQUEST ===> ", formData);
         this.setState({ uploadingImage: true });
         axios.post('http://13.127.188.164/api/uploadProductFiles', formData, {
             onUploadProgress: (percentage) => {
@@ -80,6 +81,7 @@ export default class UserProfile extends Component {
             }
         }).then((res) => {
             this.setState({ uploadingImage: false, isLoading: false });
+            console.log("UPLOAD PRODUCT RESPONSE ===> ", res);
             if (res && res.data && res.data.message === "Success") {
                 PostOffer.resetData();
                 history.push(routerNames.post_offer_finish, { screenType: screenType === "edit" ? screenType : '' });

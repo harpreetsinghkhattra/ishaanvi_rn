@@ -15,7 +15,7 @@ import { MemoryRouter, BackButton } from 'react-router-native'
 import { User } from './model/user';
 import { ConnectionInfoBar } from './components/Card/Home'
 import firebase from 'react-native-firebase';
-
+import { EventNotificationinfo } from './scenes/Modal';
 import MainScene from './scenes/MainScene';
 
 const PORTRAIT = 0;
@@ -37,7 +37,9 @@ class Rootrn extends PureComponent {
             scale: null,
             fontScale: null,
             isSocketConnected: true,
-            userHasActivatedCallback: null
+            userHasActivatedCallback: null,
+            alertNotificationMessageVisible: false,
+            selectedNotification: {}
         };
     }
 
@@ -115,16 +117,22 @@ class Rootrn extends PureComponent {
         this.notificationListener = firebase.notifications().onNotification((notification) => {
             const { title, body } = notification;
             console.log("NOTIFICATION ===> FOURGROUND", notification);
-            this.showAlert(title, body);
+            // this.showAlert(title, body);
         });
 
         /*
         * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
         * */
         this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-            const { title, body } = notificationOpen.notification;
+            const { data } = notificationOpen.notification;
             console.log("NOTIFICATION ===> BACKGROUND", notificationOpen);
-            this.showAlert(title, body);
+            this.setState({
+                alertNotificationMessageVisible: true,
+                selectedNotification: {
+                    title: data.title,
+                    description: data.description
+                }
+            })
         });
 
         /*
@@ -133,8 +141,15 @@ class Rootrn extends PureComponent {
         const notificationOpen = await firebase.notifications().getInitialNotification();
         if (notificationOpen) {
             console.log("NOTIFICATION ===> CLOSED", notificationOpen);
-            const { title, body } = notificationOpen.notification;
-            this.showAlert(title, body);
+            const { data } = notificationOpen.notification;
+            this.setState({
+                alertNotificationMessageVisible: true,
+                selectedNotification: {
+                    title: data.title,
+                    description: data.description
+                }
+            })
+            // this.showAlert(title, body);
         }
         /*
         * Triggered for data only payload in foreground
@@ -189,7 +204,13 @@ class Rootrn extends PureComponent {
         this.setState({ isSocketConnected });
     }
 
+    alertMessageVisible = (alertNotificationMessageVisible, selectedNotification) => {
+        this.setState({ alertNotificationMessageVisible, selectedNotification });;
+    }
+
     render() {
+        const { alertNotificationMessageVisible, selectedNotification } = this.state;
+
         return (
             <MemoryRouter>
                 <View
@@ -201,6 +222,13 @@ class Rootrn extends PureComponent {
                 >
                     <BackButton />
                     <StatusBar hidden={false} backgroundColor={Palette.theme_color} />
+                    <EventNotificationinfo
+                        {...this.props}
+                        isVisible={alertNotificationMessageVisible}
+                        title={selectedNotification && selectedNotification.title ? selectedNotification.title : ''}
+                        description={selectedNotification && selectedNotification.description ? selectedNotification.description : ''}
+                        setVisible={this.alertMessageVisible.bind(this, false, {})}
+                    />
                     {React.createElement(MainScene, {
                         booted: this.state.booted,
                         isSocketConnected: this.state.isSocketConnected,

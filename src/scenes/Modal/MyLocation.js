@@ -120,6 +120,12 @@ export default class MyLocation extends Component {
                         setVisible(false, true);
                         return;
                     default:
+                        Alert.alert(
+                            "",
+                            res && res.error_message ? res.error_message : "Unable to get your location, Internal error",
+                            [{
+                                text: "Okay"
+                            }]);
                         this.setState({ isLoadingLocation: false });
                 }
             })
@@ -157,10 +163,17 @@ export default class MyLocation extends Component {
                         this.setState({ isLoadingZipcode: false });
                         alert("No location found with entered zipcode");
                     default:
+                        Alert.alert(
+                            "",
+                            res && res.error_message ? res.error_message : "Unable to get your location, Internal error",
+                            [{
+                                text: "Okay"
+                            }]);
                         this.setState({ isLoadingZipcode: false });
                 }
             })
             .catch(err => {
+                console.log('zipcode response ===> err', err);
                 this.setState({ isLoadingZipcode: false });
             });
     }
