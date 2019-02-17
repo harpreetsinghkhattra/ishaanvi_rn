@@ -103,7 +103,7 @@ export default class ViewProduct extends Component {
         if (location.state && location.state.screenType === "home")
             history.replace(routerNames.index, { selectedIndex: 0 })
         else if (location.state && location.state.screenType === "search")
-            history.replace(routerNames.index, { selectedIndex: 1 })
+            history.replace(routerNames.index, { selectedIndex: 1, selectedSearchPageIndex: 1 }) 
         else history.go(-1);
     }
 

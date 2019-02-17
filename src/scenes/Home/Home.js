@@ -31,7 +31,7 @@ export default class Home extends Component {
 
     state = {
         isLoading: false,
-        alertMessageVisible: false   
+        alertMessageVisible: false
     }
 
     componentDidMount = () => {
@@ -72,6 +72,7 @@ export default class Home extends Component {
         const views = [
             <Index
                 tabEmitter={this._tabEmitter}
+                openSearch={() => this.tabsViewRef.setPage(1)}
                 initialPage={this.getIntialIndex()}
                 {...this.props} />,
             <Search
@@ -104,7 +105,7 @@ export default class Home extends Component {
                 },
                 {
                     text: '',
-                    onTabPress: this.setAlertMessageVisible.bind(this, true), 
+                    onTabPress: this.setAlertMessageVisible.bind(this, true),
                     iconSource: require('../../images/trending.png'),
                 },
                 {
@@ -137,6 +138,7 @@ export default class Home extends Component {
                         indicator={_renderHeader()}
                         initialPage={this.getIntialIndex()}
                         tabEmitter={this._tabEmitter}
+                        ref={ref => this.tabsViewRef = ref}
                         style={{ flex: 1 }}
                     >
                         {views.map((ele, index) =>

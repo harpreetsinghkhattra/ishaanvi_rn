@@ -35,9 +35,10 @@ export default class ProductList extends PureComponent {
     }
 
     listenLazyLoadEvent = () => {
-        const { tabEmitter } = this.props;
+        const { tabEmitter, isFilter } = this.props;
         if (tabEmitter.addListener) {
             tabEmitter.addListener('search_lazy_load', (data) => {
+                if (isFilter) isFilter && isFilter(data && data.index === 0 ? false : true);
                 if (data && data.index === PAGE_INDEX)
                     this.setState(prevState => {
                         if (!prevState.isLazyLoading) {

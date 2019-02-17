@@ -26,8 +26,20 @@ export default class Home extends PureComponent {
         this._tabEmitter = new EventEmitter();
     }
 
+    componentDidMount() {
+        const { isFilter } = this.props;
+
+        if (this.getIntialPage() === 0) isFilter && isFilter(false);
+    }
+
     componentWillUnmount() {
         this._tabEmitter.removeAllListeners();
+    }
+
+    getIntialPage = () => {
+        const { location } = this.props;
+
+        return location && location.state && location.state.selectedSearchPageIndex ? parseInt(location.state.selectedSearchPageIndex) : 0;
     }
 
     render() {
@@ -38,12 +50,13 @@ export default class Home extends PureComponent {
         const views = [
             <ShopList
                 {...rest}
-                initialSearchTabPage={0}
+                initialSearchTabPage={this.getIntialPage()}
                 tabEmitter={this._tabEmitter}
             />,
             <ProductList
                 {...rest}
-                initialSearchTabPage={0}
+                isSearch
+                initialSearchTabPage={this.getIntialPage()}
                 tabEmitter={this._tabEmitter}
             />
         ];
@@ -72,7 +85,7 @@ export default class Home extends PureComponent {
                     <TabViews
                         tabPosition="top"
                         indicator={_renderHeader()}
-                        initialPage={location && location.state && location.state.selectedSearchPageIndex ? parseInt(location.state.selectedSearchPageIndex) : 0}
+                        initialPage={this.getIntialPage()}
                         horizontalScroll={true}
                         style={{ flex: 1 }}
                     >

@@ -198,6 +198,7 @@ export default class Login extends PureComponent {
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <SearchViaProduct
+                    ref={ref => this.searchViaProductInput = ref}
                     isLoading={isSearchLoading}
                     openFilter={this.setFilterModalVisible.bind(this, true)}
                     onSubmit={this.onSubmit.bind(this)}
@@ -215,6 +216,7 @@ export default class Login extends PureComponent {
                 >
                     <SearchTab
                         data={searchedElements}
+                        isFilter={isFilter => this.searchViaProductInput && this.searchViaProductInput.isFilter(isFilter)}
                         {...this.props} />
                 </WView>
             </WView >);

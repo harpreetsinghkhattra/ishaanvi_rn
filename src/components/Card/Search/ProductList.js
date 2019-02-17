@@ -20,7 +20,8 @@ export default class ProductList extends PureComponent {
     }
 
     static defaultProps = {
-        initialSearchTabPage: 1
+        initialSearchTabPage: 1,
+        isSearch: false
     }
 
     constructor(props) {
@@ -95,7 +96,7 @@ export default class ProductList extends PureComponent {
             data && prevProps.data && prevProps.data.length !== data.length ||
             data && prevProps.data && prevProps.data.length && data.length &&
             prevProps.data[0]._id !== data[0]._id ||
-            data && prevProps.data && prevProps.data.length && data.length && prevProps.data[0].product.length && prevProps.data[0].product[0]._id !== data[0].product[0]._id
+            data && prevProps.data && prevProps.data.length && prevProps.data[0].product && data.length && prevProps.data[0].product.length && prevProps.data[0].product[0]._id !== data[0].product[0]._id
         ) {
             this.limit = 6;
             this.isOnEndReached = true;
@@ -116,7 +117,7 @@ export default class ProductList extends PureComponent {
         const { isLazyLoading } = this.state;
         if (!isLazyLoading) return empty;
 
-        let { screenWidth, isLoading, type } = this.props;
+        let { screenWidth, isLoading, type, isSearch } = this.props;
         const { data } = this.state;
         const column = 2;
         const width = screenWidth / column;
@@ -137,11 +138,15 @@ export default class ProductList extends PureComponent {
                 onEndReached={this.onEndReached.bind(this)}
                 onEndReachedThreshold={1}
                 ListHeaderComponent={
-                    data && !data.length ?
+                    data && !data.length && isSearch ?
                         <WView dial={5} flex margin={[30, 0]}>
                             <Image source={require('../../../images/searchproducts.png')} style={{ width: 150, height: 150, tintColor: Palette.theme_color }} />
                             <WText color={Palette.black}>Search for products</WText>
-                        </WView> : null
+                        </WView> : data && !data.length ?
+                            <WView dial={5} flex margin={[30, 0]}>
+                                <Image source={require('../../../images/no_product.png')} resizeMode={"cover"} style={{ height: 200 }} />
+                                <WText color={Palette.black}>No Product Available</WText>
+                            </WView> : null
                 }
                 renderItem={({ item, index }) => <ProductCardsListItem
                     {...this.props}

@@ -10,7 +10,8 @@ export default class SearchHeaderViaProduct extends Component {
 
     state = {
         isLocationModalVisible: false,
-        searchValue: Search.getSearchData().search ? Search.getSearchData().search : "test"
+        isFilter: true,
+        searchValue: Search.getSearchData().search ? Search.getSearchData().search : ""
     }
 
     componentDidMount = () => {
@@ -19,6 +20,10 @@ export default class SearchHeaderViaProduct extends Component {
             this.setLocationModalVisible(true);
     }
 
+    /** Set filter value */
+    isFilter = isFilter => {
+        // this.setState({ isFilter }); 
+    }
 
     /** Set visible */
     setLocationModalVisible = (isLocationModalVisible, location) => {
@@ -35,7 +40,7 @@ export default class SearchHeaderViaProduct extends Component {
 
     render() {
         const { textInputContainer, textInputContainerStyle, btnContainerStyle, btnContainerStyle1, stretch, iconStyle } = styles
-        const { isLocationModalVisible, searchValue } = this.state;
+        const { isLocationModalVisible, searchValue, isFilter } = this.state;
         const filterIcon = require('../../images/filter.png');
         const { openFilter, onSubmit, isLoading } = this.props;
         const location = User.getUserData().location;
@@ -53,7 +58,7 @@ export default class SearchHeaderViaProduct extends Component {
                         loading={isLoading}
                         getFocus={ref => this.input1 = ref}
                         containerStyle={textInputContainerStyle}
-                        placeholderName="Product Name"
+                        placeholderName="Search"
                         value={searchValue}
                         onChangeText={value => this.onChangeText('searchValue', value)}
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
@@ -61,9 +66,12 @@ export default class SearchHeaderViaProduct extends Component {
                         iconPath={require("../../images/search.png")}
                         onSubmitEditing={onSubmit.bind(this, searchValue)}
                     />
-                    <WTouchable onPress={openFilter} dial={5} padding={[0, 10]} style={btnContainerStyle}>
-                        <Image source={filterIcon} style={iconStyle} />
-                    </WTouchable>
+                    {
+                        isFilter ?
+                            <WTouchable onPress={openFilter} dial={5} padding={[0, 10]} style={btnContainerStyle}>
+                                <Image source={filterIcon} style={iconStyle} />
+                            </WTouchable> : null
+                    }
                 </WRow>
             </WRow>
         )

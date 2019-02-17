@@ -160,8 +160,8 @@ export default class ProductList extends PureComponent {
     }
 
     render() {
-        const { screenWidth, screenHeightWithHeader, history } = this.props;
-        const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
+        const { screenWidth, screenHeightWithHeader, history, openSearch } = this.props;
+        const { stretch, btnStyle, btnContainer, border, icon, floatBtn, shopBtnContainer } = styles;
         const { userType } = User.getUserData();
         const { isHomeFilterVisible, isLocationModalVisible, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
         const plus = require('../../../images/plus.png');
@@ -183,10 +183,12 @@ export default class ProductList extends PureComponent {
                             />
                         }
                         onEndReachedThreshold={0.5}
+                        keyboardDismissMode={"none"}
                         ListHeaderComponent={
                             <WView dial={5}>
                                 <ImageSlider
                                     imagePress={false}
+                                    autoPlayEnable
                                     {...this.props}
                                     data={[
                                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCsmPy6oq2HWmSuWaORkefo5EwzJnf15c6sr1hUWVVOVsHzuYWBA",
@@ -194,6 +196,9 @@ export default class ProductList extends PureComponent {
                                         "https://www.printastic.com/data/image_box/group/35/sales-and-promotions-banners.png",
                                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnNwyDJlqMr4zm6eoAG1Ed2C6OamntQQXYb__baxAYNcgzT7pFiw"
                                     ]} />
+                                <WTouchable onPress={openSearch} flex style={[shopBtnContainer, { alignSelf: 'stretch' }]} margin={[10, 10]} padding={[0, 10]} dial={5}>
+                                    <WText color={Palette.white}>Search Shops Locally</WText>
+                                </WTouchable>
                                 {
                                     isLoading ?
                                         <WView dial={5} flex>
@@ -253,6 +258,11 @@ const styles = {
         width: 50,
         height: 50,
         borderRadius: 25
+    },
+    shopBtnContainer: {
+        backgroundColor: Palette.theme_color,
+        height: 40,
+        borderRadius: 20
     }
 }
 
