@@ -5,6 +5,7 @@ import Palette from '../../../Palette';
 import { Large } from '../../UI/btn';
 import { routerNames } from '../../../RouteConfig';
 import { RecentProductsList } from '../../Lists';
+import { ShopListItem } from '../../ListItems';
 import { SearchHeader } from '../../Header';
 import { Storage, StorageKeys } from '../../../helper';
 import { User } from '../../../model/user';
@@ -12,6 +13,7 @@ import { UserLocation } from '../../../model/UserLocation';
 import { MyLocation, HomeFilter } from '../../../scenes/Modal';
 import { get_home_items } from '../../../api/SocketUrls';
 import { Api, Socket, User as UserApi } from '../../../api';
+import { ImageSlider } from '../../ViewPost';
 
 const UserData = new Storage();
 const PAGE_INDEX = 0;
@@ -168,7 +170,7 @@ export default class ProductList extends PureComponent {
         console.log("home loading render product list");
 
         return (
-            <WView dial={2} padding={[5, 5]} style={[{ width: screenWidth, height: screenHeightWithHeader - 56 }, stretch]} >
+            <WView dial={2} padding={[5, 0]} style={[{ width: screenWidth, height: screenHeightWithHeader - 56 }, stretch]} >
                 {
 
                     <FlatList
@@ -180,28 +182,40 @@ export default class ProductList extends PureComponent {
                                 onRefresh={this.onProductListRefresh.bind(this)}
                             />
                         }
+                        onEndReachedThreshold={0.5}
                         ListHeaderComponent={
-                            isLoading ?
-                                <WView dial={5} flex>
-                                    <WSpinner size={"small"} color={Palette.theme_color} />
-                                    <WText fontSize={16} fontFamily={"Muli-Bold"}>Looking for shops...</WText>
-                                </WView>
-                                : data && data.length ?
-                                    null :
-                                    <WView dial={5}>
-                                        <WText fontSize={16} fontFamily={"Muli-Bold"}>No product found</WText>
-                                        <Image source={require('../../../images/no_product.png')} resizeMode="cover" style={{ height: 200 }} />
-                                    </WView>
+                            <WView dial={5}>
+                                <ImageSlider
+                                    imagePress={false}
+                                    {...this.props}
+                                    data={[
+                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCsmPy6oq2HWmSuWaORkefo5EwzJnf15c6sr1hUWVVOVsHzuYWBA",
+                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbEwxHfbUpWO9wquZbOkckybDUj_xhXHmLjIl1qeIRs4LMvSBN",
+                                        "https://www.printastic.com/data/image_box/group/35/sales-and-promotions-banners.png",
+                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnNwyDJlqMr4zm6eoAG1Ed2C6OamntQQXYb__baxAYNcgzT7pFiw"
+                                    ]} />
+                                {
+                                    isLoading ?
+                                        <WView dial={5} flex>
+                                            <WSpinner size={"small"} color={Palette.theme_color} />
+                                            <WText fontSize={16} fontFamily={"Muli-Bold"}>Looking for shops...</WText>
+                                        </WView>
+                                        : data && data.length ?
+                                            null :
+                                            <WView dial={5}>
+                                                <WText fontSize={16} fontFamily={"Muli-Bold"}>No product found</WText>
+                                                <Image source={require('../../../images/no_product.png')} resizeMode="cover" style={{ height: 200 }} />
+                                            </WView>
+                                }
+                            </WView>
                         }
                         onEndReached={this.onRequestMoreProducts.bind(this)}
                         data={data}
                         renderItem={({ item, index }) =>
-                            <RecentProductsList
+                            <ShopListItem
                                 {...this.props}
-                                key={`products-${index}-${new Date().getTime()}`}
-                                data={item.items}
-                                userId={item._id}
-                                heading={item.business_name} />}
+                                data={item}
+                            />}
                     />
                 }
             </WView>);

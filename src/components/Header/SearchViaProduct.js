@@ -10,7 +10,7 @@ export default class SearchHeaderViaProduct extends Component {
 
     state = {
         isLocationModalVisible: false,
-        searchValue: Search.getSearchData().search ? Search.getSearchData().search : ""
+        searchValue: Search.getSearchData().search ? Search.getSearchData().search : "test"
     }
 
     componentDidMount = () => {

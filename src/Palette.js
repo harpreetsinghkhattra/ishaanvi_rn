@@ -11,5 +11,6 @@ export default {
   border_color: "#9b9b9b",
   facebook_logo: "#3f51b5",
   red: "red",
-  ratingColor: '#ffca28'
+  ratingColor: '#ffca28',
+  green: "green"
 }

@@ -15,6 +15,7 @@ import { Api, Socket, User as UserApi } from '../../api';
 import { ProductList as RandomProductList } from '../../components/Card/Home';
 import { ProductList } from '../../components/Card/Search';
 import { Search } from '../../model/search';
+import { SearchTab } from '.';
 
 const UserData = new Storage();
 const PAGE_INDEX = 1;
@@ -194,7 +195,6 @@ export default class Login extends PureComponent {
 
         if (!isLazyLoading) return empty;
 
-        console.log("home loading render");
         return (
             <WView dial={2} flex style={{ alignItems: 'stretch' }}>
                 <SearchViaProduct
@@ -213,35 +213,9 @@ export default class Login extends PureComponent {
                     dial={2}
                     style={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - 56, justifyContent: 'flex-start' }, stretch]}
                 >
-                    {
-                        searchedElements && searchedElements.length ?
-                            <ProductList
-                                {...this.props}
-                                data={searchedElements}
-                                onItemPress={productId => this.openScreen(routerNames.view_product, { screenType: 'search', productId })}
-                            />
-                            :
-                            isNoProduct ?
-                                <WView dial={5} flex backgroundColor={Palette.white}>
-                                    <WText color={Palette.theme_color} fontSize={14} fontFamily={"Muli-Bold"}>No Product Found</WText>
-                                    <Image
-                                        source={require('../../images/no_product.png')}
-                                        containerStyle={{ width: screenWidth }}
-                                    />
-                                </WView>
-                                :
-
-                                <WView dial={5} flex backgroundColor={Palette.white}>
-                                    <Image
-                                        source={require('../../images/search_view.png')}
-                                        containerStyle={{ width: screenWidth }}
-                                    />
-                                    {/*<Image
-                                    source={require('../../images/search.jpg')}
-                                    containerStyle={{ width: screenWidth }}
-                                />*/}
-                                </WView>
-                    }
+                    <SearchTab
+                        data={searchedElements}
+                        {...this.props} />
                 </WView>
             </WView >);
     }
@@ -280,3 +254,35 @@ const styles = {
         borderRadius: 25
     }
 }
+
+
+
+// {
+//                         searchedElements && searchedElements.length ?
+//                             <ProductList
+//                                 {...this.props}
+//                                 data={searchedElements}
+//                                 onItemPress={productId => this.openScreen(routerNames.view_product, { screenType: 'search', productId })}
+//                             />
+//                             :
+//                             isNoProduct ?
+//                                 <WView dial={5} flex backgroundColor={Palette.white}>
+//                                     <WText color={Palette.theme_color} fontSize={14} fontFamily={"Muli-Bold"}>No Product Found</WText>
+//                                     <Image
+//                                         source={require('../../images/no_product.png')}
+//                                         containerStyle={{ width: screenWidth }}
+//                                     />
+//                                 </WView>
+//                                 :
+
+//                                 <WView dial={5} flex backgroundColor={Palette.white}>
+//                                     <Image
+//                                         source={require('../../images/search_view.png')}
+//                                         containerStyle={{ width: screenWidth }}
+//                                     />
+//                                     {/*<Image
+//                                     source={require('../../images/search.jpg')}
+//                                     containerStyle={{ width: screenWidth }}
+//                                 />*/}
+//                                 </WView>
+//                     }

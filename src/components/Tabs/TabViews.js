@@ -36,19 +36,19 @@ export default class IndicatorViewPager extends Component {
         super(props)
         this._onPageScroll = this._onPageScroll.bind(this)
         this._onPageSelected = this._onPageSelected.bind(this)
-        // this._goToNextPage = this._goToNextPage.bind(this)
+        this._goToNextPage = this._goToNextPage.bind(this)
         this._renderIndicator = this._renderIndicator.bind(this)
         this.setPage = this.setPage.bind(this)
         this.setPageWithoutAnimation = this.setPageWithoutAnimation.bind(this)
-        // this._startAutoPlay = this._startAutoPlay.bind(this)
-        // this._stopAutoPlay = this._stopAutoPlay.bind(this)
+        this._startAutoPlay = this._startAutoPlay.bind(this)
+        this._stopAutoPlay = this._stopAutoPlay.bind(this)
         this._currentIndex = props.initialPage
         this._childrenCount = React.Children.count(props.children)
     }
 
     componentDidMount() {
-        // if (this.props.autoPlayEnable) this._startAutoPlay()
-        // else this._stopAutoPlay()
+        if (this.props.autoPlayEnable) this._startAutoPlay()
+        else this._stopAutoPlay()
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -104,25 +104,25 @@ export default class IndicatorViewPager extends Component {
         })
     }
 
-    // _goToNextPage() {
-    //     let nextIndex = (this._currentIndex + 1) % this._childrenCount
-    //     this.setPage(nextIndex)
-    // }
+    _goToNextPage() {
+        let nextIndex = (this._currentIndex + 1) % this._childrenCount
+        this.setPage(nextIndex)
+    }
 
-    // _startAutoPlay() {
-    //     if (this._timerId) clearInterval(this._timerId)
-    //     this._timerId = setInterval(this._goToNextPage, this.props.autoPlayInterval)
-    // }
+    _startAutoPlay() {
+        if (this._timerId) clearInterval(this._timerId)
+        this._timerId = setInterval(this._goToNextPage, this.props.autoPlayInterval)
+    }
 
-    // _stopAutoPlay() {
-    //     if (this._timerId) {
-    //         clearInterval(this._timerId)
-    //         this._timerId = null
-    //     }
-    // } 
+    _stopAutoPlay() {
+        if (this._timerId) {
+            clearInterval(this._timerId)
+            this._timerId = null
+        }
+    } 
 
     setPage(selectedPage) {
-        this.refs[VIEWPAGER_REF].setPage(selectedPage)
+        this.refs[VIEWPAGER_REF] && this.refs[VIEWPAGER_REF].setPage && this.refs[VIEWPAGER_REF].setPage(selectedPage)
     }
 
     setPageWithoutAnimation(selectedPage) {

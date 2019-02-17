@@ -101,7 +101,7 @@ export default class Header extends PureComponent {
     dialNumber = () => {
         const { data } = this.state;
         if (data && data.mobile_number) {
-            Linking.openURL(`tel:+91${user.mobile_number}`);
+            Linking.openURL(`tel:+91${data.mobile_number}`);
         } else Alert.alert("", "Number not Found");
     }
 

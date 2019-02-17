@@ -7,9 +7,10 @@ import Palette from '../../../Palette';
 import { userPortalProducts } from '../../../api/SocketUrls';
 import { Api, Socket, User as UserApi } from '../../../api';
 import { User } from '../../../model/user';
+import { ShopListItem } from '../../../components/ListItems'
 import { routerNames } from '../../../RouteConfig';
 
-const PAGE_INDEX = 1;
+const PAGE_INDEX = 0;
 export default class ProductList extends PureComponent {
 
     static propTypes = {
@@ -19,30 +20,23 @@ export default class ProductList extends PureComponent {
         onItemPress: PropTypes.func
     }
 
-    static defaultProps = {
-        initialSearchTabPage: 1
-    }
-
     constructor(props) {
         super(props);
 
         const { initialSearchTabPage, data } = this.props;
-
-        this.limit = 6;
         this.state = {
             isLazyLoading: initialSearchTabPage === PAGE_INDEX ? true : false,
-            data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit)
+            data: Array.from(data && data.length ? data[0].users : []).slice(0, this.limit)
         }
 
         this._isMounted = true;
-        this.isOnEndReached = true;
 
         this.listenLazyLoadEvent();
     }
 
     listenLazyLoadEvent = () => {
         const { tabEmitter } = this.props;
-        if (tabEmitter && tabEmitter.addListener) {
+        if (tabEmitter.addListener) {
             tabEmitter.addListener('search_lazy_load', (data) => {
                 if (data && data.index === PAGE_INDEX)
                     this.setState(prevState => {
@@ -66,7 +60,7 @@ export default class ProductList extends PureComponent {
         const { tabEmitter } = this.props;
 
         this._isMounted = false;
-        tabEmitter && tabEmitter.removeAllListeners();
+        tabEmitter.removeAllListeners();
     }
 
     openScreen(path, data) {
@@ -80,7 +74,7 @@ export default class ProductList extends PureComponent {
 
         if (this.isOnEndReached) {
             this.limit += 6;
-            this._setState({ data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit) });
+            this._setState({ data: Array.from(data && data.length ? data[0].users : []).slice(0, this.limit) });
             if (this.limit > data.length) {
                 this.isOnEndReached = false;
             }
@@ -95,19 +89,21 @@ export default class ProductList extends PureComponent {
             data && prevProps.data && prevProps.data.length !== data.length ||
             data && prevProps.data && prevProps.data.length && data.length &&
             prevProps.data[0]._id !== data[0]._id ||
-            data && prevProps.data && prevProps.data.length && data.length && prevProps.data[0].product.length && prevProps.data[0].product[0]._id !== data[0].product[0]._id
+            data && prevProps.data && prevProps.data.length && data.length && prevProps.data[0].users.length && prevProps.data[0].users[0]._id !== data[0].users[0]._id
         ) {
+
             this.limit = 6;
             this.isOnEndReached = true;
             this._setState({
-                data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit)
+                data: Array.from(data && data.length ? data[0].users : []).slice(0, this.limit)
             });
             if (this.limit > data.length) {
                 this.isOnEndReached = false;
             }
+
+            console.log("this.isOnEndReached", this.isOnEndReached);
         }
     }
-
 
     render() {
 
@@ -116,37 +112,30 @@ export default class ProductList extends PureComponent {
         const { isLazyLoading } = this.state;
         if (!isLazyLoading) return empty;
 
-        let { screenWidth, isLoading, type } = this.props;
+        const { screenWidth, isLoading, type } = this.props;
+        let { ...rest } = this.props;
         const { data } = this.state;
         const column = 2;
         const width = screenWidth / column;
 
-        if (isLoading)
-            return (
-                <WView dial={5} flex>
-                    <WSpinner size={"small"} color={Palette.theme_color} />
-                    <WText color={Palette.theme_color} fontFamily={"Muli-Bold"}>Please wait...</WText>
-                </WView>
-            );
-
         return (
             <FlatList
                 data={data}
-                keyExtractor={(item, index) => `shops-product-${index}`}
                 style={{ flexGrow: 1 }}
                 onEndReached={this.onEndReached.bind(this)}
                 onEndReachedThreshold={1}
                 ListHeaderComponent={
                     data && !data.length ?
                         <WView dial={5} flex margin={[30, 0]}>
-                            <Image source={require('../../../images/searchproducts.png')} style={{ width: 150, height: 150, tintColor: Palette.theme_color }} />
-                            <WText color={Palette.black}>Search for products</WText>
+                            <Image source={require('../../../images/searchshops.png')} style={{ width: 150, height: 150, tintColor: Palette.theme_color }} />
+                            <WText color={Palette.black}>Search for shops</WText>
                         </WView> : null
                 }
-                renderItem={({ item, index }) => <ProductCardsListItem
-                    {...this.props}
-                    item={item}
-                    onItemPress={productId => this.openScreen(routerNames.view_product, { screenType: "search", productId })}
+                keyExtractor={(item, index) => `shops-product-${index}`}
+                renderItem={({ item, index }) => <ShopListItem
+                    {...rest}
+                    data={item}
+                    onItemPress={userId => this.openScreen(routerNames.viewPortal, { screenType: 'search', userId })}
                 />}
             />
         )
@@ -154,28 +143,3 @@ export default class ProductList extends PureComponent {
 }
 
 
-
-// <ScrollView
-//                 contentContainerStyle={{ flexGrow: 1, flexDirection: 'row' }}
-//             >
-//                 <WView dial={2} style={{ width }}>
-//                     {
-//                         data.map((item, index) => {
-//                             if (index % 2 === 0)
-//                                 return (<WView key={`product-searched-item-even-${index}`}>
-//                                     <ProductListItem {...this.props} width={width} data={item} />
-//                                 </WView>);
-//                         })
-//                     }
-//                 </WView>
-//                 <WView dial={2} style={{ width }}>
-//                     {
-//                         data.map((item, index) => {
-//                             if (index % 2 !== 0)
-//                                 return (<WView key={`product-searched-item-odd-${index}`}>
-//                                     <ProductListItem {...this.props} width={width} data={item} />
-//                                 </WView>);
-//                         })
-//                     }
-//                 </WView>
-//             </ScrollView>

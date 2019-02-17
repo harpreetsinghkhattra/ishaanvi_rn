@@ -105,7 +105,7 @@ export default class MyLocation extends Component {
         const { setVisible } = this.props;
 
         console.log('this.userlocation mylocation', latitude, longitude)
-        this.setState({ isLoadingLocation: false });
+        // this.setState({ isLoadingLocation: false });
         Api.getLocationDetailViaLatLng(["latlng"], { latlng: `${latitude},${longitude}` })
             .then(res => {
                 switch (res.status) {

@@ -246,6 +246,8 @@ export default class App extends Component {
 
     if (location.state && location.state.screenType === "home")
       history.replace(routerNames.index, { selectedIndex: 0 })
+    if (location.state && location.state.screenType === "search")
+      history.replace(routerNames.index, { selectedIndex: 1, selectedSearchPageIndex: 0 })
     else history.go(-1);
   }
 
