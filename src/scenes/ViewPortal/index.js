@@ -100,19 +100,16 @@ export default class ViewPortal extends PureComponent {
                 isLoading={isLoading}
                 data={saleProducts}
                 type={"sale"}
-                onItemPress={productId => this.openScreen(routerNames.view_product, { productId })}
             />,
             <ProductList
                 {...this.props}
                 isLoading={isLoading}
                 data={newProducts}
-                onItemPress={productId => this.openScreen(routerNames.view_product, { productId })}
                 type={"new"} />,
             <ProductList
                 {...this.props}
                 data={popularProducts}
                 isLoading={isLoading}
-                onItemPress={productId => this.openScreen(routerNames.view_product, { productId })}
                 type={"popular"} />
         ];
         const { screenWidth, screenHeight, history } = this.props;

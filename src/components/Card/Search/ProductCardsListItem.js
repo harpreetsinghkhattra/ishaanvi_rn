@@ -48,6 +48,7 @@ export default class ProductsCardsListItem extends PureComponent {
     openScreen1 = (path, value = {}) => {
         const { history } = this.props;
 
+        alert(JSON.stringify(value))
         history.push(path, value);
     }
 
@@ -61,9 +62,9 @@ export default class ProductsCardsListItem extends PureComponent {
         const star = require('../../../images/star.png');
         const view = require('../../../images/show_password.png');
 
-        const { name, price, discount, images, views, rating, reviews, _id, userInfo } = data;
+        const { name, price, discount, images, views, rating, reviews, _id, userInfo: userData } = data;
 
-        console.log("data ===> ", data);
+        let userInfo = userData && userData.length ? userData[0] : userData; 
 
         return (
             <WView dial={4} margin={[5, 5]} style={[stretch, container]}>

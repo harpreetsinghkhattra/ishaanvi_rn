@@ -100,6 +100,16 @@ export default class ChatList extends PureComponent {
                 </WView >
             );
 
+        if (!isLoading && users && !users.length)
+            return (
+                <WView dial={5} flex>
+                    <Image
+                        source={require("../../../images/chatmessage.png")}
+                        style={{ width: 100, height: 100 }}
+                    />
+                </WView>
+            );
+
         return (
             <FlatList
                 keyExtractor={(item, index) => `chat-list-${index}`}

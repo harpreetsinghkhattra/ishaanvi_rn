@@ -52,6 +52,7 @@ export default class ViewProduct extends Component {
         const { _id: id, userAccessToken: accessToken } = User.getUserData();
         const { isLoading } = this.state;
 
+        // alert(`${state.productId}`);
         Socket.request(markProductAsViewed.emit, {
             id,
             accessToken,
@@ -103,7 +104,7 @@ export default class ViewProduct extends Component {
         if (location.state && location.state.screenType === "home")
             history.replace(routerNames.index, { selectedIndex: 0 })
         else if (location.state && location.state.screenType === "search")
-            history.replace(routerNames.index, { selectedIndex: 1, selectedSearchPageIndex: 1 }) 
+            history.replace(routerNames.index, { selectedIndex: 1, selectedSearchPageIndex: 1 })
         else history.go(-1);
     }
 
@@ -171,13 +172,16 @@ export default class ViewProduct extends Component {
                                 item={productData} />
                             <OtherInfo
                                 item={productData} />
-                            <ShareAndCommentBar
-                                onCommentPress={this.openScreen.bind(this, routerNames.comments, { productId: productData._id })}
-                                onChatPress={this.openScreen.bind(this, routerNames.chat_room, {
-                                    receiverId: productData.userInfo._id,
-                                    image: productData.userInfo && productData.userInfo.imageUrl ? { uri: productData.userInfo.imageUrl } : require("../../images/profile.png")
-                                })}
-                            />
+                            {
+                                productData && productData.userInfo ?
+                                    <ShareAndCommentBar
+                                        onCommentPress={this.openScreen.bind(this, routerNames.comments, { productId: productData._id })}
+                                        onChatPress={this.openScreen.bind(this, routerNames.chat_room, {
+                                            receiverId: productData.userInfo._id,
+                                            image: productData.userInfo && productData.userInfo.imageUrl ? { uri: productData.userInfo.imageUrl } : require("../../images/profile.png")
+                                        })}
+                                    /> : null
+                            }
                             <ProductUserData
                                 item={productData} />
                             {

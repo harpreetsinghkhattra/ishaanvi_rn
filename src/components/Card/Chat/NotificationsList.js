@@ -106,8 +106,9 @@ export default class NotificationsList extends PureComponent {
                 keyExtractor={(item, index) => `notifications-${index}`}
                 ListHeaderComponent={
                     isLoading ?
-                        <WView dial={5}>
+                        <WView dial={5} padding={[10, 10]}>
                             <WSpinner size={"small"} color={Palette.theme_color} />
+                            <WText color={Palette.theme_color}>Please wait...</WText>
                         </WView> : null
 
                 }

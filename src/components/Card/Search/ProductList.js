@@ -29,7 +29,7 @@ export default class ProductList extends PureComponent {
 
         const { initialSearchTabPage, data } = this.props;
 
-        this.limit = 6;
+        this.limit = 15;
         this.state = {
             isLazyLoading: initialSearchTabPage === PAGE_INDEX ? true : false,
             data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit)
@@ -80,7 +80,7 @@ export default class ProductList extends PureComponent {
         const { data } = this.props;
 
         if (this.isOnEndReached) {
-            this.limit += 6;
+            this.limit += 15;
             this._setState({ data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit) });
             if (this.limit > data.length) {
                 this.isOnEndReached = false;
@@ -98,7 +98,7 @@ export default class ProductList extends PureComponent {
             prevProps.data[0]._id !== data[0]._id ||
             data && prevProps.data && prevProps.data.length && prevProps.data[0].product && data.length && prevProps.data[0].product.length && prevProps.data[0].product[0]._id !== data[0].product[0]._id
         ) {
-            this.limit = 6;
+            this.limit = 15;
             this.isOnEndReached = true;
             this._setState({
                 data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit)
@@ -136,7 +136,6 @@ export default class ProductList extends PureComponent {
                 keyExtractor={(item, index) => `shops-product-${index}`}
                 style={{ flexGrow: 1 }}
                 onEndReached={this.onEndReached.bind(this)}
-                onEndReachedThreshold={1}
                 ListHeaderComponent={
                     data && !data.length && isSearch ?
                         <WView dial={5} flex margin={[30, 0]}>
@@ -151,7 +150,7 @@ export default class ProductList extends PureComponent {
                 renderItem={({ item, index }) => <ProductCardsListItem
                     {...this.props}
                     item={item}
-                    onItemPress={productId => this.openScreen(routerNames.view_product, { screenType: "search", productId })}
+                    onItemPress={productId => this.openScreen(routerNames.view_product, isSearch ? { screenType: "search", productId } : { productId })}
                 />}
             />
         )

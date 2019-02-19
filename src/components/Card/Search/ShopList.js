@@ -24,6 +24,8 @@ export default class ProductList extends PureComponent {
         super(props);
 
         const { initialSearchTabPage, data } = this.props;
+
+        this.limit = 15;
         this.state = {
             isLazyLoading: initialSearchTabPage === PAGE_INDEX ? true : false,
             data: Array.from(data && data.length ? data[0].users : []).slice(0, this.limit)
@@ -74,7 +76,7 @@ export default class ProductList extends PureComponent {
         const { data } = this.props;
 
         if (this.isOnEndReached) {
-            this.limit += 6;
+            this.limit += 15;
             this._setState({ data: Array.from(data && data.length ? data[0].users : []).slice(0, this.limit) });
             if (this.limit > data.length) {
                 this.isOnEndReached = false;
@@ -93,7 +95,7 @@ export default class ProductList extends PureComponent {
             data && prevProps.data && prevProps.data.length && data.length && prevProps.data[0].users.length && prevProps.data[0].users[0]._id !== data[0].users[0]._id
         ) {
 
-            this.limit = 6;
+            this.limit = 15;
             this.isOnEndReached = true;
             this._setState({
                 data: Array.from(data && data.length ? data[0].users : []).slice(0, this.limit)

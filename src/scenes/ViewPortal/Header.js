@@ -78,13 +78,13 @@ export default class Header extends PureComponent {
     getFollowers = () => {
         const { data } = this.state;
         return data && data.otherData && data.otherData.length ?
-            data.otherData.filter(ele => data.otherData.findIndex(ele => ele.followers ? true : false) > -1).length : 0;
+            data.otherData.filter(ele => ele.followers ? true : false).length : 0;
     }
 
     getFollowing = () => {
         const { data } = this.state;
         return data && data.otherData && data.otherData.length ?
-            data.otherData.filter(ele => data.otherData.findIndex(ele => ele.following ? true : false) > -1).length : 0;
+            data.otherData.filter(ele => ele.following ? true : false).length : 0;
     }
 
     isFollowing = () => {

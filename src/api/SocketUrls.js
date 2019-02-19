@@ -128,6 +128,11 @@ const getAllNotifications = {
     on: "/socket/api/response/getAllNotifications"
 }
 
+const getHomeBanners = {
+    emit: "/socket/api/getAddedBannerLocation",
+    on: "/socket/api/response/getAddedBannerLocation"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -154,5 +159,6 @@ export {
     sendRealTimeP2PMessage,
     getAllProductChatUsersList,
     getProductChatMessage,
-    getAllNotifications
+    getAllNotifications,
+    getHomeBanners
 }

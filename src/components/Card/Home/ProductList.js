@@ -11,7 +11,7 @@ import { Storage, StorageKeys } from '../../../helper';
 import { User } from '../../../model/user';
 import { UserLocation } from '../../../model/UserLocation';
 import { MyLocation, HomeFilter } from '../../../scenes/Modal';
-import { get_home_items } from '../../../api/SocketUrls';
+import { get_home_items, getHomeBanners } from '../../../api/SocketUrls';
 import { Api, Socket, User as UserApi } from '../../../api';
 import { ImageSlider } from '../../ViewPost';
 
@@ -28,7 +28,15 @@ export default class ProductList extends PureComponent {
             isHomeFilterVisible: false,
             isLocationModalVisible: false,
             isLoading: true,
-            data: []
+            data: [],
+            images: [
+                "http:/13.127.188.164/public/uploadProductFiles/15504257574992701ishaanvi.jpeg",
+                "http:/13.127.188.164/public/uploadProductFiles/15504257574992701ishaanvi.jpeg",
+                "http:/13.127.188.164/public/uploadProductFiles/15504257574992701ishaanvi.jpeg",
+                "http:/13.127.188.164/public/uploadProductFiles/15504257574992701ishaanvi.jpeg",
+                "http:/13.127.188.164/public/uploadProductFiles/15504257574992701ishaanvi.jpeg",
+                "http:/13.127.188.164/public/uploadProductFiles/15504257574992701ishaanvi.jpeg"
+            ]
         }
 
         this.shopIds = [];
@@ -42,6 +50,23 @@ export default class ProductList extends PureComponent {
 
     init = () => {
         this.getUserResponse();
+        this.getHomeBanners();
+    }
+
+    getHomeBanners() {
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
+
+        Socket.request(getHomeBanners.emit, {
+            id,
+            accessToken
+        });
+        UserApi.getSocketResponseOnce(getHomeBanners.on, (res) => {
+            if (res && res.message === "Success") {
+                console.log("VIEW PRODUCT home DATA ========> ", res);
+
+                this.setState({ images: res.data && res.data.length ? res.data.map(ele => ele.images) : [] });
+            } else this.setState({ images: [] });
+        });
     }
 
     getUserResponse() {
@@ -163,67 +188,55 @@ export default class ProductList extends PureComponent {
         const { screenWidth, screenHeightWithHeader, history, openSearch } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn, shopBtnContainer } = styles;
         const { userType } = User.getUserData();
-        const { isHomeFilterVisible, isLocationModalVisible, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
+        const { isHomeFilterVisible, isLocationModalVisible, data, isLoading, isRefreshingList, isGetNewItems, images } = this.state;
         const plus = require('../../../images/plus.png');
         const empty = [];
 
         console.log("home loading render product list");
 
         return (
-            <WView dial={2} padding={[5, 0]} style={[{ width: screenWidth, height: screenHeightWithHeader - 56 }, stretch]} >
-                {
-
-                    <FlatList
-                        contentContainerStyle={{ flexGrow: 1 }}
-                        keyExtractor={(item, index) => `products-${index}-${new Date().getTime()}`}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={isRefreshingList}
-                                onRefresh={this.onProductListRefresh.bind(this)}
-                            />
-                        }
-                        onEndReachedThreshold={0.5}
-                        keyboardDismissMode={"none"}
-                        ListHeaderComponent={
-                            <WView dial={5}>
-                                <ImageSlider
-                                    imagePress={false}
-                                    autoPlayEnable
-                                    {...this.props}
-                                    data={[
-                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCsmPy6oq2HWmSuWaORkefo5EwzJnf15c6sr1hUWVVOVsHzuYWBA",
-                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbEwxHfbUpWO9wquZbOkckybDUj_xhXHmLjIl1qeIRs4LMvSBN",
-                                        "https://www.printastic.com/data/image_box/group/35/sales-and-promotions-banners.png",
-                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnNwyDJlqMr4zm6eoAG1Ed2C6OamntQQXYb__baxAYNcgzT7pFiw"
-                                    ]} />
-                                <WTouchable onPress={openSearch} flex style={[shopBtnContainer, { alignSelf: 'stretch' }]} margin={[10, 10]} padding={[0, 10]} dial={5}>
-                                    <WText color={Palette.white}>Search Shops Locally</WText>
-                                </WTouchable>
-                                {
-                                    isLoading ?
-                                        <WView dial={5} flex>
-                                            <WSpinner size={"small"} color={Palette.theme_color} />
-                                            <WText fontSize={16} fontFamily={"Muli-Bold"}>Looking for shops...</WText>
-                                        </WView>
-                                        : data && data.length ?
-                                            null :
-                                            <WView dial={5}>
-                                                <WText fontSize={16} fontFamily={"Muli-Bold"}>No product found</WText>
-                                                <Image source={require('../../../images/no_product.png')} resizeMode="cover" style={{ height: 200 }} />
-                                            </WView>
-                                }
-                            </WView>
-                        }
-                        onEndReached={this.onRequestMoreProducts.bind(this)}
-                        data={data}
-                        renderItem={({ item, index }) =>
-                            <ShopListItem
-                                {...this.props}
-                                data={item}
-                            />}
+            <FlatList
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyExtractor={(item, index) => `products-${index}-${new Date().getTime()}`}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshingList}
+                        onRefresh={this.onProductListRefresh.bind(this)}
                     />
                 }
-            </WView>);
+                ListHeaderComponent={
+                    <WView dial={5}>
+                        <ImageSlider
+                            imagePress={false}
+                            autoPlayEnable
+                            {...this.props}
+                            data={images} />
+                        <WTouchable onPress={openSearch} flex style={[shopBtnContainer, { alignSelf: 'stretch' }]} margin={[10, 10]} padding={[0, 10]} dial={5}>
+                            <WText color={Palette.white}>Search Shops Locally</WText>
+                        </WTouchable>
+                        {
+                            isLoading ?
+                                <WView dial={5} flex>
+                                    <WSpinner size={"small"} color={Palette.theme_color} />
+                                    <WText fontSize={16} fontFamily={"Muli-Bold"}>Looking for shops...</WText>
+                                </WView>
+                                : data && data.length ?
+                                    null :
+                                    <WView dial={5}>
+                                        <WText fontSize={16} fontFamily={"Muli-Bold"}>No product found</WText>
+                                        <Image source={require('../../../images/no_product.png')} resizeMode="cover" style={{ height: 200 }} />
+                                    </WView>
+                        }
+                    </WView>
+                }
+                onEndReached={this.onRequestMoreProducts.bind(this)}
+                data={data}
+                renderItem={({ item, index }) =>
+                    <ShopListItem
+                        {...this.props}
+                        data={item}
+                    />}
+            />);
     }
 }
 
