@@ -3,16 +3,22 @@
     android:layout_width="match_parent"
     android:layout_gravity="center"
     android:layout_height="match_parent"
-    android:background="#59CAC8">
+    android:background="#2976BD">
 
-    <TextView
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:fontFamily="Muli-Bold"-->
+        <!--android:text="ISHAANVI"-->
+        <!--android:textAlignment="center"-->
+        <!--android:textColor="@color/cardview_light_background"-->
+        <!--android:textSize="25dp" />-->
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:fontFamily="Muli-Bold"
-        android:text="ISHAANVI"
-        android:textAlignment="center"
-        android:textColor="@color/cardview_light_background"
-        android:textSize="25dp" />
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo"/>
 
 </LinearLayout>
