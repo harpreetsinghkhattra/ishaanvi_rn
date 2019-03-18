@@ -128,13 +128,13 @@ export default class ChatMessagesList extends Component {
                 sections={messages && messages.length ? messages : []}
                 ref={ref => this.ChatMessagesListRef = ref}
                 onContentSizeChange={() => messages && messages.length ? this.ChatMessagesListRef.scrollToLocation({
-                    animated: true,
+                    animated: false,
                     sectionIndex: messages.length - 1,
                     itemIndex: messages[messages.length - 1].data.length - 1,
                     viewOffset: -1
                 }) : null}
                 onLayout={() => messages && messages.length ? this.ChatMessagesListRef.scrollToLocation({
-                    animated: true,
+                    animated: false,
                     sectionIndex: messages.length - 1,
                     itemIndex: messages[messages.length - 1].data.length - 1,
                     viewOffset: -1

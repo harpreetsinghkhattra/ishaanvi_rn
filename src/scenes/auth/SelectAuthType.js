@@ -105,6 +105,7 @@ export default class SelectAuthType extends Component {
                                 Helper.resetAndPushRoot(history, routerNames.index);
                             }
                         } else if (res.message === "NotValid") this.setAlertMessageVisible(true, { status: res.message, heading: "User Not Valid!", message: "User/Password incorrect, Please try again" });
+                        else if (res.message === "Blocked") this.setAlertMessageVisible(true, { status: res.message, heading: "User is Blocked!", message: "Contact your admin, Please try again" });
                         else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });
                     } else if (res && res.response) {
                         const { status, response } = res;
@@ -121,8 +122,9 @@ export default class SelectAuthType extends Component {
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
-        const { stretch, btnStyle, btnContainer, iconDesign } = styles;
+        const { stretch, btnStyle, btnContainer, iconDesign, logoStyle } = styles;
         const { alertMessageVisible, alertMessage, isLoading } = this.state;
+        const logo = require("../../images/logo.png");
 
         console.log(this.props);
         return (
@@ -139,7 +141,8 @@ export default class SelectAuthType extends Component {
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader }, stretch]}>
                     <WView dial={5} flex padding={[10, 10]} backgroundColor={Palette.white} style={[stretch]}>
                         <WView dial={5} flex>
-                            <WText fontSize={30} fontFamily="Muli-Bold" center padding={[20, 0]} color={Palette.text_color}>ISHAANVI</WText>
+                            {/*<WText fontSize={30} fontFamily="Muli-Bold" center padding={[20, 0]} color={Palette.text_color}>ISHAANVI</WText>*/}
+                            <Image source={logo} style={logoStyle} />
                         </WView>
                         <WView dial={5} flex>
                             <WithLeftIcon
@@ -156,7 +159,7 @@ export default class SelectAuthType extends Component {
                                     isLoading={isLoading}
                                     onPress={this.getCurrentUser.bind(this)}
                                     iconPath={require("../../images/google_logo.png")}
-                                    iconStyle={{ width: 18, height: 18 }}
+                                    iconStyle={{ width: 18, height: 18, tintColor: Palette.white }}
                                     style={{ marginRight: 10, flex: 1 }}
                                 />
                                 <WithLeftIcon
@@ -197,5 +200,10 @@ const styles = {
         width: 14,
         height: 14,
         tintColor: Palette.white
+    },
+    logoStyle: {
+        width: 110,
+        height: 110,
+        tintColor: Palette.theme_color
     }
 }

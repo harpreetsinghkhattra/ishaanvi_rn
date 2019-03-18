@@ -139,7 +139,7 @@ export default class Login extends PureComponent {
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
         const { userType } = User.getUserData();
         const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
-        const plus = require('../../images/plus.png');
+        const plus = require('../../images/addshop.png');
         const empty = [];
 
         if (!isLazyLoading) return empty;
@@ -195,8 +195,8 @@ const styles = {
         borderColor: Palette.theme_color
     },
     icon: {
-        width: 20,
-        height: 20,
+        width: 30,
+        height: 30,
         tintColor: Palette.white
     },
     floatBtn: {

@@ -68,7 +68,7 @@ const ProductListItem = (props) => {
                                 <Text style={{
                                     fontSize: 12,
                                     color: Palette.white
-                                }}>{rating ? rating : 0}</Text>
+                                }}>{rating ? parseFloat(rating).toFixed(1) : 0}</Text>
                             </View>
                             <View style={{ paddingRight: 5 }}>
                                 <Image

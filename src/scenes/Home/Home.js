@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, NativeModules, Platform } from 'react-native';
 import Palette from '../../Palette';
 import TabsView from '../../components/Tabs/TabsView';
 import TabViews from '../../components/Tabs/TabViews';
@@ -38,6 +38,27 @@ export default class Home extends Component {
         Socket.request("/socket/api/saveUser", {
             id: User.getUserData()._id
         });
+        this.getUserResponse();
+
+        this.closeSplashScreen();
+    }
+
+    getUserResponse() {
+        const { _id: id, userAccessToken: accessToken } = User.getUserData();
+        Socket.request(get_user_profile.emit, { id, accessToken });
+        UserApi.getSocketResponseOnce(get_user_profile.on, (res) => { 
+            if(res && res.message && res.message.toLowerCase() === "blocked"){
+                this.onLogout();
+            }
+        });
+    }
+
+    async onLogout() {
+        const { history } = this.props;
+
+        User.resetUserData();
+        await UserData.removeItem(StorageKeys.USER_DATA);
+        Helper.resetAndPushRoot(history, routerNames.selectUserAction);
     }
 
     getIntialIndex = () => {
@@ -47,6 +68,12 @@ export default class Home extends Component {
         if (state.selectedIndex) return state.selectedIndex;
 
         return 0;
+    }
+
+    closeSplashScreen() {
+        if (Platform.OS === "android") {
+            NativeModules.AndroidCommon.closeSplashScreen();
+        }
     }
 
     // shouldComponentUpdate = (nextProps, nextState) => {

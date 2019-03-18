@@ -94,7 +94,7 @@ export default class ChatList extends PureComponent {
 
         if (isLoading)
             return (
-                <WView dial={5}>
+                <WView margin={[10, 10]} dial={5}> 
                     <WSpinner size={"small"} color={Palette.theme_color} />
                     <WText color={Palette.theme_color} >Please wait...</WText>
                 </WView >

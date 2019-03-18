@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WSpinner } from '../../components/common';
-import { ScrollView, PixelRatio, Alert } from 'react-native';
+import { ScrollView, PixelRatio, Alert, Image } from 'react-native';
 import Palette from '../../Palette';
 import { Large } from '../../components/UI/btn';
 import { CheckBox } from '../../components/UI/checkbox';
@@ -161,9 +161,10 @@ export default class Register extends Component {
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
-        const { stretch, btnStyle, btnContainer, border } = styles;
+        const { stretch, btnStyle, btnContainer, border, logoStyle } = styles;
         const { isLoading, alertMessage, alertMessageVisible, isVisible, requestBody, isLocationDetailLoading } = this.state;
         const { address, email, name, mobile_number } = requestBody;
+        const logo = require("../../images/logo.png");
 
         console.log("requestBody ===>", User.getUserData());
         return (
@@ -183,7 +184,8 @@ export default class Register extends Component {
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={5} padding={[0, 20]} style={[stretch]} >
                         <WView flex dial={5}>
-                            <WText center fontFamily={"Muli-Bold"} fontSize={30}>ISHAANVI</WText>
+                            {/*<WText center fontFamily={"Muli-Bold"} fontSize={30}>ISHAANVI</WText>*/}
+                            <Image source={logo} style={logoStyle} />
                         </WView>
                         <WView flex dial={2} style={[stretch]}>
 
@@ -276,5 +278,10 @@ const styles = {
         borderStyle: "solid",
         borderBottomWidth: (5 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
         borderColor: Palette.theme_color
+    },
+    logoStyle: {
+        width: 110,
+        height: 110,
+        tintColor: Palette.theme_color
     }
 }

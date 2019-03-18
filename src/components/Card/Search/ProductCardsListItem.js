@@ -36,7 +36,7 @@ export default class ProductsCardsListItem extends PureComponent {
     openScreen = (data) => {
         const { history } = this.props;
 
-        data = data && data.length ? data[0] : {};
+        data = data && data.length ? data[0] : data && data._id ? data : {};
 
         if (data._id)
             history.push(routerNames.chat_room, {
@@ -86,7 +86,7 @@ export default class ProductsCardsListItem extends PureComponent {
                         <WRow dial={4}>
                             <WRow dial={5} padding={[0, 5]} style={ratingContainer}>
                                 <Image source={star} style={[iconStyle, { tintColor: Palette.ratingColor }]} />
-                                <WText padding={[0, 0, 0, 5]} color={Palette.black}>{rating ? rating : 0}</WText>
+                                <WText padding={[0, 0, 0, 5]} color={Palette.black}>{rating ? parseFloat(rating).toFixed(1) : 0}</WText>
                             </WRow>
                             <WText padding={[0, 5]} color={Palette.black}>({reviews ? reviews : 0} ratings)</WText>
                         </WRow>

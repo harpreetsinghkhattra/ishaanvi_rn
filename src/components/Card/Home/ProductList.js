@@ -206,11 +206,13 @@ export default class ProductList extends PureComponent {
                 }
                 ListHeaderComponent={
                     <WView dial={5}>
-                        <ImageSlider
-                            imagePress={false}
-                            autoPlayEnable
-                            {...this.props}
-                            data={images} />
+                        {
+                            images && images.length ?
+                                <ImageSlider
+                                    imagePress={false}
+                                    autoPlayEnable
+                                    {...this.props}
+                                    data={images} /> : null}
                         <WTouchable onPress={openSearch} flex style={[shopBtnContainer, { alignSelf: 'stretch' }]} margin={[10, 10]} padding={[0, 10]} dial={5}>
                             <WText color={Palette.white}>Search Shops Locally</WText>
                         </WTouchable>

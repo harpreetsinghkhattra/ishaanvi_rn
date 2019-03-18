@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { WView, WText, WRow, Header, WTextInput } from '../../components/common';
-import { ScrollView, PixelRatio, Alert } from 'react-native';
+import { ScrollView, PixelRatio, Alert, Image } from 'react-native';
 import Palette from '../../Palette';
 import { Large } from '../../components/UI/btn';
 import { routerNames } from '../../RouteConfig';
@@ -60,6 +60,7 @@ export default class Login extends Component {
                                 Helper.resetAndPushRoot(history, routerNames.index);
                             }
                         } else if (res.message === "NotValid") this.setAlertMessageVisible(true, { status: res.message, heading: "User Not Valid!", message: "User/Password incorrect, Please try again" });
+                         else if (res.message === "Blocked") this.setAlertMessageVisible(true, { status: res.message, heading: "User is Blocked!", message: "Conact your admin, Please try again" });
                         else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again!" });
                     } else if (res && res.response) {
                         const { status, response } = res;
@@ -76,8 +77,9 @@ export default class Login extends Component {
 
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
-        const { stretch, btnStyle, btnContainer, border } = styles;
+        const { stretch, btnStyle, btnContainer, border, logoStyle } = styles;
         const { isLoading, alertMessageVisible, alertMessage } = this.state;
+        const logo = require("../../images/logo.png");
 
         console.log(this.props);
         return (
@@ -94,7 +96,8 @@ export default class Login extends Component {
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={5} padding={[0, 20]} style={[stretch]} >
                         <WView flex dial={5}>
-                            <WText center fontFamily={"Muli-Bold"} fontSize={30}>ISHAANVI</WText>
+                            {/*<WText center fontFamily={"Muli-Bold"} fontSize={30}>ISHAANVI</WText>*/}
+                            <Image source={logo} style={logoStyle} />
                         </WView>
                         <WView flex dial={2} style={[stretch]}>
 
@@ -158,5 +161,10 @@ const styles = {
         borderStyle: "solid",
         borderBottomWidth: (5 / PixelRatio.getPixelSizeForLayoutSize(1)) * 2,
         borderColor: Palette.theme_color
+    },
+    logoStyle: {
+        width: 110,
+        height: 110,
+        tintColor: Palette.theme_color
     }
 }

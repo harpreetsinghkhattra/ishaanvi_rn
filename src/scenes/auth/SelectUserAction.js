@@ -46,14 +46,16 @@ export default class SelectAdType extends Component {
 
     render() {
         const { screenWidth, screenHeight, history } = this.props;
-        const { stretch, btnStyle, btnContainer, iconDesign } = styles;
+        const { stretch, btnStyle, btnContainer, iconDesign, logoStyle } = styles;
         const { isLoading } = this.state;
+        const logo = require("../../images/logo.png");
 
         return (
             <WView dial={5} flex={1} style={{ alignItems: 'stretch' }}>
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeight, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex={0.6} dial={5} padding={[10, 10]} backgroundColor={Palette.theme_color} style={{ justifyContent: "space-around" }}>
-                        <WText fontSize={30} fontFamily="Muli-Bold" padding={[20, 10]} color={Palette.white}>ISHAANVI</WText>
+                        {/*<WText fontSize={30} fontFamily="Muli-Bold" padding={[20, 10]} color={Palette.white}>ISHAANVI</WText>*/}
+                        <Image source={logo} style={logoStyle}/>
                         <WRow dial={5} padding={[20, 10]}>
                             <WView dial={5} flex>
                                 <Image source={require("../../images/buyer.png")} style={iconDesign} />
@@ -102,5 +104,10 @@ const styles = {
         width: 14,
         height: 14,
         tintColor: Palette.white
+    },
+    logoStyle: {
+        width: 110,
+        height: 110,
+        tintColor: Palette.white 
     }
 }
