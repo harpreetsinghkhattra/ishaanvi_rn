@@ -1,6 +1,6 @@
 import Palette from './Palette'
 const NPM_PACKAGE = require('../package.json')
-const APP_NAME = 'Ishaanvi'
+const APP_NAME = 'Ishanvi'
 
 /**
  * The configuration file for the App

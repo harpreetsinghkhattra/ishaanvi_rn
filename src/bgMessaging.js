@@ -1,27 +1,33 @@
 import firebase from 'react-native-firebase';
+import Pallete from './Palette';
 
 export default async (message) => {
     // handle your message
-    console.log("NOTIFICATION ===> BgMessage", message);
+    // console.log("NOTIFICATION ===> BgMessag", message);
+    const notificationId = `${new Date().getTime()}`;
+    const { title, description } = message.data;
 
-    // const notificationOpen = await firebase.notifications().getInitialNotification();
-    // if (notificationOpen) {
-    //     console.log("NOTIFICATION ===> CLOSED", notificationOpen.notification);
-    // }
-    /*
-    * Triggered for data only payload in foreground
-    * */
-    // this.messageListener = firebase.messaging().onMessage((message) => {
-    //     //process data message
-    //     console.log("NOTIFICATION ===> CLOSED Done", JSON.stringify(message));
-    // });
+    const notification = new firebase.notifications.Notification()
+        .setNotificationId(notificationId)
+        .setTitle(title)
+        .setBody(description)
+        .setSound(firebase.notifications.Android.Defaults.Sound)
+        .setData({
+            title: title,
+            description: description
+        }); 
 
-    // this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-    //     const { title, body } = notificationOpen.notification;
-    //     console.log("NOTIFICATION ===> BACKGROUND", notificationOpen);
-    //     this.showAlert(title, body);
-    // });
+    notification
+        .android.setChannelId('channelId')
+        .android.setAutoCancel(true)  
+        .android.setLargeIcon("@mipmap/ic_launcher")
+        .android.setPriority(firebase.notifications.Android.Priority.High)
+        .android.setColor(Pallete.theme_color)
+        .android.setVibrate([1000])
+        .android.setCategory("alarm")
+        .android.setSmallIcon('@drawable/ic_action_logo');
 
+    firebase.notifications().displayNotification(notification);
 
     return Promise.resolve();
 }

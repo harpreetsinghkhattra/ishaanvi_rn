@@ -86,7 +86,7 @@ export default class Login extends Component {
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex dial={5} padding={[0, 20]} style={[stretch]} >
                         <WView flex dial={5}>
-                            {/*<WText center fontFamily={"Muli-Bold"} fontSize={30}>ISHAANVI</WText>*/}
+                            {/*<WText center fontFamily={"Muli-Bold"} fontSize={30}>ISHANVI</WText>*/}
                             <Image source={logo} style={logoStyle} />
                         </WView>
                         <WView flex dial={2} style={[stretch]}>

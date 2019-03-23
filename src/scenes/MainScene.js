@@ -47,7 +47,7 @@ class Main extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (!nextProps.isSocketConnected) {
+        if (!nextProps.isSocketConnected || nextProps.isNotificationAlertInRoot !== this.props.isNotificationAlertInRoot) {
             return false;
         }
 

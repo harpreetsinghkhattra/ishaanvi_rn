@@ -124,8 +124,9 @@ class Rootrn extends PureComponent {
         * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
         * */
         this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-            const { data } = notificationOpen.notification;
-            console.log("NOTIFICATION ===> BACKGROUND", notificationOpen);
+            const { data, notificationId } = notificationOpen.notification;
+            console.log("NOTIFICATION ===> BACKGROUND notificationId", notificationId);
+            firebase.notifications().removeDeliveredNotification(notificationId);
             this.setState({
                 alertNotificationMessageVisible: true,
                 selectedNotification: {
@@ -140,8 +141,10 @@ class Rootrn extends PureComponent {
         * */
         const notificationOpen = await firebase.notifications().getInitialNotification();
         if (notificationOpen) {
-            console.log("NOTIFICATION ===> CLOSED", notificationOpen);
-            const { data } = notificationOpen.notification;
+            const { data, notificationId } = notificationOpen.notification;
+            console.log("NOTIFICATION ===> CLOSED", notificationId);
+
+            firebase.notifications().removeDeliveredNotification(notificationId);
             this.setState({
                 alertNotificationMessageVisible: true,
                 selectedNotification: {
@@ -154,9 +157,15 @@ class Rootrn extends PureComponent {
         /*
         * Triggered for data only payload in foreground
         * */
-        this.messageListener = firebase.messaging().onMessage((message) => {
+        this.messageListener = firebase.messaging().onMessage(({ data }) => {
             //process data message
-            console.log("requestBody ===>", JSON.stringify(message));
+            this.setState({
+                alertNotificationMessageVisible: true,
+                selectedNotification: {
+                    title: data.title,
+                    description: data.description
+                }
+            })
         });
 
         firebase.messaging().subscribeToTopic("ishaanvi_events");
@@ -224,6 +233,8 @@ class Rootrn extends PureComponent {
                     <StatusBar hidden={false} backgroundColor={Palette.theme_color} />
                     <EventNotificationinfo
                         {...this.props}
+                        screenWidth={this.state.viewableScreenWidth}
+                        screenHeight={this.state.viewableScreenHeight}
                         isVisible={alertNotificationMessageVisible}
                         title={selectedNotification && selectedNotification.title ? selectedNotification.title : ''}
                         description={selectedNotification && selectedNotification.description ? selectedNotification.description : ''}
@@ -232,6 +243,7 @@ class Rootrn extends PureComponent {
                     {React.createElement(MainScene, {
                         booted: this.state.booted,
                         isSocketConnected: this.state.isSocketConnected,
+                        isNotificationAlertInRoot: alertNotificationMessageVisible,
                         screenWidth: this.state.viewableScreenWidth,
                         screenHeight: this.state.viewableScreenHeight,
                         screenHeightWithHeader: this.state.viewableScreenHeightWithHeader,

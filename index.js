@@ -22,14 +22,14 @@ socket.on("connect", () => {
         });
 });
 
-firebase.notifications().getInitialNotification().then((notificationOpen, notificationOpen1) => {
-    console.log("NOTIFICATION ===> CLOSED1", notificationOpen, notificationOpen1); 
-})
+// firebase.notifications().getInitialNotification().then((notificationOpen, notificationOpen1) => {
+//     console.log("NOTIFICATION ===> git initial", notificationOpen, notificationOpen1); 
+// })
 
-firebase.notifications().onNotificationOpened((notificationOpen) => {
-    const { title, body } = notificationOpen.notification;
-    console.log("NOTIFICATION ===> BACKGROUND1", notificationOpen);
-});
+// firebase.notifications().onNotificationOpened((notificationOpen) => {
+//     const { title, body } = notificationOpen.notification;
+//     console.log("NOTIFICATION ===> on notification oppended", notificationOpen);
+// });
 
 const client = new Socket(socket);
 
