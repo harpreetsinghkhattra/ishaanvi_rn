@@ -11,7 +11,7 @@ export default async (message) => {
         .setNotificationId(notificationId)
         .setTitle(title)
         .setBody(description)
-        .setSound(firebase.notifications.Android.Defaults.Sound)
+        .setSound('default')
         .setData({
             title: title,
             description: description
@@ -23,8 +23,7 @@ export default async (message) => {
         .android.setLargeIcon("@mipmap/ic_launcher")
         .android.setPriority(firebase.notifications.Android.Priority.High)
         .android.setColor(Pallete.theme_color)
-        .android.setVibrate([1000])
-        .android.setCategory("alarm")
+        .android.setVibrate([400, 1000])
         .android.setSmallIcon('@drawable/ic_action_logo');
 
     firebase.notifications().displayNotification(notification);
