@@ -22,7 +22,7 @@
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
-          android:launchMode="singleTop"
+          android:launchMode="singleTask"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
         android:windowSoftInputMode="adjustResize">
         <intent-filter>
@@ -33,7 +33,7 @@
               <action android:name="android.intent.action.VIEW" />
               <category android:name="android.intent.category.DEFAULT" />
               <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="peopleapp" android:host="people" />
+              <data android:scheme="http" android:host="13.127.188.164" />
           </intent-filter>
 
       </activity>
