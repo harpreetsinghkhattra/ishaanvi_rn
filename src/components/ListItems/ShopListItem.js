@@ -1,23 +1,27 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { FlatList, Image, Linking, Alert } from 'react-native';
-import { WText, WView, WRow, WSpinner, WTouchable } from '../common';
+import { WText, WView, WRow, WSpinner, WTouchable, Image as WImage } from '../common';
 import { RecentProductsItem } from '../ListItems/';
 import Palette from '../../Palette';
 import { routerNames } from '../../RouteConfig';
 
-export default class RecentProductsList extends PureComponent {
+const CARD_IMAGE_WIDTH = 150;
+
+export default class ShopListItem extends PureComponent {
 
     static propTypes = {
         heading: PropTypes.string,
         data: PropTypes.any,
         isLoading: PropTypes.bool,
         isViewMore: PropTypes.bool,
-        onItemPress: PropTypes.func
+        onItemPress: PropTypes.func,
+        marginContainer: PropTypes.array
     }
 
     static defaultProps = {
-        isViewMore: true
+        isViewMore: true,
+        marginContainer: [5, 5, 5, 0]
     }
 
     openScreen(path, data) {
@@ -46,49 +50,37 @@ export default class RecentProductsList extends PureComponent {
         });
     }
 
-    openScreen1 = (path, value={}) => {
+    openScreen1 = (path, value = {}) => {
         const { history } = this.props;
 
         history.push(path, value);
     }
 
     render = () => {
-        const { heading, data, isLoading, isViewMore, onPress, userId, onItemPress } = this.props;
-        const { btnContainer, stretch, imageStyle, iconStyle, container } = styles;
+        const { heading, data, isLoading, isViewMore, onPress, userId, onItemPress, marginContainer } = this.props;
+        const { container, getBtnContainer, stretch, iconStyle } = styles;
 
         const message = require('../../images/message.png');
         const phone = require('../../images/phone.png');
         const share = require('../../images/share1.png');
+        const shop = require("../../images/shop.png");
+        const star = require("../../images/filled_star.png");
 
-        const { name, business_name, mobile_number, business_address, imageUrl } = data;
-        
         return (
-            <WView dial={4} margin={[5, 5]} style={[stretch, container]}>
-                <WRow dial={4} style={[stretch]}>
-                    <WView dial={5} padding={[0, 5]}>
-                        <Image source={imageUrl ? { uri: imageUrl } : require("../../images/profile.png")} style={imageStyle} />
-                    </WView>
-                    <WView flex dial={4} padding={[0, 5]}>
-                        <WText color={Palette.black} fontFamily={"Muli-Bold"} fontSize={14}>{name}</WText>
-                        <WText color={Palette.black} fontSize={14} >{business_name}</WText>
-                        <WText color={Palette.black} fontSize={12} lines={2}>{business_address}</WText>
-                    </WView>
-                    <WView dial={2} padding={[5, 5]}>
-                        <WTouchable onPress={onItemPress ? onItemPress.bind(this, data._id) : this.openScreen1.bind(this, routerNames.viewPortal, { screenType: "home", userId: data._id })} style={btnContainer} dial={5} padding={[0, 10]}> 
-                            <WText center color={Palette.white} fontSize={14} fontFamily={"Muli-Bold"}>Visit</WText>
-                        </WTouchable>
-                    </WView>
-                </WRow>
-                <WRow dial={4} backgroundColor={Palette.line_color}>
-                    <this.Btn
-                        onPress={this.dialNumber.bind(this, data)}
-                        path={phone} />
-                    <this.Btn
-                        onPress={this.openScreen.bind(this, data)}
-                        path={message} />
-                    <this.Btn
-                        onPress={() => Alert.alert("", "It will be cover with web page link.")}
-                        path={share} />
+            <WView dial={4} margin={marginContainer} style={[stretch, container]}> 
+                <WView>
+                    <WImage source={shop} width={CARD_IMAGE_WIDTH} />
+                    <WText fontSize={14} fontFamily={"Muli-Bold"} lines={1}>Dummy test name of shop test test test</WText>
+                    <WText fontSize={14} lines={2}>Dummy test description of shop test test test</WText>
+                </WView>
+                <WRow dial={4}>
+                    <WRow dial={4} flex>
+                        <WText>4.1</WText>
+                        <Image source={star} style={iconStyle} />
+                    </WRow>
+                    <WTouchable margin={[0, 0, 0, 10]} dial={5} style={getBtnContainer}>
+                        <WText color={Palette.theme_color} fontFamily={"Muli-Bold"}>GET</WText>
+                    </WTouchable>
                 </WRow>
             </WView>
         )
@@ -96,6 +88,9 @@ export default class RecentProductsList extends PureComponent {
 }
 
 const styles = {
+    container: {
+        width: CARD_IMAGE_WIDTH
+    },
     stretch: {
         alignItems: 'stretch'
     },
@@ -118,9 +113,10 @@ const styles = {
         width: 10,
         height: 10
     },
-    container: {
-        elevation: 1,
-        borderColor: Palette.border_color,
-        borderStyle: 'solid'
+    getBtnContainer: {
+        width: 80,
+        height: 20,
+        borderRadius: 10,
+        backgroundColor: Palette.line_color
     }
 }

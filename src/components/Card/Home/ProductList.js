@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
-import { WView, WText, WRow, Header, WTextInput, WTouchable, WSpinner } from '../../common';
+import { WView, WText, WRow, Header, WTextInput, WTouchable, WSpinner, WButton } from '../../common';
 import { ScrollView, PixelRatio, Image, FlatList, RefreshControl } from 'react-native';
 import Palette from '../../../Palette';
 import { Large } from '../../UI/btn';
 import { routerNames } from '../../../RouteConfig';
-import { RecentProductsList } from '../../Lists';
+import { RecentProductsList, ShopList } from '../../Lists';
 import { ShopListItem } from '../../ListItems';
 import { SearchHeader } from '../../Header';
 import { Storage, StorageKeys } from '../../../helper';
@@ -184,13 +184,46 @@ export default class ProductList extends PureComponent {
         return (data.length - 1 === index && isRequestMoreProducts) ? true : false;
     }
 
+    /** Render Category Buttons */
+    CategoryBtn = ({ label1, label2, backgroundColor1, backgroundColor2 }) =>
+        <WRow dial={5} margin={[5, 5]}>
+            {
+                label1 ?
+                    <WButton
+                        flex
+                        fontSize={14}
+                        label={label1}
+                        margin={label2 ? [0, 5, 0, 0] : [0, 0]}
+                        btnPadding={[5, 10]}
+                        textStyle={{ textAlign: 'center' }}
+                        containerStyle={{ backgroundColor: backgroundColor1 }}
+                    /> : null
+            }
+            {
+                label2 ?
+                    <WButton
+                        flex
+                        fontSize={14}
+                        label={label2}
+                        btnPadding={[5, 10]}
+                        textStyle={{ textAlign: 'center' }}
+                        containerStyle={{ backgroundColor: backgroundColor2 }}
+                    /> : null
+            }
+        </WRow>
+
     render() {
         const { screenWidth, screenHeightWithHeader, history, openSearch } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn, shopBtnContainer } = styles;
         const { userType } = User.getUserData();
-        const { isHomeFilterVisible, isLocationModalVisible, data, isLoading, isRefreshingList, isGetNewItems, images } = this.state;
+        const { isHomeFilterVisible, isLocationModalVisible, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
         const plus = require('../../../images/plus.png');
         const empty = [];
+        const images = [
+            require("../../../images/slider1.jpeg"),
+            require("../../../images/slider2.jpeg"),
+            require("../../../images/slider3.jpeg")
+        ];
 
         console.log("home loading render product list");
 
@@ -206,10 +239,26 @@ export default class ProductList extends PureComponent {
                 }
                 ListHeaderComponent={
                     <WView dial={5}>
+                        <this.CategoryBtn
+                            label1={"MULTI BRAND"}
+                            label2={"GARMENTS"}
+                            backgroundColor1={Palette.greenBtn1}
+                            backgroundColor2={Palette.greenBtn2} />
+                        <this.CategoryBtn
+                            label1={"BOUTIQUES"}
+                            label2={"DESIGNER"}
+                            backgroundColor1={Palette.red}
+                            backgroundColor2={Palette.orange} />
+                        <this.CategoryBtn
+                            label1={"CLOTH HOUSE/SHOP"}
+                            backgroundColor1={Palette.lightSeeGreen}
+                        />
                         {
                             images && images.length ?
                                 <ImageSlider
                                     imagePress={false}
+                                    absolutePath
+                                    minHeight={90}
                                     autoPlayEnable
                                     {...this.props}
                                     data={images} /> : null}
@@ -232,9 +281,11 @@ export default class ProductList extends PureComponent {
                     </WView>
                 }
                 onEndReached={this.onRequestMoreProducts.bind(this)}
-                data={data}
+                data={[
+                    { name: "DESIGNER" }
+                ]}
                 renderItem={({ item, index }) =>
-                    <ShopListItem
+                    <ShopList
                         {...this.props}
                         data={item}
                     />}

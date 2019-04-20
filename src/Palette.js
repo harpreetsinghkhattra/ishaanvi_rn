@@ -13,5 +13,9 @@ export default {
   facebook_logo: "#3f51b5",
   red: "red",
   ratingColor: '#ffca28',
-  green: "green"
+  green: "green",
+  orange: "#F55217",
+  greenBtn1: "#32CD32",
+  greenBtn2: "#228B22",
+  lightSeeGreen: "#20B2AA"
 }

@@ -29,11 +29,11 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-          <intent-filter android:label="filter_react_native">
+          <intent-filter android:label="Ishaanvi">
               <action android:name="android.intent.action.VIEW" />
               <category android:name="android.intent.category.DEFAULT" />
               <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="http" android:host="13.127.188.164" />
+              <data android:scheme="http" android:host="ishaanvi.co" />
           </intent-filter>
 
       </activity>

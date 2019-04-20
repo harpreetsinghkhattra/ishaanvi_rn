@@ -8,7 +8,8 @@ import {
     StatusBar,
     ToastAndroid,
     Alert,
-    AsyncStorage
+    AsyncStorage,
+    Linking
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { MemoryRouter, BackButton } from 'react-router-native'
@@ -100,6 +101,10 @@ class Rootrn extends PureComponent {
     async componentDidMount() {
         this.checkPermission();
         this.createNotificationListeners(); //add this line
+
+        Linking.getInitialURL().then(url => {
+            console.log("url ===> ", url);
+        });
     }
 
     ////////////////////// Add these methods //////////////////////

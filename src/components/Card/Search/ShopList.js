@@ -10,8 +10,8 @@ import { User } from '../../../model/user';
 import { ShopListItem } from '../../../components/ListItems'
 import { routerNames } from '../../../RouteConfig';
 
-const PAGE_INDEX = 0;
-export default class ProductList extends PureComponent {
+const PAGE_INDEX = 1;
+export default class ShopList extends PureComponent {
 
     static propTypes = {
         type: PropTypes.string,
@@ -40,7 +40,7 @@ export default class ProductList extends PureComponent {
         const { tabEmitter, isFilter } = this.props;
         if (tabEmitter.addListener) {
             tabEmitter.addListener('search_lazy_load', (data) => {
-                if (isFilter) isFilter && isFilter(data && data.index === 0 ? false : true);
+                if (isFilter) isFilter && isFilter(data && data.index === PAGE_INDEX ? false : true);
                 if (data && data.index === PAGE_INDEX)
                     this.setState(prevState => {
                         if (!prevState.isLazyLoading) {
@@ -127,6 +127,7 @@ export default class ProductList extends PureComponent {
                 style={{ flexGrow: 1 }}
                 onEndReached={this.onEndReached.bind(this)}
                 onEndReachedThreshold={1}
+                numColumns={2}
                 ListHeaderComponent={
                     data && !data.length ?
                         <WView dial={5} flex margin={[30, 0]}>
@@ -138,6 +139,7 @@ export default class ProductList extends PureComponent {
                 renderItem={({ item, index }) => <ShopListItem
                     {...rest}
                     data={item}
+                    marginContainer={[5, 5]}
                     onItemPress={userId => this.openScreen(routerNames.viewPortal, { screenType: 'search', userId })}
                 />}
             />

@@ -24,7 +24,8 @@ export default class WTextInput extends Component {
         isLoading: PropTypes.bool,
         containerStyle: PropTypes.any,
         flex: PropTypes.number,
-        loading: PropTypes.bool
+        loading: PropTypes.bool,
+        onLeftViewPress: PropTypes.func
     }
 
     static defaultProps = {
@@ -68,6 +69,7 @@ export default class WTextInput extends Component {
             flex,
             iconTintColor,
             loading,
+            onLeftViewPress,
             ...rest
         } = this.props;
 
@@ -76,9 +78,9 @@ export default class WTextInput extends Component {
                 <WRow dial={5} style={[container, isError.status ? error : success, containerStyle]} >
                     {
                         iconPath &&
-                        <WView dial={5} padding={[0, 5, 0, 0]}>
+                        <WTouchable activeOpacity={1} onPress={onLeftViewPress} dial={5} padding={[0, 5, 0, 0]}>
                             <Image source={iconPath} style={[iconStyle, isError.status ? error : success, { tintColor: iconTintColor }]} />
-                        </WView>
+                        </WTouchable>
                     }
                     <TextInput
                         {...rest}

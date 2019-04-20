@@ -48,14 +48,14 @@ export default class Home extends PureComponent {
         const { tabEmitter, ...rest } = this.props;
 
         const views = [
-            <ShopList
-                {...rest}
-                initialSearchTabPage={this.getIntialPage()}
-                tabEmitter={this._tabEmitter}
-            />,
             <ProductList
                 {...rest}
                 isSearch
+                initialSearchTabPage={this.getIntialPage()}
+                tabEmitter={this._tabEmitter}
+            />,
+            <ShopList
+                {...rest}
                 initialSearchTabPage={this.getIntialPage()}
                 tabEmitter={this._tabEmitter}
             />
@@ -65,10 +65,10 @@ export default class Home extends PureComponent {
         const _renderHeader = () => {
             let tabs = [
                 {
-                    label: 'Shops',
+                    label: 'By Products',
                 },
                 {
-                    label: 'Products',
+                    label: 'By Shops',
                 }
             ];
             return (
@@ -81,6 +81,8 @@ export default class Home extends PureComponent {
 
         return (
             <WView dial={2} flex={1} style={[{ width: screenWidth, minHeight: screenHeight - 100 }]}>
+                <WText color={Palette.orange} fontFamily={"Muli-Bold"} fontSize={18}>EXPLORE THE DESIGNER FASION</WText>
+                <WText color={Palette.orange} fontFamily={"Muli-Bold"} fontSize={22}>#Locally#</WText>
                 <WView dial={2} flex style={{ alignSelf: 'stretch', alignItems: 'stretch' }}>
                     <TabViews
                         tabPosition="top"

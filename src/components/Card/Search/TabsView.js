@@ -63,7 +63,7 @@ export default class TabsView extends Component {
                     }}
                 >
                     <WView flex dial={5} padding={[8, 0]}>
-                        <WText fontSize={18} fontFamily={"Muli-Bold"} color={isSelected ? Palette.white : Palette.border_color}>{tab.label}</WText>
+                        <WText fontSize={18} fontFamily={"Muli-Bold"} color={isSelected ? Palette.theme_color : Palette.border_color}>{tab.label}</WText>
                     </WView>
                 </TouchableOpacity>
             )
@@ -88,17 +88,17 @@ export default class TabsView extends Component {
 const styles = StyleSheet.create({
     container: {
         height: 30,
-        borderRadius: 15,
-        marginHorizontal: 20,
+        marginHorizontal: 30,
         marginVertical: 10,
         flexDirection: 'row',
-        alignItems: 'stretch',
-        backgroundColor: Palette.theme_color
+        alignItems: 'stretch'
     },
     itemContainer: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderBottomWidth: 2,
+        borderStyle: 'solid'
     },
     image: {
         height: 22,
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     textSelected: {
         marginTop: 4,
         fontSize: 16,
-        color: '#ffffff'
+        color: Palette.theme_color
     },
     swiperIndicatorContainer: {
         left: 0,
@@ -128,10 +128,9 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch'
     },
     selected: {
-        backgroundColor: Palette.theme_color,
-        borderRadius: 15
+        borderColor: Palette.theme_color
     },
     deSelected: {
-        backgroundColor: Palette.white
+       borderColor: 'transparent'
     }
 })

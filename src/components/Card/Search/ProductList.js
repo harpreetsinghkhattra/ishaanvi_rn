@@ -9,7 +9,7 @@ import { Api, Socket, User as UserApi } from '../../../api';
 import { User } from '../../../model/user';
 import { routerNames } from '../../../RouteConfig';
 
-const PAGE_INDEX = 1;
+const PAGE_INDEX = 0;
 export default class ProductList extends PureComponent {
 
     static propTypes = {
@@ -135,6 +135,7 @@ export default class ProductList extends PureComponent {
                 data={data}
                 keyExtractor={(item, index) => `shops-product-${index}`}
                 style={{ flexGrow: 1 }}
+                numColumns={2}
                 onEndReached={this.onEndReached.bind(this)}
                 ListHeaderComponent={
                     data && !data.length && isSearch ?

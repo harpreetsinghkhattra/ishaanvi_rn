@@ -15,7 +15,7 @@ import { Api, Socket, User as UserApi } from '../../api';
 import { ProductList as RandomProductList } from '../../components/Card/Home';
 import { ProductList } from '../../components/Card/Search';
 import { Search } from '../../model/search';
-import { SearchTab } from '.';
+import { SearchTab, SearchAutoFill } from '.';
 
 const UserData = new Storage();
 const PAGE_INDEX = 1;
@@ -200,6 +200,7 @@ export default class Login extends PureComponent {
                 <SearchViaProduct
                     ref={ref => this.searchViaProductInput = ref}
                     isLoading={isSearchLoading}
+                    isAutoFillView={(value) => this.searchAutoFillRef && this.searchAutoFillRef.isView(value)} 
                     openFilter={this.setFilterModalVisible.bind(this, true)}
                     onSubmit={this.onSubmit.bind(this)}
                 />
@@ -218,6 +219,50 @@ export default class Login extends PureComponent {
                         data={searchedElements}
                         isFilter={isFilter => this.searchViaProductInput && this.searchViaProductInput.isFilter(isFilter)}
                         {...this.props} />
+                    <SearchAutoFill
+                        ref={ref => this.searchAutoFillRef = ref}
+                        data={[
+                            {
+                                isShop: true,
+                                value: "Test"
+                            },
+                            {
+                                isShop: true,
+                                value: "Test"
+                            },
+                            {
+                                isShop: true,
+                                value: "Test"
+                            },
+                            {
+                                isShop: true,
+                                value: "Test"
+                            },
+                            {
+                                isShop: true,
+                                value: "Test"
+                            },
+                            {
+                                isShop: true,
+                                value: "Test"
+                            },
+                            {
+                                isShop: true,
+                                value: "Test"
+                            },
+                            {
+                                isShop: true,
+                                value: "Test"
+                            },
+                            {
+                                isShop: false,
+                                value: "Test"
+                            },
+                            {
+                                isShop: true,
+                                value: "Test"
+                            }
+                        ]} />
                 </WView>
             </WView >);
     }

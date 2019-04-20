@@ -4,7 +4,7 @@ import { TouchableNativeFeedback, Platform } from 'react-native';
 import { WTouchable, WText, WSpinner, WView } from './';
 import Palette from '../../Palette';
 
-export default WButton = ({ isLoading, loadingColor, dial, flex, label, containerStyle, component, onPress, btnPadding, fontSize, margin }) => {
+export default WButton = ({ isLoading, loadingColor, dial, flex, label, containerStyle, component, onPress, btnPadding, fontSize, margin, textStyle }) => {
     return (
         <WTouchable flex={flex ? flex : 0} dial={dial} onPress={isLoading ? () => { } : onPress} style={[containerStyle]} padding={btnPadding} margin={margin}>
             {
@@ -14,7 +14,7 @@ export default WButton = ({ isLoading, loadingColor, dial, flex, label, containe
                     component && component() ?
                         component()
                         :
-                        <WText fontSize={fontSize} color={Palette.white}>{label}</WText>
+                        <WText fontSize={fontSize} color={Palette.white} style={textStyle}>{label}</WText>
             }
         </WTouchable>
     )
