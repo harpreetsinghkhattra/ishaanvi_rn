@@ -43,9 +43,10 @@ export default class Home extends PureComponent {
     }
 
     render() {
-
         const { location } = this.props;
-        const { tabEmitter, ...rest } = this.props;
+        const { tabEmitter, setSearchTabIndex, ...rest } = this.props;
+
+        setSearchTabIndex(this.getIntialPage());
 
         const views = [
             <ProductList
@@ -74,6 +75,7 @@ export default class Home extends PureComponent {
             return (
                 <TabsView
                     tabEmitter={this._tabEmitter}
+                    setSearchTabIndex={setSearchTabIndex}
                     tabs={tabs}
                 />
             );

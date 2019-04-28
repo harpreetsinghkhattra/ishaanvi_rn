@@ -15,7 +15,8 @@ export default class AutoFill extends PureComponent {
 
         this.state = {
             keyboardHeight: 0,
-            isView: false
+            isView: false,
+            data: []
         }
 
         this._isMounted = true;
@@ -51,7 +52,22 @@ export default class AutoFill extends PureComponent {
         })
     }
 
-    isView = (isView) => this._setState({ isView })
+    isView = (isView) => this._setState({ isView });
+
+    getData = (data, tabIndex) => {
+
+        if (tabIndex < 0) return;
+
+        if (tabIndex === 0) data = data && data.length ? data.slice(0, 10) : []
+        else data = data && data.length && data[0].users && data[0].users.length ? data[0].users.slice(0, 10) : [];
+
+        this.setState({
+            data: data.map(ele => ({
+                isShop: tabIndex ? true : false,
+                value: ele.product && tabIndex === 0 ? ele.product.name : ele.name ? ele.name : ''
+            }))
+        });
+    }
 
     renderItem = ({ item, index }) => {
         const productIcon = require("../../images/addshop.png");
@@ -72,14 +88,14 @@ export default class AutoFill extends PureComponent {
     }
 
     render() {
-        const { data } = this.props;
+        const { data } = this.state;
         const { keyboardHeight, isView } = this.state;
         const { autoFillContainer, seprator } = styles;
 
-        if(!isView) return null;
-        
+        if (!isView) return null;
+
         return (
-            <WView dial={2} backgroundColor={Palette.white} style={[autoFillContainer, { bottom: keyboardHeight }]}>
+            <WView dial={2} backgroundColor={Palette.white} style={[autoFillContainer, { bottom: keyboardHeight }]} >
                 <FlatList
                     data={data}
                     keyboardShouldPersistTaps={"always"}

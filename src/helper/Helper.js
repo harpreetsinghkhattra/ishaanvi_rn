@@ -12,7 +12,10 @@ export class Helper {
     static isObjectEmpty(obj, cb) {
         let names = Object.getOwnPropertyNames(obj);
         console.log("names =>", names);
-        return Promise.resolve({ status: (names.length === 0) ? true : false, names });
+        return Promise.resolve({
+            status: (names.length === 0) ? true : false,
+            names
+        });
     }
 
     /**
@@ -55,6 +58,11 @@ export class Helper {
         return (number && number.length >= 10 && number.length <= 12);
     }
 
+    static validateDiscount(number) {
+        number = number ? parseFloat(number) : 0;
+        return number >= 0 && number <= 100;
+    }
+
     /** Validate password */
     static validatePassword = (value) => {
         return (value && value.length >= 5) ? true : false;
@@ -75,7 +83,10 @@ export class Helper {
      */
     static validate(parameters, obj) {
         return this.isObjectEmpty(obj)
-            .then(({ status, names }) => {
+            .then(({
+                status,
+                names
+            }) => {
                 console.log("names", status, names);
                 if (!status) {
                     var existedFields = {
@@ -83,33 +94,63 @@ export class Helper {
                         emptyKeys: []
                     }
                     parameters.forEach((element, index) => {
-                        !obj[element] && existedFields.emptyKeys.push({ fieldName: element, message: "Required" });
+                        !obj[element] && existedFields.emptyKeys.push({
+                            fieldName: element,
+                            message: "Required"
+                        });
                     });
 
                     //Specific fields validations
-                    existedFields.emptyKeys.length <= 0 &&
+                    // existedFields.emptyKeys.length <= 0 &&
                         existedFields.keys.forEach((element) => {
                             switch (element) {
                                 case "email":
-                                    !this.validateEmail(obj["email"]) && existedFields.emptyKeys.push({ fieldName: element, message: "Email address is not valid." });
+                                    !this.validateEmail(obj["email"]) && existedFields.emptyKeys.push({
+                                        fieldName: element,
+                                        message: "Email address is not valid."
+                                    });
                                     break;
                                 case "mobile_number":
-                                    !this.validateMobile(obj["mobile_number"]) && existedFields.emptyKeys.push({ fieldName: element, message: "Mobile number is not valid." });
+                                    !this.validateMobile(obj["mobile_number"]) && existedFields.emptyKeys.push({
+                                        fieldName: element,
+                                        message: "Mobile number is not valid."
+                                    });
+                                    break;
+                                case "discount":
+                                    !this.validateDiscount(obj["discount"]) && existedFields.emptyKeys.push({
+                                        fieldName: element,
+                                        message: "Discount must be 0 to 100"
+                                    });
                                     break;
                                 case "password":
-                                    !this.validatePassword(obj["password"]) && existedFields.emptyKeys.push({ fieldName: element, message: "Password at least 5 characters" });
+                                    !this.validatePassword(obj["password"]) && existedFields.emptyKeys.push({
+                                        fieldName: element,
+                                        message: "Password at least 5 characters"
+                                    });
                                     break;
                                 case "confirm_password":
                                     if (obj["password"] !== obj["confirm_password"]) {
-                                        existedFields.emptyKeys.push({ fieldName: "password", message: "Password is not matched." });
-                                        existedFields.emptyKeys.push({ fieldName: "confirm_password", message: "Password is not matched." });
+                                        existedFields.emptyKeys.push({
+                                            fieldName: "password",
+                                            message: "Password is not matched."
+                                        });
+                                        existedFields.emptyKeys.push({
+                                            fieldName: "confirm_password",
+                                            message: "Password is not matched."
+                                        });
                                     }
                                     break;
                             }
                         });
 
-                    return Promise.resolve({ status: existedFields.emptyKeys.length > 0 ? false : true, response: existedFields.emptyKeys });
-                } else return Promise.resolve({ status: false, response: parameters });
+                    return Promise.resolve({
+                        status: existedFields.emptyKeys.length > 0 ? false : true,
+                        response: existedFields.emptyKeys
+                    });
+                } else return Promise.resolve({
+                    status: false,
+                    response: parameters
+                });
             });
     }
 

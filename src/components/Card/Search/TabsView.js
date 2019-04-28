@@ -16,6 +16,7 @@ export default class TabsView extends Component {
             selectedIconSource: Image.propTypes.source
         })).isRequired,
         changePageWithAnimation: PropTypes.bool,
+        setSearchTabIndex: PropTypes.func
     }
 
     /**
@@ -36,7 +37,8 @@ export default class TabsView extends Component {
         let {
             tabs, pager, style, itemStyle, selectedItemStyle, iconStyle,
             selectedIconStyle, textStyle, selectedTextStyle, changePageWithAnimation,
-            onTabPress
+            onTabPress,
+            setSearchTabIndex
         } = this.props
         if (!tabs || tabs.length === 0) return null
 
@@ -58,6 +60,8 @@ export default class TabsView extends Component {
                             if (this.props.changePageWithAnimation)
                                 pager.setPage(index);
                             else pager.setPageWithoutAnimation(index);
+
+                            setSearchTabIndex(index);
                         }
                         return;
                     }}

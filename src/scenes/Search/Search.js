@@ -39,6 +39,7 @@ export default class Login extends PureComponent {
 
         this.listenLazyLoadEvent();
         this._isMounted = true;
+        this.searchTabIndex = 0;
     }
 
     componentWillUnmount() {
@@ -151,7 +152,7 @@ export default class Login extends PureComponent {
         return (data.length - 1 === index && isRequestMoreProducts) ? true : false;
     }
 
-    onSubmit = (searchValue) => {
+    onSubmit = (searchValue, isOnTextChange = false) => {
         if (!searchValue) return;
 
         if (filterData && (filterData[0] > filterData[1])) return;
@@ -172,17 +173,28 @@ export default class Login extends PureComponent {
 
         // "coordinates": [31.9579623, 75.6282207]
 
-        this._setState(prevState => {
-            if (prevState.isSearchLoading) return;
-            return ({ isSearchLoading: true });
-        })
+        if (!isOnTextChange) {
+            this._setState(prevState => {
+                if (prevState.isSearchLoading) return;
+                return ({ isSearchLoading: true });
+            });
+        }
+
         Socket.request(search.emit, searchData);
         UserApi.getSocketResponseOnce(search.on, (res) => {
             console.log('get socket response once', JSON.stringify(searchData), JSON.stringify(res));
-            if (res && res.message === "Success") {
-                this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: res.data, isNoProduct: true });
-            } else this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: [], isNoProduct: true });
+            if (!isOnTextChange) {
+                if (res && res.message === "Success") {
+                    this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: res.data, isNoProduct: true });
+                } else this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: [], isNoProduct: true });
+            } else {
+                this.searchAutoFillRef && this.searchAutoFillRef.getData(res.data, this.searchTabIndex);
+            }
         });
+    }
+
+    setSearchTabIndex = (index) => {
+        this.searchTabIndex = index > -1 ? index : 0;
     }
 
     render() {
@@ -200,9 +212,9 @@ export default class Login extends PureComponent {
                 <SearchViaProduct
                     ref={ref => this.searchViaProductInput = ref}
                     isLoading={isSearchLoading}
-                    isAutoFillView={(value) => this.searchAutoFillRef && this.searchAutoFillRef.isView(value)} 
+                    isAutoFillView={(value) => this.searchAutoFillRef && this.searchAutoFillRef.isView(value)}
                     openFilter={this.setFilterModalVisible.bind(this, true)}
-                    onSubmit={this.onSubmit.bind(this)}
+                    onSubmit={(value, isOnTextChange) => this.onSubmit(value, isOnTextChange)}
                 />
                 <HomeFilter
                     {...this.props}
@@ -217,52 +229,12 @@ export default class Login extends PureComponent {
                 >
                     <SearchTab
                         data={searchedElements}
+                        setSearchTabIndex={index => this.setSearchTabIndex(index)}
                         isFilter={isFilter => this.searchViaProductInput && this.searchViaProductInput.isFilter(isFilter)}
                         {...this.props} />
                     <SearchAutoFill
                         ref={ref => this.searchAutoFillRef = ref}
-                        data={[
-                            {
-                                isShop: true,
-                                value: "Test"
-                            },
-                            {
-                                isShop: true,
-                                value: "Test"
-                            },
-                            {
-                                isShop: true,
-                                value: "Test"
-                            },
-                            {
-                                isShop: true,
-                                value: "Test"
-                            },
-                            {
-                                isShop: true,
-                                value: "Test"
-                            },
-                            {
-                                isShop: true,
-                                value: "Test"
-                            },
-                            {
-                                isShop: true,
-                                value: "Test"
-                            },
-                            {
-                                isShop: true,
-                                value: "Test"
-                            },
-                            {
-                                isShop: false,
-                                value: "Test"
-                            },
-                            {
-                                isShop: true,
-                                value: "Test"
-                            }
-                        ]} />
+                    />
                 </WView>
             </WView >);
     }

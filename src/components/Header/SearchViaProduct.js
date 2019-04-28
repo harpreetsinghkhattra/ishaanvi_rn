@@ -54,6 +54,8 @@ export default class SearchHeaderViaProduct extends Component {
 
         this._setState({ [key]: value });
         if (key === "searchValue") Search.setSearchData({ search: value });
+
+        onSubmit(value, true);
     }
 
     onSearchFocus = () => {
@@ -101,7 +103,7 @@ export default class SearchHeaderViaProduct extends Component {
                                 style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                                 iconTintColor={Palette.orange}
                                 iconPath={require("../../images/send.png")}
-                                onSubmitEditing={onSubmit.bind(this, searchValue)}
+                                onSubmitEditing={()=> {}}
                             /> : null
                     }
 
@@ -124,7 +126,7 @@ export default class SearchHeaderViaProduct extends Component {
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                         iconTintColor={Palette.orange}
                         iconPath={hasSearchFocus ? require("../../images/back.png") : require("../../images/search.png")}
-                        onSubmitEditing={onSubmit.bind(this, searchValue)}
+                        onSubmitEditing={onSubmit.bind(this, searchValue, false)}
                     />
                     {
                         isFilter ?

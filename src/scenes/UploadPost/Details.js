@@ -14,7 +14,7 @@ import { SelectProductTypeList } from '../../components/Lists';
 import { PostOffer } from '../../model/PostOffer';
 
 import { Api, Socket, User as UserApi } from '../../api';
-import { AlertMessage, AutoComplete } from '../Modal/';
+import { AlertMessage, AutoComplete, Sizes } from '../Modal/';
 import { add_product, edit_product } from '../../api/SocketUrls';
 
 const UserData = new Storage();
@@ -29,7 +29,8 @@ export default class Details extends Component {
         formData: {},
         errors: [],
         alertMessageVisible: false,
-        alertMessage: {}
+        alertMessage: {},
+        sizeAlertVisible: false
     }
 
     componentWillMount = () => {
@@ -42,6 +43,7 @@ export default class Details extends Component {
     init = () => {
         const { history, location } = this.props;
         const { screenType, item } = location.state;
+        const { category } = User.getUserData();
 
         if (screenType === "edit") {
             const { name, size, color, description, price, discount, itemCode, material, occasion, type, selectType, category, images, status } = item;
@@ -63,7 +65,13 @@ export default class Details extends Component {
                 deletedStatus: '0',
                 photos: images && images.length ? images : []
             });
+
+            return;
         }
+
+        PostOffer.setData({
+            category
+        });
     }
 
     /** On change */
@@ -112,17 +120,30 @@ export default class Details extends Component {
     sumbit = (btnStatus) => {
         const { history, location } = this.props;
         const { screenType, item } = location.state;
-        const { photos, status, deletedStatus, ...rest } = PostOffer.getData();
+        const { photos, status, deletedStatus, color, description, material, occasion, type, ...rest } = PostOffer.getData();
         const { _id: id, userAccessToken: accessToken } = User.getUserData();
         const btnLoading = btnStatus === -1 ? 'isSubmitLoading' : 'isLoading';
 
         if (screenType === "edit") {
             this.setState(() => ({ [btnLoading]: true, errors: [] }), () => {
-                Api.isValidForm(Object.keys(Object.assign({ ...rest }, { status, deletedStatus })), Object.assign({ ...rest }, { status, deletedStatus }))
+                Api.isValidForm(Object.keys(Object.assign({ ...rest }, {
+                    status,
+                    deletedStatus
+                })), Object.assign({ ...rest }, { status, deletedStatus }))
                     .then(res => {
                         if (res && res.message) {
                             if (res.message === "Success") {
-                                Socket.request(edit_product.emit, Object.assign({ ...rest }, { id, accessToken, status, deletedStatus }));
+                                Socket.request(edit_product.emit, Object.assign({ ...rest }, {
+                                    id,
+                                    accessToken,
+                                    status,
+                                    deletedStatus,
+                                    color: color ? color : "NA",
+                                    description: description ? description : "NA",
+                                    material: material ? material : "NA",
+                                    occasion: occasion ? occasion : "NA",
+                                    type: type ? type : "NA"
+                                }));
                                 this.getEditProductResponse(btnStatus);
                             } else Alert.alert("", res.message);
                         } else if (res && res.response) {
@@ -138,7 +159,15 @@ export default class Details extends Component {
                     .then(res => {
                         if (res && res.message) {
                             if (res.message === "Success") {
-                                Socket.request(add_product.emit, Object.assign({ ...rest }, { id, accessToken }));
+                                Socket.request(add_product.emit, Object.assign({ ...rest }, {
+                                    id,
+                                    accessToken,
+                                    color: color ? color : "NA",
+                                    description: description ? description : "NA",
+                                    material: material ? material : "NA",
+                                    occasion: occasion ? occasion : "NA",
+                                    type: type ? type : "NA"
+                                }));
                                 this.getAddProductResponse();
                             } else Alert.alert("", res.message);
                         } else if (res && res.response) {
@@ -165,6 +194,15 @@ export default class Details extends Component {
         this.setState({ alertMessageVisible, alertMessage });
     }
 
+    openSizeMenu = (sizeAlertVisible, size) => {
+        const { formData } = this.props;
+        if (typeof size === "string" && size) {
+            this.onTextChange("size", size.toUpperCase());
+        }
+
+        this.setState({ sizeAlertVisible });
+    }
+
     back = () => {
         const { history, location } = this.props;
 
@@ -177,7 +215,7 @@ export default class Details extends Component {
     render() {
         const { screenWidth, screenHeightWithHeader, history, location } = this.props;
         const { stretch, btnStyle, btnContainer, border } = styles;
-        const { userData, formData, alertMessage, alertMessageVisible, isLoading, isSubmitLoading } = this.state;
+        const { userData, formData, alertMessage, alertMessageVisible, isLoading, isSubmitLoading, sizeAlertVisible } = this.state;
         const { name, itemCode, category, color, description, discount, material, occasion, type, selectType, price, size } = formData;
 
         const { screenType, item } = location.state;
@@ -193,7 +231,18 @@ export default class Details extends Component {
                     data={alertMessage}
                     {...this.props}
                     setVisible={this.setAlertMessageVisible.bind(this, false)} />
-                <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start' }, stretch]}>
+                <Sizes
+                    isVisible={sizeAlertVisible}
+                    data={{
+                        size,
+                        category: category ? category.toUpperCase() : ""
+                    }}
+                    {...this.props}
+                    setVisible={this.openSizeMenu.bind(this)} />
+                <ScrollView
+                    contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader - BOTTOM_STATUS_BAR, justifyContent: 'flex-start' }, stretch]}
+                    keyboardShouldPersistTaps="always"
+                >
                     <WView flex dial={2} padding={[5, 5]} style={[stretch, { justifyContent: 'space-between' }]} >
                         <WView flex dial={2} style={[stretch]}>
                             <Section
@@ -222,17 +271,21 @@ export default class Details extends Component {
                             <TextInputWithLabel
                                 margin={[10, 0]}
                                 label="Size *"
-                                placeholderName={"e.g. 12 inches"}
+                                placeholderName={"e.g. XL"}
                                 isError={this.isError('size')}
                                 keyboardType={'numeric'}
                                 value={size}
-                                onChangeText={value => this.onTextChange("size", value)}
+                                onFocus={this.openSizeMenu.bind(this, true)}
+                                onChangeText={() => {
+                                    this.onTextChange("size", formData && formData.size ? formData.size : "");
+                                    this.openSizeMenu(this, true)
+                                }}
                                 getFocus={ref => this.input3 = ref}
-                                onSubmitEditing={() => this.input4 && this.input4.focus()}
+                                onSubmitEditing={() => { }}
                             />
                             <TextInputWithLabel
                                 margin={[10, 0]}
-                                label="Color *"
+                                label="Color"
                                 placeholderName={"e.g. Black"}
                                 isError={this.isError('color')}
                                 value={color}
@@ -242,7 +295,7 @@ export default class Details extends Component {
                             />
                             <MultiTextInputWithLabel
                                 margin={[10, 0]}
-                                label="Description *"
+                                label="Description"
                                 placeholderName={"e.g. About your product"}
                                 isError={this.isError('description')}
                                 value={description}
@@ -280,7 +333,7 @@ export default class Details extends Component {
                                 label={"Highlights"} />
                             <MultiTextInputWithLabel
                                 margin={[10, 0]}
-                                label="Material *"
+                                label="Material"
                                 placeholderName={"e.g. materials"}
                                 isError={this.isError('material')}
                                 value={material}
@@ -290,7 +343,7 @@ export default class Details extends Component {
                             />
                             <MultiTextInputWithLabel
                                 margin={[10, 0]}
-                                label="Occasion *"
+                                label="Occasion"
                                 placeholderName={"e.g. occasion"}
                                 isError={this.isError('occasion')}
                                 value={occasion}
@@ -300,7 +353,7 @@ export default class Details extends Component {
                             />
                             <MultiTextInputWithLabel
                                 margin={[10, 0]}
-                                label="Type *"
+                                label="Type"
                                 placeholderName={"e.g. type"}
                                 isError={this.isError('type')}
                                 value={type}
@@ -317,12 +370,6 @@ export default class Details extends Component {
                                 onSelect={value => this.onTextChange("selectType", value)}
                                 value={selectType}
                                 data={['SALE', 'NEW', 'POPULAR']} />
-                            <SelectProductTypeList
-                                heading={"Select Category *"}
-                                isError={this.isError('category')}
-                                onSelect={value => this.onTextChange("category", value)}
-                                value={category}
-                                data={['Multi Brand\'s', 'Garments', 'Boutiques', 'Designers \n(men, woman)', 'Cloth \nHouse/Shop']} />
                             {
                                 screenType === "edit" ?
                                     <SelectProductTypeList
