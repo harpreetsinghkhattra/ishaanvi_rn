@@ -7,7 +7,8 @@ import Palette from '../../Palette';
 export default class AutoFill extends PureComponent {
 
     static propTypes = {
-        data: PropTypes.array
+        data: PropTypes.array,
+        onItemSelect: PropTypes.func
     }
 
     constructor(props) {
@@ -74,14 +75,13 @@ export default class AutoFill extends PureComponent {
         const shopIcon = require("../../images/shop.png");
         const { iconStyle } = styles;
         const { isShop, value } = item;
+        const { onItemSelect } = this.props;
 
         return (
-            <WTouchable onPress={() => {
-                alert(JSON.stringify(this.state));
-            }}>
+            <WTouchable onPress={onItemSelect.bind(this, value)}>
                 <WRow dial={4} padding={[5, 10]} flex>
                     <Image source={isShop ? shopIcon : productIcon} style={iconStyle} />
-                    <WText padding={[5, 10]} lines={2} fontSize={14}>{value + index}</WText>
+                    <WText padding={[5, 10]} lines={2} fontSize={14}>{value}</WText>
                 </WRow>
             </WTouchable>
         )
@@ -95,9 +95,16 @@ export default class AutoFill extends PureComponent {
         if (!isView) return null;
 
         return (
-            <WView dial={2} backgroundColor={Palette.white} style={[autoFillContainer, { bottom: keyboardHeight }]} >
+            <WView dial={2} style={[autoFillContainer, { bottom: keyboardHeight }]} >
                 <FlatList
                     data={data}
+                    contentContainerStyle={{
+                        backgroundColor: Palette.white,
+                        elevation: 1,
+                        borderColor: Palette.line_color,
+                        borderStyle: 'solid',
+                        borderBottomWidth: 1
+                    }}
                     keyboardShouldPersistTaps={"always"}
                     ItemSeparatorComponent={() => {
                         return (

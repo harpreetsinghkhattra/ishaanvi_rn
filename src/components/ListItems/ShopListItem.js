@@ -58,7 +58,7 @@ export default class ShopListItem extends PureComponent {
 
     render = () => {
         const { heading, data, isLoading, isViewMore, onPress, userId, onItemPress, marginContainer } = this.props;
-        const { container, getBtnContainer, stretch, iconStyle } = styles;
+        const { container, getBtnContainer, stretch, iconStyle, imageStyle } = styles;
 
         const message = require('../../images/message.png');
         const phone = require('../../images/phone.png');
@@ -67,11 +67,11 @@ export default class ShopListItem extends PureComponent {
         const star = require("../../images/filled_star.png");
 
         return (
-            <WView dial={4} margin={marginContainer} style={[stretch, container]}> 
+            <WView dial={4} margin={marginContainer} style={[stretch, container]}>
                 <WView>
-                    <WImage source={shop} width={CARD_IMAGE_WIDTH} />
-                    <WText fontSize={14} fontFamily={"Muli-Bold"} lines={1}>Dummy test name of shop test test test</WText>
-                    <WText fontSize={14} lines={2}>Dummy test description of shop test test test</WText>
+                    <Image source={data && data.imageUrl ? { uri: data.imageUrl } : shop} style={imageStyle} resizeMode={data && data.imageUrl ? "cover" : "center"} />
+                    <WText fontSize={14} fontFamily={"Muli-Bold"} lines={1}>{data && data.business_name}</WText>
+                    <WText fontSize={14} lines={2}>{data && data.business_address}</WText>
                 </WView>
                 <WRow dial={4}>
                     <WRow dial={4} flex>
@@ -95,8 +95,11 @@ const styles = {
         alignItems: 'stretch'
     },
     imageStyle: {
-        width: 60,
-        height: 60
+        width: 150,
+        height: 200,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: Palette.line_color,
     },
     btnContainer: {
         backgroundColor: Palette.theme_color,

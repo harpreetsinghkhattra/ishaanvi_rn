@@ -197,6 +197,11 @@ export default class Login extends PureComponent {
         this.searchTabIndex = index > -1 ? index : 0;
     }
 
+    onItemSelect = (searchValue) => {
+        this.searchViaProductInput && this.searchViaProductInput.setSearchValue(searchValue);
+        this.onSubmit(searchValue);
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
@@ -233,6 +238,7 @@ export default class Login extends PureComponent {
                         isFilter={isFilter => this.searchViaProductInput && this.searchViaProductInput.isFilter(isFilter)}
                         {...this.props} />
                     <SearchAutoFill
+                        onItemSelect={this.onItemSelect.bind(this)}
                         ref={ref => this.searchAutoFillRef = ref}
                     />
                 </WView>

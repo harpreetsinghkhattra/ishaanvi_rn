@@ -9,7 +9,11 @@ import { User } from './src/model/user';
 import bgMessaging from './src/bgMessaging';
 import firebase from 'react-native-firebase';
 
-const socket = IO('http://13.127.188.164', {
+// const socket = IO('http://13.127.188.164', {
+//     transports: ['websocket']
+// });
+
+const socket = IO('http://13.127.214.32:3000', {
     transports: ['websocket']
 });
 

@@ -120,7 +120,7 @@ export default class ProductsCardsListItem extends PureComponent {
 
         return (
             <WView dial={5} stretch spaceBetween margin={[5, 5]} style={container}>
-                <Image source={images && images.length ? { uri: images[0] } : require("../../../images/product-dummy.png")} style={imageStyle} resizeMode="cover" />
+                <Image source={images && images.length ? { uri: images[0] } : require("../../../images/product-dummy.png")} style={imageStyle} resizeMode={images && images.length ? "cover" : "center"} />
                 <WView dial={4}>
                     <WText color={Palette.black} fontFamily={"Muli-Bold"} fontSize={14}>{name}</WText>
                 </WView>
@@ -139,29 +139,29 @@ export default class ProductsCardsListItem extends PureComponent {
                 </WView>
 
                 {
-                    isMore ? 
-                    <WRow margin={[2, 0]} dial={4}>
-                    <WRow dial={5} padding={[0, 5]} style={ratingContainer}>
-                        <Image source={star} style={[iconStyle, { tintColor: Palette.ratingColor }]} />
-                        <WText padding={[0, 0, 0, 5]} color={Palette.black}>{rating ? parseFloat(rating).toFixed(1) : 0}</WText>
-                    </WRow>
-                    <WText padding={[0, 5]} color={Palette.black}>({reviews ? reviews : 0} ratings)</WText>
-                </WRow> : null
+                    isMore ?
+                        <WRow margin={[2, 0]} dial={4}>
+                            <WRow dial={5} padding={[0, 5]} style={ratingContainer}>
+                                <Image source={star} style={[iconStyle, { tintColor: Palette.ratingColor }]} />
+                                <WText padding={[0, 0, 0, 5]} color={Palette.black}>{rating ? parseFloat(rating).toFixed(1) : 0}</WText>
+                            </WRow>
+                            <WText padding={[0, 5]} color={Palette.black}>({reviews ? reviews : 0} ratings)</WText>
+                        </WRow> : null
                 }
 
                 {
-                    isMore ? 
-                    <WRow spaceBetween dial={6} >
-                    <this.Btn
-                        onPress={this.dialNumber.bind(this, userInfo)}
-                        path={phone} />
-                    <this.Btn
-                        onPress={this.openScreen.bind(this, userInfo)}
-                        path={message} />
-                    <this.Btn
-                        onPress={() => Alert.alert("", "It will be cover with web page link.")}
-                        path={share} />
-                </WRow> : null
+                    isMore ?
+                        <WRow spaceBetween dial={6} >
+                            <this.Btn
+                                onPress={this.dialNumber.bind(this, userInfo)}
+                                path={phone} />
+                            <this.Btn
+                                onPress={this.openScreen.bind(this, userInfo)}
+                                path={message} />
+                            <this.Btn
+                                onPress={() => Alert.alert("", "It will be cover with web page link.")}
+                                path={share} />
+                        </WRow> : null
                 }
             </WView>
         )
@@ -175,7 +175,6 @@ const styles = {
         borderRadius: 5,
         borderWidth: 1,
         borderColor: Palette.line_color,
-        borderStyle: 'solid'
     },
     btnContainer1: {
         backgroundColor: Palette.theme_color,

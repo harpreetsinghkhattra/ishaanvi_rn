@@ -58,6 +58,14 @@ export default class SearchHeaderViaProduct extends Component {
         onSubmit(value, true);
     }
 
+    setSearchValue = (searchValue) => {
+        if(!searchValue) return;
+
+        this._setState({ searchValue });
+        Search.setSearchData({ search: searchValue });
+        this.onSearchBlur();
+    }
+
     onSearchFocus = () => {
         const { isAutoFillView } = this.props;
         this._setState({ hasSearchFocus: true, isLocationModalVisible: false });
@@ -103,7 +111,7 @@ export default class SearchHeaderViaProduct extends Component {
                                 style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                                 iconTintColor={Palette.orange}
                                 iconPath={require("../../images/send.png")}
-                                onSubmitEditing={()=> {}}
+                                onSubmitEditing={() => { }}
                             /> : null
                     }
 
