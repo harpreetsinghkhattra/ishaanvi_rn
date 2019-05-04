@@ -193,6 +193,48 @@ export default class Login extends PureComponent {
         });
     }
 
+    searchViaCategory = (category, isOnTextChange = false) => {
+
+        if(category && category.length === 0) return;
+
+        if (filterData && (filterData[0] > filterData[1])) return;
+
+        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
+
+        const searchData = {
+            id,
+            accessToken,
+            category,
+            area: filterData.area && filterData.area.length ? filterData.area[1] : 500,
+            price: filterData.price && filterData.price[1] ? [parseFloat(filterData.price[0]), parseFloat(filterData.price[1])] : 'all',
+            searchValue: "",
+            coordinates: [location.latitude, location.longitude]
+        };
+
+        console.log("searchDatasearchData", searchData, filterData);
+
+        // "coordinates": [31.9579623, 75.6282207]
+
+        if (!isOnTextChange) {
+            this._setState(prevState => {
+                if (prevState.isSearchLoading) return;
+                return ({ isSearchLoading: true });
+            });
+        }
+
+        Socket.request(search.emit, searchData);
+        UserApi.getSocketResponseOnce(search.on, (res) => {
+            console.log('get socket response once', JSON.stringify(searchData), JSON.stringify(res));
+            if (!isOnTextChange) {
+                if (res && res.message === "Success") {
+                    this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: res.data, isNoProduct: true });
+                } else this._setState({ isLoading: false, isRefreshingList: false, isSearchLoading: false, searchedElements: [], isNoProduct: true });
+            } else {
+                this.searchAutoFillRef && this.searchAutoFillRef.getData(res.data, this.searchTabIndex);
+            }
+        });
+    }
+
     setSearchTabIndex = (index) => {
         this.searchTabIndex = index > -1 ? index : 0;
     }

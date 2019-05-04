@@ -43,7 +43,7 @@ export default class Home extends PureComponent {
     }
 
     render() {
-        const { location } = this.props;
+        const { location, data } = this.props;
         const { tabEmitter, setSearchTabIndex, ...rest } = this.props;
 
         setSearchTabIndex(this.getIntialPage());
@@ -52,11 +52,14 @@ export default class Home extends PureComponent {
             <ProductList
                 {...rest}
                 isSearch
+                data={data && data.length && data[0].product && data[0].product.length ? data[0].product : []}
+                isEmpty={data && data.length ? data[0].product && data[0].product.length ? false : true : false}
                 initialSearchTabPage={this.getIntialPage()}
                 tabEmitter={this._tabEmitter}
             />,
             <ShopList
                 {...rest}
+                isEmpty={data && data.length ? data[0].users && data[0].users.length ? false : true : false}
                 initialSearchTabPage={this.getIntialPage()}
                 tabEmitter={this._tabEmitter}
             />

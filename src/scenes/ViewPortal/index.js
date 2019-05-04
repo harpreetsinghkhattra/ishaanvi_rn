@@ -41,7 +41,7 @@ export default class ViewPortal extends PureComponent {
     componentDidMount = () => {
         this.getUserProductsViaType();
     }
-    
+
 
     getUserProductsViaType = () => {
         const { _id: id, userAccessToken: accessToken, filterData } = User.getUserData();
@@ -64,11 +64,12 @@ export default class ViewPortal extends PureComponent {
 
         UserApi.getSocketResponse(userPortalProducts.on, (res) => {
             if (res && res.message === "Success") {
-                this._setState({ 
-                    saleProducts: res.data[0].saleProducts, 
-                    newProducts: res.data[0].newProducts, 
-                    popularProducts: res.data[0].popularProducts, 
-                    isLoading: false });
+                this._setState({
+                    saleProducts: res.data[0].saleProducts,
+                    newProducts: res.data[0].newProducts,
+                    popularProducts: res.data[0].popularProducts,
+                    isLoading: false
+                });
             } else this._setState({ isLoading: false });
         });
     }
@@ -97,18 +98,24 @@ export default class ViewPortal extends PureComponent {
         const views = [
             <ProductList
                 {...this.props}
+                isMore
                 isLoading={isLoading}
+                isLazyLoading={false}
                 data={saleProducts}
                 type={"sale"}
             />,
             <ProductList
                 {...this.props}
+                isMore
                 isLoading={isLoading}
+                isLazyLoading={false}
                 data={newProducts}
                 type={"new"} />,
             <ProductList
                 {...this.props}
+                isMore
                 data={popularProducts}
+                isLazyLoading={false}
                 isLoading={isLoading}
                 type={"popular"} />
         ];

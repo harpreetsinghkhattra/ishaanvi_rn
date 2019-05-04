@@ -64,10 +64,10 @@ export default class ShopListItem extends PureComponent {
         const phone = require('../../images/phone.png');
         const share = require('../../images/share1.png');
         const shop = require("../../images/shop.png");
-        const star = require("../../images/filled_star.png");
+        const view = require("../../images/show_password.png");
 
         return (
-            <WView dial={4} margin={marginContainer} style={[stretch, container]}>
+            <WTouchable onPress={onItemPress ? onItemPress.bind(this, data._id) : this.openScreen1.bind(this, routerNames.viewPortal, { screenType: "home", userId: data._id })} dial={4} margin={marginContainer} style={[stretch, container]}>
                 <WView>
                     <Image source={data && data.imageUrl ? { uri: data.imageUrl } : shop} style={imageStyle} resizeMode={data && data.imageUrl ? "cover" : "center"} />
                     <WText fontSize={14} fontFamily={"Muli-Bold"} lines={1}>{data && data.business_name}</WText>
@@ -75,14 +75,14 @@ export default class ShopListItem extends PureComponent {
                 </WView>
                 <WRow dial={4}>
                     <WRow dial={4} flex>
-                        <WText>4.1</WText>
-                        <Image source={star} style={iconStyle} />
+                        <WText margin={[0, 5, 0, 0]}>{data && data.views ? data.views : 0}</WText>
+                        <Image source={view} style={iconStyle} />
                     </WRow>
-                    <WTouchable margin={[0, 0, 0, 10]} dial={5} style={getBtnContainer}>
+                    <WTouchable onPress={onItemPress ? onItemPress.bind(this, data._id) : this.openScreen1.bind(this, routerNames.viewPortal, { screenType: "home", userId: data._id })}  margin={[0, 0, 0, 10]} dial={5} style={getBtnContainer}>
                         <WText color={Palette.theme_color} fontFamily={"Muli-Bold"}>GET</WText>
                     </WTouchable>
                 </WRow>
-            </WView>
+            </WTouchable>
         )
     }
 }

@@ -57,12 +57,9 @@ export default class SearchHeader extends Component {
                         onChangeText={this.setLocationModalVisible.bind(this, true)}
                         style={{ justifyContent: 'center', alignSelf: 'center', fontWeight: 'bold' }}
                         iconTintColor={Palette.orange}
-                        iconPath={require("../../images/send.png")} 
+                        iconPath={require("../../images/send.png")}
                         onSubmitEditing={() => { }}
                     />
-                    <WTouchable onPress={openFilter} dial={5} padding={[0, 10]} style={btnContainerStyle}>
-                        <Image source={filterIcon} style={iconStyle} />
-                    </WTouchable>
                 </WRow>
             </WRow>
         )
@@ -103,3 +100,7 @@ const styles = {
         tintColor: Palette.orange
     }
 }
+
+// {/* <WTouchable onPress={openFilter} dial={5} padding={[0, 10]} style={btnContainerStyle}>
+//                         <Image source={filterIcon} style={iconStyle} />
+//                     </WTouchable> */}

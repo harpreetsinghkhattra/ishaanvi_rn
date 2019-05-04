@@ -28,7 +28,7 @@ export default class ShopList extends PureComponent {
         this.limit = 15;
         this.state = {
             isLazyLoading: initialSearchTabPage === PAGE_INDEX ? true : false,
-            data: Array.from(data && data.length ? data[0].users : []).slice(0, this.limit)
+            data: Array.from(data && data.users ? data.users : []).slice(0, this.limit)
         }
 
         this._isMounted = true;
@@ -92,7 +92,8 @@ export default class ShopList extends PureComponent {
             data && prevProps.data && prevProps.data.length !== data.length ||
             data && prevProps.data && prevProps.data.length && data.length &&
             prevProps.data[0]._id !== data[0]._id ||
-            data && prevProps.data && prevProps.data.length && data.length && prevProps.data[0].users.length && prevProps.data[0].users[0]._id !== data[0].users[0]._id
+            data && data.length && prevProps.data && prevProps.data.length && data[0].users.length !== prevProps.data[0].users.length ||
+            data && data.length && data[0].users.length && prevProps.data && prevProps.data.length && prevProps.data[0].users.length && prevProps.data[0].users[0]._id !== data[0].users[0]._id
         ) {
 
             this.limit = 15;
@@ -115,7 +116,7 @@ export default class ShopList extends PureComponent {
         const { isLazyLoading } = this.state;
         if (!isLazyLoading) return empty;
 
-        const { screenWidth, isLoading, type } = this.props;
+        const { screenWidth, isLoading, type, isEmpty } = this.props;
         let { ...rest } = this.props;
         const { data } = this.state;
         const column = 2;
@@ -129,11 +130,15 @@ export default class ShopList extends PureComponent {
                 onEndReachedThreshold={1}
                 numColumns={2}
                 ListHeaderComponent={
-                    data && !data.length ?
-                        <WView dial={5} flex margin={[30, 0]}>
-                            <Image source={require('../../../images/searchshops.png')} style={{ width: 150, height: 150, tintColor: Palette.theme_color }} />
-                            <WText color={Palette.black}>Search for shops</WText>
-                        </WView> : null
+                    data && !data.length && isEmpty ?
+                        <WView dial={2} flex margin={[30, 0]}>
+                            <WText color={Palette.black}>No Result Found</WText>
+                        </WView> :
+                        data && !data.length ?
+                            <WView dial={5} flex margin={[30, 0]}>
+                                <Image source={require('../../../images/searchshops.png')} style={{ width: 150, height: 150, tintColor: Palette.theme_color }} />
+                                <WText color={Palette.black}>Search for shops</WText>
+                            </WView> : null
                 }
                 keyExtractor={(item, index) => `shops-product-${index}`}
                 renderItem={({ item, index }) => <ShopListItem

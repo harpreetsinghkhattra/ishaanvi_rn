@@ -63,6 +63,11 @@ const markProductAsViewed = {
     on: "/socket/api/response/addProductCount"
 }
 
+const markShopAsViewed = {
+    emit: "/socket/api/addShopCount",
+    on: "/socket/api/response/addShopCount"
+}
+
 const getProductViaId = {
     emit: "/socket/api/viewProduct",
     on: "/socket/api/response/viewProduct"
@@ -160,5 +165,6 @@ export {
     getAllProductChatUsersList,
     getProductChatMessage,
     getAllNotifications,
-    getHomeBanners
+    getHomeBanners,
+    markShopAsViewed
 }

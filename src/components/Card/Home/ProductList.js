@@ -42,6 +42,7 @@ export default class ProductList extends PureComponent {
         this.shopIds = [];
         this.isFetchedWholeData = false;
         this.isRequestMoreProducts1 = false;
+        this.homeData = [];
     }
 
     componentDidMount = () => {
@@ -72,28 +73,35 @@ export default class ProductList extends PureComponent {
     getUserResponse() {
         const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
 
-        console.log("const { _id: id, userAccessToken: accessToken ===> ", {
-            id,
-            accessToken,
-            category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
-            area: filterData && filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            coordinates: [location.latitude, location.longitude]
-        });
-
         this.setState({ isLoading: true });
         Socket.request(get_home_items.emit, {
             id,
             accessToken,
-            category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
-            area: filterData && filterData.area && filterData.area.length ? filterData.area[1] : 500,
+            area: 500,
             coordinates: [location.latitude, location.longitude]
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
             if (res && res.message === "Success") {
-                console.log("VIEW PRODUCT home DATA ========> ", res);
+                console.log("VIEW PRODUCT home DATA ========> ", res.data[0].recentViewedShops);
 
                 this.shopIds = res.data && res.data.length ? Array.from(res.data.map(ele => ele._id)) : [];
-                this.setState({ isLoading: false, isRefreshingList: false, data: res.data });
+                this.homeData = res.data;
+
+                const tempData = res.data && res.data.length ? res.data && res.data.length && res.data[0] : [];
+                if(tempData && tempData.recentViewedShops && tempData.recentViewedShops.length){
+                    this.homeData.push({
+                        category: "RECENT VISITED SHOPS",
+                        values: tempData.recentViewedShops.map(ele => ele.shopDetail).reverse().slice(0, 6)
+                    })
+                }
+
+                if(tempData && tempData.recentViewedProducts && tempData.recentViewedProducts.length){
+                    this.homeData.push({
+                        category: "RECENT VISITED PRODUCTS",
+                        values: tempData.recentViewedProducts.map(ele => ele.productDetail).reverse().slice(0, 6)
+                    })
+                }
+                this.setState({ isLoading: false, isRefreshingList: false, data: this.homeData.length ? this.homeData : [] });
             } else this.setState({ isLoading: false, isRefreshingList: false });
         });
 
@@ -102,33 +110,22 @@ export default class ProductList extends PureComponent {
     }
 
     onBottomPullSocketResponse() {
-        // alert(JSON.stringify(this.shopIds));
-        const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
-        Socket.request(get_home_items.emit, {
-            id,
-            accessToken,
-            category: filterData && filterData.category && filterData.category.length ? filterData.category : "all",
-            area: filterData && filterData.area && filterData.area.length ? filterData.area[1] : 500,
-            coordinates: [location.latitude, location.longitude],
-            presentShops: this.shopIds
-        });
-        UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
-            if (res && res.message === "Success") {
 
-                this.isRequestMoreProducts1 = false;
-                if (res && res.data && (!res.data.length || res.data.length <= 5)) {
-                    this.isFetchedWholeData = true;
-                }
+        if (!this.homeData.length) this.setState({ isLoading: false, isRefreshingList: false, isRequestMoreProducts: false });
 
-                this.setState(prevState => {
-                    const { data } = prevState;
-                    let tempData = Array.from(data);
-                    tempData = tempData.concat(Array.from(res.data));
-                    this.shopIds = Array.from(tempData.map(ele => ele._id));
+        this.setState(prevState => {
+            const { data } = prevState;
+            let tempData = Array.from(data);
 
-                    return ({ isLoading: false, isRequestMoreProducts: false, isRefreshingList: false, data: tempData });
-                });
-            } else this.setState({ isLoading: false, isRefreshingList: false, isRequestMoreProducts: false });
+            tempData = tempData.concat(Array.from([this.homeData[tempData.length <= this.homeData.length ? tempData.length : this.homeData.length - 1]]));
+
+            this.isRequestMoreProducts1 = false;
+            if (tempData.length === this.homeData.length) {
+                alert(`${tempData.length} ===> ${this.homeData.length}`)
+                this.isFetchedWholeData = true;
+            }
+
+            return ({ isLoading: false, isRequestMoreProducts: false, isRefreshingList: false, data: tempData });
         });
     }
 
@@ -185,14 +182,16 @@ export default class ProductList extends PureComponent {
     }
 
     /** Render Category Buttons */
-    CategoryBtn = ({ label1, label2, backgroundColor1, backgroundColor2 }) =>
+    CategoryBtn = ({ label1, label2, backgroundColor1, backgroundColor2, onPress1, onPress2 }) =>
         <WRow dial={5} margin={[5, 5]}>
             {
                 label1 ?
                     <WButton
                         flex
+                        dial={5}
                         fontSize={14}
                         label={label1}
+                        onPress={onPress1}
                         margin={label2 ? [0, 5, 0, 0] : [0, 0]}
                         btnPadding={[5, 10]}
                         textStyle={{ textAlign: 'center' }}
@@ -203,9 +202,11 @@ export default class ProductList extends PureComponent {
                 label2 ?
                     <WButton
                         flex
+                        dial={5}
                         fontSize={14}
                         label={label2}
                         btnPadding={[5, 10]}
+                        onPress={onPress2}
                         textStyle={{ textAlign: 'center' }}
                         containerStyle={{ backgroundColor: backgroundColor2 }}
                     /> : null
@@ -242,15 +243,20 @@ export default class ProductList extends PureComponent {
                         <this.CategoryBtn
                             label1={"MULTI BRAND"}
                             label2={"GARMENTS"}
+                            onPress1={openSearch.bind(this, ['multi brand\'s'])}
+                            onPress2={openSearch.bind(this, ['garments'])}
                             backgroundColor1={Palette.greenBtn1}
                             backgroundColor2={Palette.greenBtn2} />
                         <this.CategoryBtn
                             label1={"BOUTIQUES"}
                             label2={"DESIGNER"}
+                            onPress1={openSearch.bind(this, ['boutiques'])}
+                            onPress2={openSearch.bind(this, ['designers \n(men, woman)'])}
                             backgroundColor1={Palette.red}
                             backgroundColor2={Palette.orange} />
                         <this.CategoryBtn
                             label1={"CLOTH HOUSE/SHOP"}
+                            onPress1={openSearch.bind(this, ['Cloth \nHouse/Shop'])}
                             backgroundColor1={Palette.lightSeeGreen}
                         />
                         {
@@ -262,9 +268,6 @@ export default class ProductList extends PureComponent {
                                     autoPlayEnable
                                     {...this.props}
                                     data={images} /> : null}
-                        <WTouchable onPress={openSearch} flex style={[shopBtnContainer, { alignSelf: 'stretch' }]} margin={[10, 10]} padding={[0, 10]} dial={5}>
-                            <WText color={Palette.white}>Search Shops Locally</WText>
-                        </WTouchable>
                         {
                             isLoading ?
                                 <WView dial={5} flex>
@@ -280,10 +283,7 @@ export default class ProductList extends PureComponent {
                         }
                     </WView>
                 }
-                onEndReached={this.onRequestMoreProducts.bind(this)}
-                data={[
-                    { name: "DESIGNER" }
-                ]}
+                data={data}
                 renderItem={({ item, index }) =>
                     <ShopList
                         {...this.props}
@@ -334,3 +334,4 @@ const styles = {
 
 // onEndReachedThreshold = { 0.5}
 // isLoading = { this.isRequestMoreProducts(index) }
+// onEndReached={this.onRequestMoreProducts.bind(this)}

@@ -119,7 +119,7 @@ export default class ProductsCardsListItem extends PureComponent {
         //     </WView >
 
         return (
-            <WView dial={5} stretch spaceBetween margin={[5, 5]} style={container}>
+            <WTouchable onPress={onItemPress ? onItemPress.bind(this, _id) : this.openScreen1.bind(this, routerNames.view_product, { productId: _id })} dial={5} stretch spaceBetween margin={[5, 5]} style={container}>
                 <Image source={images && images.length ? { uri: images[0] } : require("../../../images/product-dummy.png")} style={imageStyle} resizeMode={images && images.length ? "cover" : "center"} />
                 <WView dial={4}>
                     <WText color={Palette.black} fontFamily={"Muli-Bold"} fontSize={14}>{name}</WText>
@@ -163,7 +163,7 @@ export default class ProductsCardsListItem extends PureComponent {
                                 path={share} />
                         </WRow> : null
                 }
-            </WView>
+            </WTouchable>
         )
     }
 }

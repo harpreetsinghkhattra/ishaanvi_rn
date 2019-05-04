@@ -98,13 +98,13 @@ class Rootrn extends PureComponent {
     }
 
 
-    async componentDidMount() {
+    componentDidMount() {
         this.checkPermission();
         this.createNotificationListeners(); //add this line
 
-        Linking.getInitialURL().then(url => {
-            console.log("url ===> ", url);
-        });
+        Linking.getInitialURL().then((url) => {
+            console.log('url ===> ' + url);
+        }).catch(err => console.error('url ===> error ', err));
     }
 
     ////////////////////// Add these methods //////////////////////

@@ -17,7 +17,7 @@ import { ProductList } from '../../components/Card/Home';
 const UserData = new Storage();
 const PAGE_INDEX = 0;
 
-export default class Login extends PureComponent {
+export default class Index extends PureComponent {
 
     constructor(props) {
         super(props);

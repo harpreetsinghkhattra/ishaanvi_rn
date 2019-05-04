@@ -46,8 +46,8 @@ export default class Home extends Component {
     getUserResponse() {
         const { _id: id, userAccessToken: accessToken } = User.getUserData();
         Socket.request(get_user_profile.emit, { id, accessToken });
-        UserApi.getSocketResponseOnce(get_user_profile.on, (res) => { 
-            if(res && res.message && res.message.toLowerCase() === "blocked"){
+        UserApi.getSocketResponseOnce(get_user_profile.on, (res) => {
+            if (res && res.message && res.message.toLowerCase() === "blocked") {
                 this.onLogout();
             }
         });
@@ -93,17 +93,23 @@ export default class Home extends Component {
         this.setState({ alertMessageVisible });
     }
 
+    openSearch = (category) => {
+        this.tabsViewRef.setPage(1);
+        this.searchRef.searchViaCategory(category);
+    }
+
     render() {
         console.log("home loading render in tabs");
         const empty = [];
         const views = [
             <Index
                 tabEmitter={this._tabEmitter}
-                openSearch={() => this.tabsViewRef.setPage(1)}
+                openSearch={this.openSearch.bind(this)}
                 initialPage={this.getIntialIndex()}
                 {...this.props} />,
             <Search
                 tabEmitter={this._tabEmitter}
+                ref={ref => this.searchRef = ref}
                 initialPage={this.getIntialIndex()}
                 {...this.props} />,
             empty,

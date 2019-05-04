@@ -211,7 +211,7 @@ import { User } from '../../model/user';
 import { Storage, StorageKeys } from '../../helper';
 import ViewPortal from '../ViewPortal';
 import Header from '../ViewPortal/Header';
-import { userPortal } from '../../api/SocketUrls';
+import { userPortal, markShopAsViewed } from '../../api/SocketUrls';
 import { Api, Socket, User as UserApi } from '../../api';
 
 export default class App extends Component {
@@ -271,7 +271,32 @@ export default class App extends Component {
   }
 
   componentDidMount = () => {
-    this.getUserResponse();
+    this.getMarkedAsViewedProductResponse();
+  }
+
+  getMarkedAsViewedProductResponse = () => {
+    const { location } = this.props;
+    const { state } = location;
+    const { _id: id, userAccessToken: accessToken } = User.getUserData();
+    const { isLoading } = this.state;
+
+    // alert(`${state.productId}`);
+    Socket.request(markShopAsViewed.emit, {
+      id,
+      accessToken,
+      "userId": state.userId
+    });
+
+    UserApi.getSocketResponseOnce(markShopAsViewed.on, (res) => {
+      console.log("VIEW SHOP DATA ===> ", JSON.stringify(res));
+
+      if (res && res.message === "Success") {
+        this.getUserResponse();
+      } else if (res && res.message === "NoChange") {
+        alert("No Change")
+        this._setState({ isLoading: false });
+      } else this._setState({ isLoading: false });
+    });
   }
 
   render() {

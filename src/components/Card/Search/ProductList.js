@@ -16,23 +16,26 @@ export default class ProductList extends PureComponent {
         type: PropTypes.string,
         onNewProductsResponse: PropTypes.func,
         onSaleProductsResponse: PropTypes.func,
-        onItemPress: PropTypes.func
+        onItemPress: PropTypes.func,
+        isLazyLoading: PropTypes.bool
     }
 
     static defaultProps = {
         initialSearchTabPage: 1,
-        isSearch: false
+        isSearch: false,
+        isLazyLoading: true,
+        data: []
     }
 
     constructor(props) {
         super(props);
 
-        const { initialSearchTabPage, data } = this.props;
+        const { initialSearchTabPage, data, isLazyLoading } = this.props;
 
         this.limit = 15;
         this.state = {
-            isLazyLoading: initialSearchTabPage === PAGE_INDEX ? true : false,
-            data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit)
+            isLazyLoading: initialSearchTabPage === PAGE_INDEX || !isLazyLoading ? true : false,
+            data: Array.from(data && data ? data : []).slice(0, this.limit)
         }
 
         this._isMounted = true;
@@ -81,7 +84,7 @@ export default class ProductList extends PureComponent {
 
         if (this.isOnEndReached) {
             this.limit += 15;
-            this._setState({ data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit) });
+            this._setState({ data: Array.from(data).slice(0, this.limit) });
             if (this.limit > data.length) {
                 this.isOnEndReached = false;
             }
@@ -93,15 +96,12 @@ export default class ProductList extends PureComponent {
     componentDidUpdate = (prevProps, prevState) => {
         const { data } = this.props;
         if (
-            data && prevProps.data && prevProps.data.length !== data.length ||
-            data && prevProps.data && prevProps.data.length && data.length &&
-            prevProps.data[0]._id !== data[0]._id ||
-            data && prevProps.data && prevProps.data.length && prevProps.data[0].product && data.length && prevProps.data[0].product.length && prevProps.data[0].product[0]._id !== data[0].product[0]._id
+            data.length !== prevProps.data.length
         ) {
             this.limit = 15;
             this.isOnEndReached = true;
             this._setState({
-                data: Array.from(data.map(ele => ele.product ? ele.product : ele)).slice(0, this.limit)
+                data: Array.from(data).slice(0, this.limit)
             });
             if (this.limit > data.length) {
                 this.isOnEndReached = false;
@@ -117,7 +117,7 @@ export default class ProductList extends PureComponent {
         const { isLazyLoading } = this.state;
         if (!isLazyLoading) return empty;
 
-        let { screenWidth, isLoading, type, isSearch } = this.props;
+        let { screenWidth, isLoading, type, isSearch, isEmpty } = this.props;
         const { data } = this.state;
         const column = 2;
         const width = screenWidth / column;
@@ -138,15 +138,18 @@ export default class ProductList extends PureComponent {
                 numColumns={2}
                 onEndReached={this.onEndReached.bind(this)}
                 ListHeaderComponent={
-                    data && !data.length && isSearch ?
-                        <WView dial={5} flex margin={[30, 0]}>
-                            <Image source={require('../../../images/searchproducts.png')} style={{ width: 150, height: 150, tintColor: Palette.theme_color }} />
-                            <WText color={Palette.black}>Search for products</WText>
-                        </WView> : data && !data.length ?
+                    data && !data.length && isEmpty ?
+                        <WView dial={2} flex margin={[30, 0]}>
+                            <WText color={Palette.black}>No Result Found</WText>
+                        </WView> : data && !data.length && isSearch ?
                             <WView dial={5} flex margin={[30, 0]}>
-                                <Image source={require('../../../images/no_product.png')} resizeMode={"cover"} style={{ height: 200 }} />
-                                <WText color={Palette.black}>No Product Available</WText>
-                            </WView> : null
+                                <Image source={require('../../../images/searchproducts.png')} style={{ width: 150, height: 150, tintColor: Palette.theme_color }} />
+                                <WText color={Palette.black}>Search for products</WText>
+                            </WView> : data && !data.length ?
+                                <WView dial={5} flex margin={[30, 0]}>
+                                    <Image source={require('../../../images/no_product.png')} resizeMode={"cover"} style={{ height: 200 }} />
+                                    <WText color={Palette.black}>No Product Available</WText>
+                                </WView> : null
                 }
                 renderItem={({ item, index }) => <ProductCardsListItem
                     {...this.props}
