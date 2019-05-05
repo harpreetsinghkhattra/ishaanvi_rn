@@ -30,6 +30,33 @@ export default class HomeFilter extends PureComponent {
             "category": [],
             "price": [0, 0]
         };
+        this.tempFilterData;
+    }
+
+    componentDidMount = () => {
+        this.init();
+    }
+
+    init = () => {
+        if (!this.filterData) return;
+        const { category, price, area } = this.filterData;
+
+        this.tempFilterData = {
+            "area": Array.from(area ? area : []),
+            "category": Array.from(category ? category : []),
+            "price": Array.from(price ? price : [])
+        };
+    }
+
+    defaultInit = () => {
+        if (!this.tempFilterData) return;
+        const { category, price, area } = this.tempFilterData;
+
+        this.filterData = {
+            "area": Array.from(area ? area : []),
+            "category": Array.from(category ? category : []),
+            "price": Array.from(price ? price : [])
+        };
     }
 
     static propTypes = {
@@ -41,11 +68,11 @@ export default class HomeFilter extends PureComponent {
         isPrice: false
     }
 
-    loadToRender = () => {
+    loadToRender = (cb = () => { }) => {
         this.setState(prevState => {
 
             return ({ loadToRender: prevState.loadToRender ? false : true });
-        })
+        }, cb);
     }
 
     addCategory = (value) => {
@@ -67,6 +94,7 @@ export default class HomeFilter extends PureComponent {
         const { filterData } = User.getUserData();
         User.setUserData({ filterData: this.filterData });
         UserData.setUserData(StorageKeys.USER_DATA, User.getUserData());
+        this.init();
 
         // /** Close the modals */
         setVisible(false, 'refresh');
@@ -75,11 +103,23 @@ export default class HomeFilter extends PureComponent {
 
     onClearAll = () => {
         this.filterData = {
-            category: [],
-            area: [0, 500]
+            "area": Array.from([0, 500]),
+            "category": Array.from([]),
+            "price": Array.from([0, 0])
         }
 
         this.loadToRender();
+
+    }
+
+    onCancel = () => {
+        const { setVisible } = this.props;
+        if (this.tempFilterData) {
+            this.defaultInit();
+            this.loadToRender(setVisible.bind(this, false, ''));
+            return;
+        }
+        setVisible(false, '')
     }
 
     render() {
@@ -119,7 +159,7 @@ export default class HomeFilter extends PureComponent {
                         </WView>
                     </ScrollView>
                     <FilterBottomBar
-                        onClose={setVisible.bind(this, false, '')}
+                        onClose={this.onCancel.bind(this)}
                         onApply={this.onApply.bind(this)}
                     />
                 </WView >

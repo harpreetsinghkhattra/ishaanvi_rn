@@ -109,7 +109,6 @@ export default class ProductList extends PureComponent {
         }
     }
 
-
     render() {
 
         const empty = [];

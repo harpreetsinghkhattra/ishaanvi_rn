@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { FlatList, Image, Linking, Alert } from 'react-native';
+import { FlatList, Image, Linking, Alert, Share } from 'react-native';
 import { WText, WView, WRow, WSpinner, WTouchable, Image as WImage } from '../../common';
 import { RecentProductsItem } from '../../ListItems/';
 import Palette from '../../../Palette';
@@ -27,7 +27,7 @@ export default class ProductsCardsListItem extends PureComponent {
 
     Btn = ({ path, onPress }) =>
         <WTouchable margin={[5, 10]} onPress={onPress} dial={5} style={styles.btnContainer1}>
-            <Image source={path} style={[styles.iconStyle, { tintColor: Palette.white }]} />
+            <Image source={path} style={[styles.iconStyle, { tintColor: Palette.orange }]} />
         </WTouchable>
 
     dialNumber = (data) => {
@@ -53,6 +53,27 @@ export default class ProductsCardsListItem extends PureComponent {
 
         alert(JSON.stringify(value))
         history.push(path, value);
+    }
+
+    onShare = async (id) => {
+        try {
+            const result = await Share.share({
+                message:
+                    `http://ishaanvi.co/share/product/${id}`,
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared 
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     render = () => {
@@ -159,7 +180,7 @@ export default class ProductsCardsListItem extends PureComponent {
                                 onPress={this.openScreen.bind(this, userInfo)}
                                 path={message} />
                             <this.Btn
-                                onPress={() => Alert.alert("", "It will be cover with web page link.")}
+                                onPress={this.onShare.bind(this, _id)}
                                 path={share} />
                         </WRow> : null
                 }
@@ -177,10 +198,11 @@ const styles = {
         borderColor: Palette.line_color,
     },
     btnContainer1: {
-        backgroundColor: Palette.theme_color,
+        backgroundColor: Palette.white,
         width: 20,
         height: 20,
-        borderRadius: 10
+        borderRadius: 10,
+        elevation: 2
     },
     iconStyle: {
         width: 10,

@@ -9,7 +9,8 @@ import {
     ToastAndroid,
     Alert,
     AsyncStorage,
-    Linking
+    Linking,
+    NativeModules
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { MemoryRouter, BackButton } from 'react-router-native'
@@ -97,14 +98,9 @@ class Rootrn extends PureComponent {
         }
     }
 
-
     componentDidMount() {
         this.checkPermission();
         this.createNotificationListeners(); //add this line
-
-        Linking.getInitialURL().then((url) => {
-            console.log('url ===> ' + url);
-        }).catch(err => console.error('url ===> error ', err));
     }
 
     ////////////////////// Add these methods //////////////////////

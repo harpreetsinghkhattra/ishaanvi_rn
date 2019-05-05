@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, NativeModules, Platform } from 'react-native';
+import { View, Text, Image, NativeModules, Platform, Linking } from 'react-native';
 import Palette from '../../Palette';
 import TabsView from '../../components/Tabs/TabsView';
 import TabViews from '../../components/Tabs/TabViews';
@@ -27,6 +27,34 @@ export default class Home extends Component {
         super(props);
 
         this._tabEmitter = new EventEmitter();
+        Linking.getInitialURL().then(NativeModules.AndroidCommon.getSharedLinkInApp(this._handleDeepLinkingUrl.bind(this))).catch(err => console.log('url ===> error ', err));
+    }
+
+    openScreen(path, data) {
+        const { history } = this.props;
+
+        history.push(path, data ? data : {});
+    }
+
+    _handleDeepLinkingUrl = (data) => {
+        const url = data && data.url ? data.url : data;
+
+        console.log("url ===> home", url);
+        if (url) {
+
+            this.closeSplashScreen();
+            if (url.indexOf('product') > -1) {
+                var param = url.split('/share/')[1].replace('product/', '');
+                if (param.length !== 24) return;
+                this.openScreen(routerNames.view_product, { productId: param })
+            }
+
+            if (url.indexOf('shop') > -1) {
+                var param = url.split('/share/')[1].replace('shop/', '');
+                if (param.length !== 24) return;
+                this.openScreen(routerNames.viewPortal, { userId: param })
+            }
+        }
     }
 
     state = {
@@ -86,7 +114,7 @@ export default class Home extends Component {
     // } 
 
     componentWillUnmount() {
-        this._tabEmitter.removeAllListeners();
+        this._tabEmitter.removeAllListeners(); 
     }
 
     setAlertMessageVisible(alertMessageVisible) {

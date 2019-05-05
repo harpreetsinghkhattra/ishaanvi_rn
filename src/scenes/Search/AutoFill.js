@@ -65,7 +65,7 @@ export default class AutoFill extends PureComponent {
         this.setState({
             data: data.map(ele => ({
                 isShop: tabIndex ? true : false,
-                value: ele.product && tabIndex === 0 ? ele.product.name : ele.name ? ele.name : ''
+                value: ele && tabIndex === 0 ? ele.name : ele.business_name 
             }))
         });
     }

@@ -101,7 +101,7 @@ export default class ProductList extends PureComponent {
                         values: tempData.recentViewedProducts.map(ele => ele.productDetail).reverse().slice(0, 6)
                     })
                 }
-                this.setState({ isLoading: false, isRefreshingList: false, data: this.homeData.length ? this.homeData : [] });
+                this.setState({ isLoading: false, isRefreshingList: false, data: this.homeData.length ? Array.from(this.homeData) : [] }); 
             } else this.setState({ isLoading: false, isRefreshingList: false });
         });
 
@@ -121,7 +121,6 @@ export default class ProductList extends PureComponent {
 
             this.isRequestMoreProducts1 = false;
             if (tempData.length === this.homeData.length) {
-                alert(`${tempData.length} ===> ${this.homeData.length}`)
                 this.isFetchedWholeData = true;
             }
 

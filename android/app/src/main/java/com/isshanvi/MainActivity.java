@@ -7,6 +7,9 @@ import android.support.v4.content.ContextCompat;
 
 import com.facebook.react.ReactActivity;
 
+import custom.CommonModule;
+import custom.CustomData;
+
 public class MainActivity extends ReactActivity {
 
     /**
@@ -27,6 +30,11 @@ public class MainActivity extends ReactActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Get Deep Linking string;
+        Intent data = getIntent();
+        CustomData customData = CustomData.getInstace();
+        customData.setSharedLink(data.getDataString());
 
         Intent s = new Intent(this, Splash.class);
         startActivity(s);

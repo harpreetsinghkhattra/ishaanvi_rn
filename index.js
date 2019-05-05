@@ -1,6 +1,6 @@
 /** @format */
 
-import { AppRegistry } from 'react-native';
+import { AppRegistry, Linking, InteractionManager } from 'react-native';
 import App from './App';
 import { name as appName } from './app.json';
 const IO = require('socket.io-client/dist/socket.io');
@@ -25,6 +25,12 @@ socket.on("connect", () => {
             id: User.getUserData()._id
         });
 });
+
+// InteractionManager.runAfterInteractions(() => {
+//     Linking.getInitialURL().then(res => {
+//         console.log("url ===> index", JSON.stringify(res));
+//     }).catch(error => console.log("url ===> index error ", error));
+// });
 
 // firebase.notifications().getInitialNotification().then((notificationOpen, notificationOpen1) => {
 //     console.log("NOTIFICATION ===> git initial", notificationOpen, notificationOpen1); 

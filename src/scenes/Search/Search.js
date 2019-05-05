@@ -125,7 +125,9 @@ export default class Login extends PureComponent {
 
     /** Set visible */
     setFilterModalVisible = (isHomeFilterVisible, refresh) => {
-        if (refresh === "refresh") this.productListRef && this.productListRef.init();
+        if (refresh === "refresh") {
+            this.onSubmit(this.searchViaProductInput.state.searchValue);
+        }
 
         this._setState({ isHomeFilterVisible });
     }
@@ -195,7 +197,7 @@ export default class Login extends PureComponent {
 
     searchViaCategory = (category, isOnTextChange = false) => {
 
-        if(category && category.length === 0) return;
+        if (category && category.length === 0) return;
 
         if (filterData && (filterData[0] > filterData[1])) return;
 

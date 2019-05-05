@@ -19,6 +19,7 @@ export default class SelectAdType extends Component {
     async componentDidMount() {
         const { history } = this.props;
         const data = await UserData.getUserInfo(StorageKeys.USER_DATA);
+        const getStarted = await UserData.getUserInfo(StorageKeys.getStartedScreens);
         const userLocation = await UserData.getUserInfo(StorageKeys.USER_LOCATION);
         this.setState(() => ({ isLoading: false }), () => {
             
@@ -27,6 +28,8 @@ export default class SelectAdType extends Component {
             if (data) {
                 User.setUserData(JSON.parse(data));
                 Helper.resetAndPushRoot(history, routerNames.index);
+            }else if(!getStarted){
+                Helper.resetAndPushRoot(history, routerNames.getStarted);
             }
 
             this.closeSplashScreen();

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WTouchable } from '../../components/common';
-import { ScrollView, PixelRatio, Image, Platform, PermissionsAndroid, Linking } from 'react-native';
+import { ScrollView, PixelRatio, Image, Platform, PermissionsAndroid, Linking, Share } from 'react-native';
 import Palette from '../../Palette';
 import { routerNames } from '../../RouteConfig';
 import { User } from '../../model/user';
@@ -115,6 +115,27 @@ export default class ViewProduct extends Component {
         this.getProductViaId();
     }
 
+    onShare = async (id) => {
+        try {
+            const result = await Share.share({
+                message:
+                    `http://ishaanvi.co/share/product/${id}`,
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared 
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, floatBtn, icon, userPortalFloatBtn, directionFloatBtn } = styles;
@@ -175,6 +196,7 @@ export default class ViewProduct extends Component {
                             {
                                 productData && productData.userInfo ?
                                     <ShareAndCommentBar
+                                        onSharePress={this.onShare.bind(this, productData._id)}
                                         onCommentPress={this.openScreen.bind(this, routerNames.comments, { productId: productData._id })}
                                         onChatPress={this.openScreen.bind(this, routerNames.chat_room, {
                                             receiverId: productData.userInfo._id,

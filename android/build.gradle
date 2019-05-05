@@ -30,6 +30,7 @@ allprojects {
             name 'Google'
         }
         jcenter()
+        google()
         maven { url "https://jitpack.io" }
     }
 }
@@ -39,6 +40,6 @@ ext {
     minSdkVersion = 16
     compileSdkVersion = 28
     targetSdkVersion = 28
-    supportLibVersion = "28.1.0"
+    supportLibVersion = "28.0.0-rc01"
     googlePlayServicesVersion="15.0.0"
 }

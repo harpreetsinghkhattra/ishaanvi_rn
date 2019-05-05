@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Image, Alert, Linking } from 'react-native'
+import { Image, Alert, Linking, Share } from 'react-native'
 import { WView, WRow, WTouchable, WText } from '../../components/common'
 import { WithLeftIcon } from '../../components/UI/btn'
 import Palette from '../../Palette'
@@ -120,6 +120,27 @@ export default class Header extends PureComponent {
             <Image source={iconPath} style={styles.iconStyle} />
         </WTouchable>
 
+    onShare = async (id) => {
+        try {
+            const result = await Share.share({
+                message:
+                    `http://ishaanvi.co/share/shop/${id}`,
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared 
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
     render() {
         const back = require('../../images/back.png');
         const message = require('../../images/message.png');
@@ -167,13 +188,13 @@ export default class Header extends PureComponent {
                 </WRow>
                 <WRow dial={5}>
                     <WRow dial={4} flex>
-                        <Image source={require('../../images/location.png')} style={{ width: 20, height: 20 }} />
+                        <Image source={require('../../images/location.png')} style={{ width: 20, height: 20, tintColor: Palette.orange }} />
                         <WText lines={3}>{data && data.business_address ? data.business_address : ''}</WText>
                     </WRow>
                     <WRow dial={6} flex>
                         <this.Btn onPress={this.dialNumber.bind(this)} iconPath={phone} />
                         <this.Btn onPress={this.openScreen.bind(this)} iconPath={message} />
-                        <this.Btn onPress={() => Alert.alert("", "It will be cover with web page link.")} iconPath={share} />
+                        <this.Btn onPress={this.onShare.bind(this, data._id)} iconPath={share} /> 
                     </WRow>
                 </WRow>
             </WView>
@@ -186,7 +207,7 @@ const styles = {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: Palette.theme_color,
+        backgroundColor: Palette.white,
         elevation: 2,
         shadowColor: '#000000',
         shadowOffset: {
@@ -196,5 +217,5 @@ const styles = {
         shadowRadius: 5,
         shadowOpacity: 1.0
     },
-    iconStyle: { width: 15, height: 15, tintColor: Palette.white }
+    iconStyle: { width: 15, height: 15, tintColor: Palette.orange }
 }

@@ -34,7 +34,7 @@ export default class ShareAndCommentBar extends PureComponent {
                         <WText padding={[5, 10]} color={Palette.text_color} fontSize={14}>Comments</WText>
                     </WRow>
                 </WTouchable>
-                <WTouchable dial={5}>
+                <WTouchable onPress={onSharePress} dial={5}>
                     <WRow dial={5}>
                         <Image source={share} style={iconStyle} />
                         <WText padding={[5, 10]} color={Palette.text_color} fontSize={14}>Share</WText>

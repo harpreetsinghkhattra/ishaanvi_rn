@@ -16,9 +16,11 @@ import { EditUserProfile } from './scenes/EditProfile';
 import { UploadImage, Details, Finish } from './scenes/UploadPost';
 import { Posts, ViewPost, FullImage, ViewProduct, Comments, UserPortal, WishProducts } from './scenes/Post/';
 import ChatRoom from './scenes/Chat/ChatFile'
+import { GetStarted } from './scenes/intro';
 
 export const routerNames = {
     selectUserAction: "/",
+    getStarted: "/getStarted",
     selectAuthType: "/select_auth_type",
     register: "/register",
     registerSellerSelectCategory: "/register_seller_select_category",
@@ -167,5 +169,10 @@ export const routes = [
         path: routerNames.wishedProducts,
         exact: true,
         component: WishProducts
+    },
+    {
+        path: routerNames.getStarted,
+        exact: true,
+        component: GetStarted
     }
 ];
