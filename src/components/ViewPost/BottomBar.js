@@ -117,17 +117,20 @@ export default class BottomBar extends PureComponent {
     }
 
     render() {
-        const { leftBtnLabel, rightBtnLabel, leftBtnPress, rightBtnPress } = this.props;
-        const { leftBtnStyle, rightBtnStyle, container } = styles;
+        const { leftBtnLabel, rightBtnLabel, leftBtnPress, rightBtnPress, centerBtnLabel, centerBtnPress } = this.props;
+        const { btnStyle, centerBtnStyle, container } = styles;
         const { isLoading, isAddedProduct } = this.state;
 
         return (
             <WRow dial={5} style={container}>
-                <WTouchable onPress={isLoading ? () => { } : isAddedProduct ? this.removeWishProduct.bind(this) : this.addWishProduct.bind(this)} dial={5} style={leftBtnStyle}>
-                    <WText fontSize={16} lines={2} padding={[5]} center fontFamily={"Muli-Bold"} color={Palette.white}>{isLoading ? "Loading..." : isAddedProduct ? "Remove From Wish List" : leftBtnLabel}</WText>
+                <WTouchable onPress={isLoading ? () => { } : isAddedProduct ? this.removeWishProduct.bind(this) : this.addWishProduct.bind(this)} dial={5} style={btnStyle}>
+                    <WText fontSize={12} lines={2} padding={[5]} center fontFamily={"Muli-Bold"} color={Palette.text_color}>{isLoading ? "Loading..." : isAddedProduct ? "Remove From WishList" : leftBtnLabel}</WText>
                 </WTouchable>
-                <WTouchable dial={5} style={rightBtnStyle} onPress={rightBtnPress}>
-                    <WText fontSize={16} fontFamily={"Muli-Bold"} color={Palette.text_color}>{rightBtnLabel}</WText>
+                <WTouchable onPress={centerBtnPress} dial={5} style={centerBtnStyle}>
+                    <WText fontSize={12} lines={2} padding={[5]} center fontFamily={"Muli-Bold"} color={Palette.white}>{centerBtnLabel}</WText>
+                </WTouchable>
+                <WTouchable dial={5} style={btnStyle} onPress={rightBtnPress}>
+                    <WText fontSize={12} fontFamily={"Muli-Bold"} color={Palette.text_color}>{rightBtnLabel}</WText>
                 </WTouchable>
             </WRow>
         )
@@ -137,22 +140,23 @@ export default class BottomBar extends PureComponent {
 const styles = {
     container: {
         position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
+        bottom: 10,
+        left: 10,
+        right: 10,
         height: 50,
-        borderColor: Palette.border_color,
-        borderTopWidth: 1,
+        borderRadius: 25,
+        borderColor: Palette.theme_color,
+        borderWidth: 1,
+        elevation: 2,
         borderStyle: 'solid',
         backgroundColor: Palette.white,
         alignItems: 'stretch'
     },
-    leftBtnStyle: {
+    btnStyle: {
+        flex: 1
+    },
+    centerBtnStyle: {
         flex: 1,
         backgroundColor: Palette.theme_color
-    },
-    rightBtnStyle: {
-        flex: 1,
-        backgroundColor: Palette.white
     }
 }

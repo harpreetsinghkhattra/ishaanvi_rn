@@ -57,6 +57,6 @@ const styles = {
     iconStyle: {
         width: 20,
         height: 20,
-        tintColor: Palette.text_color
+        tintColor: Palette.orange
     }
 }

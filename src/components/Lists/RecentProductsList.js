@@ -5,6 +5,7 @@ import { WText, WView, WRow, WSpinner, WTouchable } from '../common';
 import { RecentProductsItem } from '../ListItems/';
 import Palette from '../../Palette';
 import { routerNames } from '../../RouteConfig';
+import { ProductCardsListItem } from '../Card/Search';
 
 export default class RecentProductsList extends PureComponent {
 
@@ -46,7 +47,12 @@ export default class RecentProductsList extends PureComponent {
                     data={data}
                     keyExtractor={(item, index) => (`item-${index}`)}
                     renderItem={({ item, index }) => (
-                        <RecentProductsItem  {...this.props} onPress={this.openScreen.bind(this, routerNames.view_product, { screenType: "home", productId: item._id })} key={`rencet-product-item-${index}`} data={item} spaced />
+                        <ProductCardsListItem
+                            {...this.props}
+                            item={item}
+                            isMore
+                            onItemPress={this.openScreen.bind(this, routerNames.view_product, { screenType: "home", productId: item._id })}
+                        />
                     )}
                 />
                 {

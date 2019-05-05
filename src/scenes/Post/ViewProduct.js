@@ -14,7 +14,7 @@ import { markProductAsViewed, getProductViaId } from '../../api/SocketUrls';
 import { Rating } from '../../scenes/Modal';
 
 const UserData = new Storage();
-const BOTTOM_STATUS_BAR = 50;
+const BOTTOM_STATUS_BAR = 70;
 
 export default class ViewProduct extends Component {
 
@@ -223,9 +223,14 @@ export default class ViewProduct extends Component {
                 </WTouchable>
                 <BottomBar
                     {...this.props}
-                    leftBtnLabel={"Add to Wish List"}
+                    leftBtnLabel={"ADD TO WISHLIST"}
+                    centerBtnLabel={"CHAT & BUY"}
                     rightBtnLabel={"Rate Us"}
                     item={productData}
+                    centerBtnPress={this.openScreen.bind(this, routerNames.chat_room, {
+                        receiverId: productData.userInfo._id,
+                        image: productData.userInfo && productData.userInfo.imageUrl ? { uri: productData.userInfo.imageUrl } : require("../../images/profile.png")
+                    })}
                     rightBtnPress={this.setRatingModalVisible.bind(this, true)}
                 />
                 <WTouchable onPress={() => Linking.openURL(`google.navigation:q=${productData.userInfo.location.lat},${productData.userInfo.location.lng}`)} dial={5} style={directionFloatBtn}>
@@ -274,19 +279,21 @@ const styles = {
     userPortalFloatBtn: {
         position: 'absolute',
         right: 10,
-        bottom: 60,
+        bottom: 70,
         backgroundColor: Palette.theme_color,
         width: 50,
         height: 50,
-        borderRadius: 25
+        borderRadius: 25,
+        elevation: 2
     },
     directionFloatBtn: {
         position: 'absolute',
         right: 10,
-        bottom: 115,
+        bottom: 125,
         backgroundColor: Palette.theme_color,
         width: 50,
         height: 50,
-        borderRadius: 25
+        borderRadius: 25,
+        elevation: 2
     }
 }
