@@ -73,6 +73,7 @@ export default class ProductList extends PureComponent {
     getUserResponse() {
         const { _id: id, userAccessToken: accessToken, filterData, location } = User.getUserData();
 
+        console.log("user data ===> ", User.getUserData());
         this.setState({ isLoading: true });
         Socket.request(get_home_items.emit, {
             id,
@@ -81,9 +82,8 @@ export default class ProductList extends PureComponent {
             coordinates: [location.latitude, location.longitude]
         });
         UserApi.getSocketResponseOnce(get_home_items.on, (res) => {
+            console.log("VIEW PRODUCT home DATA ========> home items", res);
             if (res && res.message === "Success") {
-                console.log("VIEW PRODUCT home DATA ========> ", res.data[0].recentViewedShops);
-
                 this.shopIds = res.data && res.data.length ? Array.from(res.data.map(ele => ele._id)) : [];
                 this.homeData = res.data;
 
@@ -95,7 +95,7 @@ export default class ProductList extends PureComponent {
                     })
                 }
 
-                if (tempData && tempData.recentViewedProducts && tempData.recentViewedProducts.length && (this.homeData.findIndex(ele => ele.category === "RECENT VISITED PRODUCTS") === -1)) { 
+                if (tempData && tempData.recentViewedProducts && tempData.recentViewedProducts.length && (this.homeData.findIndex(ele => ele.category === "RECENT VISITED PRODUCTS") === -1)) {
                     this.homeData.push({
                         category: "RECENT VISITED PRODUCTS",
                         values: tempData.recentViewedProducts.map(ele => ele.productDetail).reverse().slice(0, 6)
@@ -192,9 +192,9 @@ export default class ProductList extends PureComponent {
                         label={label1}
                         onPress={onPress1}
                         margin={label2 ? [0, 5, 0, 0] : [0, 0]}
-                        btnPadding={[5, 10]}
+                        btnPadding={[6, 10]}
                         textStyle={{ textAlign: 'center' }}
-                        containerStyle={{ backgroundColor: backgroundColor1 }}
+                        containerStyle={[styles.btnStyle, { backgroundColor: backgroundColor1 }]}
                     /> : null
             }
             {
@@ -204,17 +204,16 @@ export default class ProductList extends PureComponent {
                         dial={5}
                         fontSize={14}
                         label={label2}
-                        btnPadding={[5, 10]}
+                        btnPadding={[6, 10]}
                         onPress={onPress2}
                         textStyle={{ textAlign: 'center' }}
-                        containerStyle={{ backgroundColor: backgroundColor2 }}
+                        containerStyle={[styles.btnStyle, { backgroundColor: backgroundColor2 }]}
                     /> : null
             }
         </WRow>
 
     render() {
         const { screenWidth, screenHeightWithHeader, history, openSearch } = this.props;
-        const { stretch, btnStyle, btnContainer, border, icon, floatBtn, shopBtnContainer } = styles;
         const { userType } = User.getUserData();
         const { isHomeFilterVisible, isLocationModalVisible, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
         const plus = require('../../../images/plus.png');
@@ -263,7 +262,9 @@ export default class ProductList extends PureComponent {
                                 <ImageSlider
                                     imagePress={false}
                                     absolutePath
-                                    minHeight={90}
+                                    minHeight={125}
+                                    containerBackgroundColor={'transparent'}
+                                    inActiveColor={Palette.line_color}
                                     autoPlayEnable
                                     {...this.props}
                                     data={images} /> : null}
@@ -276,7 +277,7 @@ export default class ProductList extends PureComponent {
                                 : data && data.length ?
                                     null :
                                     <WView dial={5}>
-                                        <WText fontSize={16} fontFamily={"Muli-Bold"}>No product found</WText>
+                                        <WText fontSize={16} fontFamily={"Muli-Bold"}>No shop found</WText>
                                         <Image source={require('../../../images/no_product.png')} resizeMode="cover" style={{ height: 200 }} />
                                     </WView>
                         }
@@ -297,10 +298,9 @@ const styles = {
         alignItems: 'stretch'
     },
     btnStyle: {
-        backgroundColor: Palette.create_add_continue_btn,
-        alignSelf: "stretch",
-        height: 52,
-        borderRadius: 5
+        borderColor: Palette.line_color,
+        elevation: 2,
+        borderRadius: 3
     },
     btnContainer: {
         height: 74

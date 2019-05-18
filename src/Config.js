@@ -1,6 +1,6 @@
 import Palette from './Palette'
 const NPM_PACKAGE = require('../package.json')
-const APP_NAME = 'Ishanvi'
+const APP_NAME = 'Ishaanvi'
 
 /**
  * The configuration file for the App
@@ -22,8 +22,10 @@ export default {
     http: {
         // server: "https://thawing-citadel-16848.herokuapp.com/",
         // baseUrl: "https://thawing-citadel-16848.herokuapp.com/api/",
-        server: "http://13.127.188.164:3000/",
-        baseUrl: "http://13.127.188.164:3000/api/",
+        // server: "http://13.127.188.164:3000/",
+        // baseUrl: "http://13.127.188.164:3000/api/",
+        server: "http://13.127.214.32:3000/",
+        baseUrl: "http://13.127.214.32:3000/api/",
         locationBaseUrl: "https://maps.googleapis.com/maps/api/place/autocomplete/json",
         locationDetailBaseUrl: "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
         locationDetailViaZipCode: "https://maps.googleapis.com/maps/api/geocode/json"

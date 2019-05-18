@@ -10,6 +10,8 @@ import { routerNames } from '../../RouteConfig';
 import { User } from '../../model/user';
 import { logout } from '../../api/SocketUrls';
 import { Api } from '../../api';
+import { LoginManager } from 'react-native-fbsdk';
+import { GoogleSignin } from 'react-native-google-signin';
 
 const UserData = new Storage();
 
@@ -41,15 +43,12 @@ export default class EditActionView extends Component {
                 console.log("res logout ===>", res);
                 this.setState({ isLoading: false });
                 if (res && res.data) {
-                    if (res.message === "Success") {
-                        this.setAlertMessageVisible(false, {});
-                        User.resetUserData();
-                        await UserData.removeItem(StorageKeys.USER_DATA);
-                        Helper.resetAndPushRoot(history, routerNames.selectUserAction);
-                    }
-                    else {
-                        alert("Please try again");
-                    }
+                    this.setAlertMessageVisible(false, {});
+                    User.resetUserData();
+                    await UserData.removeItem(StorageKeys.USER_DATA);
+                    await GoogleSignin.signOut();
+                    await LoginManager.logOut();
+                    Helper.resetAndPushRoot(history, routerNames.selectUserAction);
                 } else if (res && res.response) {
                     alert("Please try again");
                 }

@@ -59,7 +59,7 @@ export default class AutoFill extends PureComponent {
 
         if (tabIndex < 0) return;
 
-        if (tabIndex === 0) data = data && data[0].product && data[0].product.length? data[0].product.slice(0, 10) : []
+        if (tabIndex === 0) data = data && data.length && data[0].product && data[0].product.length? data[0].product.slice(0, 10) : []
         else data = data && data.length && data[0].users && data[0].users.length ? data[0].users.slice(0, 10) : [];
 
         this.setState({

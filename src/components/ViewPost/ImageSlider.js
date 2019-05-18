@@ -38,6 +38,7 @@ export default class ImageSlider extends Component {
         const _renderHeader = () => {
             return (
                 <SliderIndicator
+                    {...this.props}
                     tabs={data}
                     iconStyle={{ tintColor: Palette.white }}
                 />

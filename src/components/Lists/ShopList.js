@@ -66,6 +66,7 @@ export default class ShopList extends Component {
                             <ProductCardsListItem
                                 {...this.props}
                                 item={item}
+                                isHorizontal={true}
                                 onItemPress={productId => this.openScreen(routerNames.view_product, { productId })}
                             />
                         );
@@ -73,6 +74,7 @@ export default class ShopList extends Component {
                         return (
                             <ShopListItem
                                 {...this.props}
+                                isHorizontal={true}
                                 data={item}
                             />
                         );

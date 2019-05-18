@@ -24,7 +24,6 @@ export default class SelectAuthType extends Component {
     fbLogin = () => {
         const { history } = this.props;
         const scop = this;
-        LoginManager.logOut();
         LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(
             function (result) {
                 if (result.isCancelled) {
@@ -141,7 +140,7 @@ export default class SelectAuthType extends Component {
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeightWithHeader }, stretch]}>
                     <WView dial={5} flex padding={[10, 10]} backgroundColor={Palette.white} style={[stretch]}>
                         <WView dial={5} flex>
-                            {/*<WText fontSize={30} fontFamily="Muli-Bold" center padding={[20, 0]} color={Palette.text_color}>ISHANVI</WText>*/}
+                            {/*<WText fontSize={30} fontFamily="Muli-Bold" center padding={[20, 0]} color={Palette.text_color}>ISHAANVI</WText>*/}
                             <Image source={logo} style={logoStyle} />
                         </WView>
                         <WView dial={5} flex>
@@ -175,14 +174,14 @@ export default class SelectAuthType extends Component {
                                 isLoading &&
                                 <WView dial={5}>
                                     <WSpinner size={"small"} color={Palette.theme_color} />
-                                    <WText center padding={[5, 0]} color={Palette.border_color}>{"Ishanvi is fetching data, Please wait..."}</WText>
+                                    <WText center padding={[5, 0]} color={Palette.border_color}>{"Ishaanvi is fetching data, Please wait..."}</WText>
                                 </WView>
                             }
                         </WView>
                         <WView dial={8} flex backgroundColor={Palette.white}>
                             <WView dial={5} padding={[20, 10]}>
-                                <WText center fontSize={14} lines={5}> By Continuing, you agree to ISHANVI <WText fontSize={14} color={Palette.theme_color} onPress={() => history.push(routerNames.termAndConditions)}>Terms of Service</WText> and <WText fontSize={14} color={Palette.theme_color} onPress={() => history.push(routerNames.policy)}>Privacy Policy</WText> </WText>
-                                <WText> Version 0.0.1 </WText>
+                                <WText center fontSize={14} lines={5}> By Continuing, you agree to ISHAANVI <WText fontSize={14} color={Palette.theme_color} onPress={() => history.push(routerNames.termAndConditions)}>Terms of Service</WText> and <WText fontSize={14} color={Palette.theme_color} onPress={() => history.push(routerNames.policy)}>Privacy Policy</WText> </WText>
+                                <WText> Version 0.0.9 </WText>
                             </WView>
                         </WView>
                     </WView>

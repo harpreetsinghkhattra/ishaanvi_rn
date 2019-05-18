@@ -16,12 +16,14 @@ export default class ShopListItem extends PureComponent {
         isLoading: PropTypes.bool,
         isViewMore: PropTypes.bool,
         onItemPress: PropTypes.func,
-        marginContainer: PropTypes.array
+        marginContainer: PropTypes.array,
+        isHorizontal: PropTypes.bool
     }
 
     static defaultProps = {
         isViewMore: true,
-        marginContainer: [5, 5, 5, 0]
+        marginContainer: [5, 5, 5, 0],
+        isHorizontal: false
     }
 
     openScreen(path, data) {
@@ -57,7 +59,7 @@ export default class ShopListItem extends PureComponent {
     }
 
     render = () => {
-        const { heading, data, isLoading, isViewMore, onPress, userId, onItemPress, marginContainer } = this.props;
+        const { heading, data, isLoading, isViewMore, onPress, userId, onItemPress, marginContainer, isHorizontal, screenWidth } = this.props;
         const { container, getBtnContainer, stretch, iconStyle, imageStyle } = styles;
 
         const message = require('../../images/message.png');
@@ -67,9 +69,9 @@ export default class ShopListItem extends PureComponent {
         const view = require("../../images/show_password.png");
 
         return (
-            <WTouchable onPress={onItemPress ? onItemPress.bind(this, data._id) : this.openScreen1.bind(this, routerNames.viewPortal, { screenType: "home", userId: data._id })} dial={4} margin={marginContainer} style={[stretch, container]}>
+            <WTouchable onPress={onItemPress ? onItemPress.bind(this, data._id) : this.openScreen1.bind(this, routerNames.viewPortal, { screenType: "home", userId: data._id })} dial={4} margin={marginContainer} style={[stretch, isHorizontal ? container : { width: screenWidth / 2 - 10 }]}>
                 <WView>
-                    <Image source={data && data.imageUrl ? { uri: data.imageUrl } : shop} style={imageStyle} resizeMode={data && data.imageUrl ? "cover" : "center"} />
+                    <Image source={data && data.imageUrl ? { uri: data.imageUrl } : shop} style={[imageStyle, { width: isHorizontal ? CARD_IMAGE_WIDTH : screenWidth / 2 - 10 }]} resizeMode={data && data.imageUrl ? "cover" : "center"} />
                     <WText fontSize={14} fontFamily={"Muli-Bold"} lines={1}>{data && data.business_name}</WText>
                     <WText fontSize={14} lines={2}>{data && data.business_address}</WText>
                 </WView>
@@ -78,7 +80,7 @@ export default class ShopListItem extends PureComponent {
                         <WText margin={[0, 5, 0, 0]}>{data && data.views ? data.views : 0}</WText>
                         <Image source={view} style={iconStyle} />
                     </WRow>
-                    <WTouchable onPress={onItemPress ? onItemPress.bind(this, data._id) : this.openScreen1.bind(this, routerNames.viewPortal, { screenType: "home", userId: data._id })}  margin={[0, 0, 0, 10]} dial={5} style={getBtnContainer}>
+                    <WTouchable onPress={onItemPress ? onItemPress.bind(this, data._id) : this.openScreen1.bind(this, routerNames.viewPortal, { screenType: "home", userId: data._id })} margin={[0, 0, 0, 10]} dial={5} style={getBtnContainer}>
                         <WText color={Palette.theme_color} fontFamily={"Muli-Bold"}>GET</WText>
                     </WTouchable>
                 </WRow>
@@ -95,7 +97,6 @@ const styles = {
         alignItems: 'stretch'
     },
     imageStyle: {
-        width: 150,
         height: 200,
         borderRadius: 5,
         borderWidth: 1,

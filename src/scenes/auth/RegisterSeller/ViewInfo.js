@@ -95,7 +95,7 @@ export default class ContactInfo extends Component {
                 if (res.message === "Success") {
                     history.go(-4);
                 } else if (res.message === "SuccessWithMobileChange") {
-                    this.setAlertMessageVisible(true, { status: res.message, heading: "Verification Code Sent!", message: "Ishanvi needs verification, you have to login again." }, res.message);
+                    this.setAlertMessageVisible(true, { status: res.message, heading: "Verification Code Sent!", message: "Ishaanvi needs verification, you have to login again." }, res.message);
                 } else if (res.message === "EmailPresent") this.setAlertMessageVisible(true, { status: res.message, heading: "Present!", message: "Email is present, please try with another email address." }, res.message);
                 else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" }, '');
             } else this.setAlertMessageVisible(true, { status: res.message, heading: "Internal Error!", message: "Please try again" }, '')

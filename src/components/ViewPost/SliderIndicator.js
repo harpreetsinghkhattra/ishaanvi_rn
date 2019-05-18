@@ -15,6 +15,7 @@ export default class SliderIndeicator extends Component {
         initialPage: PropTypes.number,
         pager: PropTypes.instanceOf(TabViews),
         changePageWithAnimation: PropTypes.bool,
+        containerBackgroundColor: PropTypes.string
     }
 
     /**
@@ -22,7 +23,10 @@ export default class SliderIndeicator extends Component {
      */
     static defaultProps = {
         tabs: [],
-        changePageWithAnimation: false
+        changePageWithAnimation: false,
+        containerBackgroundColor: 'rgba(0,0,0,0.2)',
+        activeColor: Palette.theme_color,
+        inActiveColor: Palette.white
     }
 
     state = {
@@ -36,7 +40,7 @@ export default class SliderIndeicator extends Component {
         let {
             tabs, pager, style, itemStyle, selectedItemStyle, iconStyle,
             selectedIconStyle, textStyle, selectedTextStyle, changePageWithAnimation,
-            onTabPress
+            onTabPress, containerBackgroundColor, activeColor, inActiveColor
         } = this.props
         if (!tabs || tabs.length === 0) return null
 
@@ -45,13 +49,13 @@ export default class SliderIndeicator extends Component {
             return (
                 <Image
                     key={`tabs-indicator${index}`}
-                    style={[styles.image, { tintColor: isSelected ? Palette.theme_color : Palette.white }]}
+                    style={[styles.image, { tintColor: isSelected ? activeColor : inActiveColor }]}
                     source={circle}
                 />
             )
         })
         return (
-            <View style={[styles.container, style]} >
+            <View style={[styles.container, { backgroundColor: containerBackgroundColor }, style]} >
                 {tabsView}
             </View>
         )
@@ -75,8 +79,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.2)'
+        alignItems: 'center'
     },
     itemContainer: {
         flex: 1,

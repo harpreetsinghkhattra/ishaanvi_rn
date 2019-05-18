@@ -26,6 +26,7 @@ export default class SelectAdType extends Component {
             if(userLocation) UserLocation.setUserLocationData(userLocation);
 
             if (data) {
+                console.log("user data ===> storage data", data);
                 User.setUserData(JSON.parse(data));
                 Helper.resetAndPushRoot(history, routerNames.index);
             }else if(!getStarted){
@@ -57,7 +58,7 @@ export default class SelectAdType extends Component {
             <WView dial={5} flex={1} style={{ alignItems: 'stretch' }}>
                 <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: screenHeight, justifyContent: 'flex-start' }, stretch]}>
                     <WView flex={0.6} dial={5} padding={[10, 10]} backgroundColor={Palette.theme_color} style={{ justifyContent: "space-around" }}>
-                        {/*<WText fontSize={30} fontFamily="Muli-Bold" padding={[20, 10]} color={Palette.white}>ISHANVI</WText>*/}
+                        {/*<WText fontSize={30} fontFamily="Muli-Bold" padding={[20, 10]} color={Palette.white}>ISHAANVI</WText>*/}
                         <Image source={logo} style={logoStyle}/>
                         <WRow dial={5} padding={[20, 10]}>
                             <WView dial={5} flex>

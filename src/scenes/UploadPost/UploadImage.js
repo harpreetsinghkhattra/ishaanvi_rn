@@ -14,6 +14,7 @@ import { AlertMessage, AutoComplete } from '../Modal/';
 import { add_product } from '../../api/SocketUrls';
 import axios from 'axios';
 import { ProgressBar } from '../../components/Edit';
+import Config from '../../Config';
 
 const UserData = new Storage();
 const BOTTOM_STATUS_BAR = 56;
@@ -71,9 +72,10 @@ export default class UserProfile extends Component {
         formData.append('itemCode', itemCode);
         formData.append('status', status ? status : 1);
 
-        console.log("UPLOAD PRODUCT REQUEST ===> ", formData);
+        console.log("product image ===> formdata", formData);
+        // formData.forEach((ele) => console.log("product image ===> productImage formData", ele))
         this.setState({ uploadingImage: true });
-        axios.post('http://13.127.188.164/api/uploadProductFiles', formData, {
+        axios.post(`${Config.http.baseUrl}uploadProductFiles`, formData, {
             onUploadProgress: (percentage) => {
                 this.setState({
                     percentage: Math.round((percentage.loaded * 100) / percentage.total)
@@ -81,7 +83,8 @@ export default class UserProfile extends Component {
             }
         }).then((res) => {
             this.setState({ uploadingImage: false, isLoading: false });
-            console.log("UPLOAD PRODUCT RESPONSE ===> ", res);
+            // console.log("UPLOAD PRODUCT RESPONSE ===> ", res);
+            console.log("product image ===> productImage response", res);
             if (res && res.data && res.data.message === "Success") {
                 PostOffer.resetData();
                 history.push(routerNames.post_offer_finish, { screenType: screenType === "edit" ? screenType : '' });

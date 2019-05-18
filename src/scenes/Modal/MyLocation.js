@@ -57,14 +57,14 @@ export default class MyLocation extends Component {
                 const granted = await PermissionsAndroid.request(
                     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
                     {
-                        'title': 'Ishanvi wants your location',
+                        'title': 'Ishaanvi wants your location',
                         'message': ''
                     }
                 )
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     this.getGeoLocation();
                 } else {
-                    Alert.alert("You have Denied Location Permission!", "Currently Ishanvi is using default location", [{
+                    Alert.alert("You have Denied Location Permission!", "Currently Ishaanvi is using default location", [{
                         text: "Okay",
                         onPress: this.defaultLocation.bind(this)
                     }]);
@@ -89,7 +89,7 @@ export default class MyLocation extends Component {
             (error) => {
                 Alert.alert(
                     "Unable to get your current location",
-                    `NOTE:\n1.) Your device GPS must be enable\n2.) Please check your wifi connection\n\nPlease try again\n\nFor Now, ISHANVI is using default location`,
+                    `NOTE:\n1.) Your device GPS must be enable\n2.) Please check your wifi connection\n\nPlease try again\n\nFor Now, ISHAANVI is using default location`,
                     [{
                         text: "Okay",
                         onPress: this.defaultLocation.bind(this)
@@ -206,7 +206,7 @@ export default class MyLocation extends Component {
 
                                 Alert.alert(
                                     "No Selected Location Found",
-                                    `ISHANVI is using default location.`,
+                                    `ISHAANVI is using default location.`,
                                     [{
                                         text: "Okay",
                                         onPress: this.defaultLocation.bind(this)
@@ -216,7 +216,7 @@ export default class MyLocation extends Component {
                         <ScrollView contentContainerStyle={[{ minWidth: screenWidth, minHeight: 200, backgroundColor: 'green', alignItems: 'flex-end', justifyContent: 'flex-end' }, stretch]}>
                             <WView dial={8} padding={[10, 10]} style={[stretch]} backgroundColor={Palette.white}>
                                 <WText padding={[0, 5, 5, 5]} center lines={2} fontSize={12} color={Palette.border_color} lines={2}>
-                                    Ishanvi wants a destination to show relevant collections
+                                    Ishaanvi wants a destination to show relevant collections
                             </WText>
 
                                 <WTouchable dial={5} onPress={(isLoadingLocation || isLoadingLocationDetail || isLoadingZipcode) ? () => { } : this.requestLocationPermission.bind(this)} style={btnContainer} >

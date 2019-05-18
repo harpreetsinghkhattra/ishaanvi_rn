@@ -118,6 +118,7 @@ import ImagePicker from 'react-native-image-picker';
 import axios from 'axios';
 import { User } from '../../model/user';
 import { ProgressBar } from './';
+import Config from '../../Config';
 
 export default class ChangeImage extends Component {
     static propTypes = {
@@ -177,7 +178,7 @@ export default class ChangeImage extends Component {
                 formData.append('accessToken', accessToken);
 
                 this.setState({ uploadingImage: true });
-                axios.post('http://13.127.188.164/api/editProfileImage', formData, {
+                axios.post(`${Config.http.baseUrl}editProfileImage`, formData, {
                     onUploadProgress: (percentage) => {
                         this.setState({
                             percentage: Math.round((percentage.loaded * 100) / percentage.total)
@@ -187,7 +188,10 @@ export default class ChangeImage extends Component {
                     this.setState({ uploadingImage: false });
                     if (res && res.data && res.data.message === "Success") {
                         User.setUserData(res.data.data);
-                    } else alert(JSON.stringify(res));
+                    } else {
+                        console.log(JSON.stringify(res));
+                        alert("Please try again");
+                    }
                 });
 
             }

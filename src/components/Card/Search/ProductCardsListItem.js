@@ -12,11 +12,13 @@ export default class ProductsCardsListItem extends PureComponent {
 
     static propTypes = {
         onItemPress: PropTypes.func,
-        isMore: PropTypes.bool
+        isMore: PropTypes.bool,
+        isHorizontal: PropTypes.bool
     }
 
     static defaultProps = {
-        isMore: false
+        isMore: false,
+        isHorizontal: false
     }
 
     openScreen(path, data) {
@@ -77,7 +79,7 @@ export default class ProductsCardsListItem extends PureComponent {
     }
 
     render = () => {
-        const { heading, item: data, isLoading, isViewMore, onPress, userId, onItemPress, isMore } = this.props;
+        const { heading, item: data, isLoading, isViewMore, onPress, userId, onItemPress, isMore, screenWidth, isHorizontal } = this.props;
         const { imageStyle, iconStyle, container, ratingContainer, viewContainer } = styles;
 
         const message = require('../../../images/message.png');
@@ -140,8 +142,8 @@ export default class ProductsCardsListItem extends PureComponent {
         //     </WView >
 
         return (
-            <WTouchable onPress={onItemPress ? onItemPress.bind(this, _id) : this.openScreen1.bind(this, routerNames.view_product, { productId: _id })} dial={5} stretch spaceBetween margin={[5, 5]} style={container}>
-                <Image source={images && images.length ? { uri: images[0] } : require("../../../images/product-dummy.png")} style={imageStyle} resizeMode={images && images.length ? "cover" : "center"} />
+            <WTouchable onPress={onItemPress ? onItemPress.bind(this, _id) : this.openScreen1.bind(this, routerNames.view_product, { productId: _id })} dial={5} stretch spaceBetween margin={[5, 5]} style={[isHorizontal ? container : { width: screenWidth / 2-10 }]}>
+                <Image source={images && images.length ? { uri: images[0] } : require("../../../images/product-dummy.png")} style={[imageStyle, { width: isHorizontal ? IMAGE_CARD_WIDTH : screenWidth / 2 - 10 }]} resizeMode={images && images.length ? "cover" : "center"} />
                 <WView dial={4}>
                     <WText color={Palette.black} fontFamily={"Muli-Bold"} fontSize={14}>{name}</WText>
                 </WView>
@@ -191,7 +193,6 @@ export default class ProductsCardsListItem extends PureComponent {
 
 const styles = {
     imageStyle: {
-        width: 150,
         height: 200,
         borderRadius: 5,
         borderWidth: 1,
