@@ -88,20 +88,20 @@ export default class ProductList extends PureComponent {
                 this.homeData = res.data;
 
                 const tempData = res.data && res.data.length ? res.data && res.data.length && res.data[0] : [];
-                if(tempData && tempData.recentViewedShops && tempData.recentViewedShops.length){
+                if (tempData && tempData.recentViewedShops && tempData.recentViewedShops.length && (this.homeData.findIndex(ele => ele.category === "RECENT VISITED SHOPS") === -1)) {
                     this.homeData.push({
                         category: "RECENT VISITED SHOPS",
                         values: tempData.recentViewedShops.map(ele => ele.shopDetail).reverse().slice(0, 6)
                     })
                 }
 
-                if(tempData && tempData.recentViewedProducts && tempData.recentViewedProducts.length){
+                if (tempData && tempData.recentViewedProducts && tempData.recentViewedProducts.length && (this.homeData.findIndex(ele => ele.category === "RECENT VISITED PRODUCTS") === -1)) { 
                     this.homeData.push({
                         category: "RECENT VISITED PRODUCTS",
                         values: tempData.recentViewedProducts.map(ele => ele.productDetail).reverse().slice(0, 6)
                     })
                 }
-                this.setState({ isLoading: false, isRefreshingList: false, data: this.homeData.length ? Array.from(this.homeData) : [] }); 
+                this.setState({ isLoading: false, isRefreshingList: false, data: this.homeData.length ? Array.from(this.homeData) : [] });
             } else this.setState({ isLoading: false, isRefreshingList: false });
         });
 
