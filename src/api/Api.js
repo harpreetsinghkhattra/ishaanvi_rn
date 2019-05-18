@@ -126,6 +126,23 @@ export class Api {
             })
     }
 
+    static logout = (keys, body) => {
+        return Helper.validate(keys, body)
+            .then(({ status, response }) => {
+                if (status) {
+                    return request(`${Config.http.baseUrl}logout`, { body: JSON.stringify(body) })
+                        .then((res) => {
+                            console.log("res get => ", res);
+                            return Promise.resolve(res);
+                        })
+                        .catch(err => {
+                            console.log("err", err);
+                            return Promise.reject(err);
+                        })
+                } else return Promise.resolve({ status, response });
+            })
+    }
+
     static loginViaSocialMedia = (keys, body) => {
         return Helper.validate(keys, body)
             .then(({ status, response }) => {

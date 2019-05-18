@@ -8,6 +8,8 @@ import { AlertMessage } from '../../scenes/Modal/'
 import { Storage, StorageKeys, Helper } from '../../helper';
 import { routerNames } from '../../RouteConfig';
 import { User } from '../../model/user';
+import { logout } from '../../api/SocketUrls';
+import { Api } from '../../api';
 
 const UserData = new Storage();
 
@@ -31,11 +33,31 @@ export default class EditActionView extends Component {
 
     async onLogoutAccept() {
         const { history } = this.props;
+        const { _id: id, userAccessToken: accessToken } = User.getUserData();
+        this.setState(() => ({ isLoading: true, errors: [] }), async () => {
+            try {
+                let res = await Api.logout(Object.keys({ id, accessToken }), { id, accessToken });
 
-        this.setAlertMessageVisible(false, {});
-        User.resetUserData();
-        await UserData.removeItem(StorageKeys.USER_DATA);
-        Helper.resetAndPushRoot(history, routerNames.selectUserAction);
+                console.log("res logout ===>", res);
+                this.setState({ isLoading: false });
+                if (res && res.data) {
+                    if (res.message === "Success") {
+                        this.setAlertMessageVisible(false, {});
+                        User.resetUserData();
+                        await UserData.removeItem(StorageKeys.USER_DATA);
+                        Helper.resetAndPushRoot(history, routerNames.selectUserAction);
+                    }
+                    else {
+                        alert("Please try again");
+                    }
+                } else if (res && res.response) {
+                    alert("Please try again");
+                }
+            } catch (error) {
+                this.setState({ isLoading: false });
+                alert("Please try again");
+            }
+        });
     }
 
     onDecline = () => {
@@ -44,7 +66,7 @@ export default class EditActionView extends Component {
 
     render() {
         const { stretch } = styles;
-        const { alertMessageVisible, alertMessage } = this.state;
+        const { alertMessageVisible, alertMessage, isLoading } = this.state;
         const { userType } = User.getUserData();
 
         return (
@@ -85,8 +107,8 @@ export default class EditActionView extends Component {
                     onPress={this.setAlertMessageVisible.bind(this, true, { status: "warning", heading: "Alert", message: "Comming soon..." })}
                     label={"Notifications"} />*/}
                 <LabelWithRightBtn
-                    onPress={this.setAlertMessageVisible.bind(this, true, { status: "logout", heading: "Logout", message: "Do you really want to logout?" })}
-                    label={"Logout"} />
+                    onPress={isLoading ? () => { } : this.setAlertMessageVisible.bind(this, true, { status: "logout", heading: "Logout", message: "Do you really want to logout?" })}
+                    label={isLoading ? "Please wait..." : "Logout"} />
             </WView>
         )
     }

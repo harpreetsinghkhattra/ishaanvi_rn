@@ -57,6 +57,15 @@ export default class Home extends Component {
         }
     }
 
+    _handleProductNotifications = () => {
+        const { productNotificationData, resetProductNotificationData } = this.props;
+
+        if (!productNotificationData) return;
+
+        resetProductNotificationData && resetProductNotificationData();
+        this.openScreen(routerNames.view_product, { productId: productNotificationData.productId });
+    }
+
     state = {
         isLoading: false,
         alertMessageVisible: false
@@ -69,6 +78,8 @@ export default class Home extends Component {
         this.getUserResponse();
 
         this.closeSplashScreen();
+
+        this._handleProductNotifications();
     }
 
     getUserResponse() {
@@ -114,7 +125,7 @@ export default class Home extends Component {
     // } 
 
     componentWillUnmount() {
-        this._tabEmitter.removeAllListeners(); 
+        this._tabEmitter.removeAllListeners();
     }
 
     setAlertMessageVisible(alertMessageVisible) {

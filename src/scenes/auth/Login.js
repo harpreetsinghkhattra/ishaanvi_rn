@@ -43,10 +43,10 @@ export default class Login extends Component {
 
     /** On submit */
     sumbit = () => {
-        const { history } = this.props;
+        const { history, deviceToken } = this.props;
 
         this.setState(() => ({ isLoading: true, errors: [] }), () => {
-            Api.login(Object.keys(this.requestBody), this.requestBody)
+            Api.login(Object.keys(this.requestBody), Object.assign(this.requestBody, { deviceToken: deviceToken }))
                 .then(res => {
                     console.log("res ===>", res);
                     this.setState({ isLoading: false });

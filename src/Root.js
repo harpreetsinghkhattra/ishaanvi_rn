@@ -41,7 +41,9 @@ class Rootrn extends PureComponent {
             isSocketConnected: true,
             userHasActivatedCallback: null,
             alertNotificationMessageVisible: false,
-            selectedNotification: {}
+            selectedNotification: {},
+            productNotificationData: null,
+            deviceToken: null
         };
     }
 
@@ -76,14 +78,19 @@ class Rootrn extends PureComponent {
     //3
     async getToken() {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        console.log("requestBody ===> fcm token", fcmToken);
+        console.log("requestBody ===> fcm token checking", fcmToken);
         if (!fcmToken) {
             fcmToken = await firebase.messaging().getToken();
             if (fcmToken) {
                 // user has a device token
+                console.log("requestBody ===> fcm token", fcmToken);
                 await AsyncStorage.setItem('fcmToken', fcmToken);
             }
         }
+
+        this.setState({
+            deviceToken: fcmToken
+        })
     }
 
     //2
@@ -128,6 +135,14 @@ class Rootrn extends PureComponent {
             const { data, notificationId } = notificationOpen.notification;
             console.log("NOTIFICATION ===> BACKGROUND notificationId", notificationId);
             firebase.notifications().removeDeliveredNotification(notificationId);
+            
+            if (data && data.notification_type === "product") {
+                this.setState({
+                    productNotificationData: data
+                })
+                return;
+            }
+
             this.setState({
                 alertNotificationMessageVisible: true,
                 selectedNotification: {
@@ -146,6 +161,14 @@ class Rootrn extends PureComponent {
             console.log("NOTIFICATION ===> CLOSED", notificationId);
 
             firebase.notifications().removeDeliveredNotification(notificationId);
+
+            if (data && data.notification_type === "product") {
+                this.setState({
+                    productNotificationData: data
+                })
+                return;
+            }
+
             this.setState({
                 alertNotificationMessageVisible: true,
                 selectedNotification: {
@@ -159,6 +182,11 @@ class Rootrn extends PureComponent {
         * Triggered for data only payload in foreground
         * */
         this.messageListener = firebase.messaging().onMessage(({ data }) => {
+
+            if (data && data.notification_type === "product") {
+                return;
+            }
+
             //process data message
             this.setState({
                 alertNotificationMessageVisible: true,
@@ -218,8 +246,14 @@ class Rootrn extends PureComponent {
         this.setState({ alertNotificationMessageVisible, selectedNotification });;
     }
 
+    resetProductNotificationData = () => {
+        this.setState({
+            productNotificationData: null
+        })
+    }
+
     render() {
-        const { alertNotificationMessageVisible, selectedNotification } = this.state;
+        const { alertNotificationMessageVisible, selectedNotification, productNotificationData, deviceToken } = this.state;
 
         return (
             <MemoryRouter>
@@ -250,7 +284,10 @@ class Rootrn extends PureComponent {
                         screenHeightWithHeader: this.state.viewableScreenHeightWithHeader,
                         screenOrientation: this.state.screenOrientation,
                         scale: this.state.scale,
-                        fontScale: this.state.fontScale
+                        fontScale: this.state.fontScale,
+                        productNotificationData: productNotificationData,
+                        deviceToken: deviceToken,
+                        resetProductNotificationData: this.resetProductNotificationData.bind(this)
                     })}
                     <ConnectionInfoBar
                         onSocketConnectionStatusChange={v => this.isSocketConnected(v)}

@@ -17,6 +17,7 @@ import { UploadImage, Details, Finish } from './scenes/UploadPost';
 import { Posts, ViewPost, FullImage, ViewProduct, Comments, UserPortal, WishProducts } from './scenes/Post/';
 import ChatRoom from './scenes/Chat/ChatFile'
 import { GetStarted } from './scenes/intro';
+import { Policy, TermAndconditions } from './scenes/policies';
 
 export const routerNames = {
     selectUserAction: "/",
@@ -46,7 +47,9 @@ export const routerNames = {
     chat_room: '/user/chat_room',
     comments: '/user/product/comments',
     viewPortal: '/user/view_portal',
-    wishedProducts: '/wish/products'
+    wishedProducts: '/wish/products',
+    policy: '/policy',
+    termAndConditions: '/termAndConditions'
 }
 
 export const routes = [
@@ -174,5 +177,15 @@ export const routes = [
         path: routerNames.getStarted,
         exact: true,
         component: GetStarted
+    },
+    {
+        path: routerNames.policy,
+        exact: true,
+        component: Policy
+    },
+    {
+        path: routerNames.termAndConditions,
+        exact: true,
+        component: TermAndconditions
     }
 ];

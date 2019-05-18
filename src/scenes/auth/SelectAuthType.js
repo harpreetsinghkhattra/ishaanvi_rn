@@ -89,10 +89,10 @@ export default class SelectAuthType extends Component {
     };
 
     submit = (body) => {
-        const { history } = this.props;
+        const { history, deviceToken } = this.props;
 
         this.setState(() => ({ isLoading: true }), () => {
-            Api.loginViaSocialMedia(Object.keys(body), body)
+            Api.loginViaSocialMedia(Object.keys(body), Object.assign(body, { deviceToken: deviceToken }))
                 .then(res => {
                     this.setState({ isLoading: false });
                     if (res && res.data) {
@@ -181,7 +181,7 @@ export default class SelectAuthType extends Component {
                         </WView>
                         <WView dial={8} flex backgroundColor={Palette.white}>
                             <WView dial={5} padding={[20, 10]}>
-                                <WText center fontSize={14} lines={5}> By Continuing, you agree to ISHANVI <WText fontSize={14} color={Palette.theme_color}>Terms of Service</WText> and <WText fontSize={14} color={Palette.theme_color}>Privacy Policy</WText> </WText>
+                                <WText center fontSize={14} lines={5}> By Continuing, you agree to ISHANVI <WText fontSize={14} color={Palette.theme_color} onPress={() => history.push(routerNames.termAndConditions)}>Terms of Service</WText> and <WText fontSize={14} color={Palette.theme_color} onPress={() => history.push(routerNames.policy)}>Privacy Policy</WText> </WText>
                                 <WText> Version 0.0.1 </WText>
                             </WView>
                         </WView>
