@@ -14,9 +14,14 @@ export default class SelectProductTypeList extends Component {
     static propTypes = {
         heading: PropTypes.string,
         data: PropTypes.array,
-        value: PropTypes.any, 
+        value: PropTypes.any,
         isError: PropTypes.object,
-        isMultiple: PropTypes.bool
+        isMultiple: PropTypes.bool,
+        right: PropTypes.bool
+    }
+
+    static defaultProps = {
+        right: true
     }
 
     componentDidMount = () => {
@@ -25,7 +30,7 @@ export default class SelectProductTypeList extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         const { value } = this.props;
-        if (value.length !== prevProps.value.length) this.parseData();
+        if (value && value.length !== prevProps.value.length) this.parseData();
     }
 
     parseData = () => {
@@ -58,12 +63,17 @@ export default class SelectProductTypeList extends Component {
     }
 
     render = () => {
-        const { heading, isError, onSelect } = this.props;
+        const { heading, isError, onSelect, right } = this.props;
         const { data } = this.state;
 
         return (
             <WView dial={4} >
-                <WText fontSize={14} right fontFamily="Muli-Bold" color={isError && isError.status ? Palette.red : Palette.text_color}>{heading}</WText>
+                {
+                    right ?
+                        <WText fontSize={14} right fontFamily="Muli-Bold" color={isError && isError.status ? Palette.red : Palette.text_color} lines={20}>{heading}</WText> :
+                        <WText fontSize={14} left fontFamily="Muli-Bold" color={isError && isError.status ? Palette.red : Palette.text_color} lines={20}>{heading}</WText>
+                }
+
                 <FlatList
                     data={data}
                     style={{ alignSelf: 'stretch' }}

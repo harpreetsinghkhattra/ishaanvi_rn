@@ -69,7 +69,7 @@ export default class UserProfile extends Component {
         });
         formData.append('id', id);
         formData.append('accessToken', accessToken);
-        formData.append('itemCode', itemCode);
+        formData.append('itemCode', itemCode ? itemCode.toLowerCase() : itemCode);
         formData.append('status', status ? status : 1);
 
         console.log("product image ===> formdata", formData);

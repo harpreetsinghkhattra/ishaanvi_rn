@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WTouchable, WSpinner, WButton } from '../../common';
 import { ScrollView, PixelRatio, Image, FlatList, RefreshControl } from 'react-native';
 import Palette from '../../../Palette';
-import { Large } from '../../UI/btn';
-import { routerNames } from '../../../RouteConfig';
+import { Large, WithLeftIcon } from '../../UI/btn';
+import { routerNames, routes } from '../../../RouteConfig';
 import { RecentProductsList, ShopList } from '../../Lists';
 import { ShopListItem } from '../../ListItems';
 import { SearchHeader } from '../../Header';
@@ -212,6 +212,29 @@ export default class ProductList extends PureComponent {
             }
         </WRow>
 
+    /**Footer survey */
+    Survey = () => {
+        const { history } = this.props;
+
+        return (
+            <WRow dial={5} padding={[10, 10]} backgroundColor={Palette.homeSurveyBackground}>
+                <WView flex dial={4}>
+                    <WText fontSize={14} fontFamily={"Muli-Bold"} color={Palette.white}>Your Voice Matters</WText>
+                    <WText color={Palette.white} lines={5}>We'd love to know more about your shopping experience and how we can improve!</WText>
+                </WView>
+                <WView flex dial={6}>
+                    <WithLeftIcon
+                        label="Take Survey"
+                        onPress={() => history.push(routerNames.survey)}
+                        buttonHeight={40}
+                        iconPath={require("../../../images/chatmessage.png")}
+                        style={{ borderWidth: 2, borderColor: Palette.white, borderStyle: 'solid', backgroundColor: 'transparent' }}
+                    />
+                </WView>
+            </WRow>
+        );
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history, openSearch } = this.props;
         const { userType } = User.getUserData();
@@ -270,7 +293,7 @@ export default class ProductList extends PureComponent {
                                     data={images} /> : null}
                         {
                             isLoading ?
-                                <WView dial={5} flex>
+                                <WView dial={2} flex style={{ minHeight: 200 }}>
                                     <WSpinner size={"small"} color={Palette.theme_color} />
                                     <WText fontSize={16} fontFamily={"Muli-Bold"}>Looking for shops...</WText>
                                 </WView>
@@ -282,6 +305,9 @@ export default class ProductList extends PureComponent {
                                     </WView>
                         }
                     </WView>
+                }
+                ListFooterComponent={
+                    <this.Survey />
                 }
                 data={data}
                 renderItem={({ item, index }) =>

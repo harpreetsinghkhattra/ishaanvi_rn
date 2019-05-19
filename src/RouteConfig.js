@@ -17,7 +17,7 @@ import { UploadImage, Details, Finish } from './scenes/UploadPost';
 import { Posts, ViewPost, FullImage, ViewProduct, Comments, UserPortal, WishProducts } from './scenes/Post/';
 import ChatRoom from './scenes/Chat/ChatFile'
 import { GetStarted } from './scenes/intro';
-import { Policy, TermAndconditions } from './scenes/policies';
+import { Policy, TermAndconditions, Survey } from './scenes/policies';
 
 export const routerNames = {
     selectUserAction: "/",
@@ -49,7 +49,8 @@ export const routerNames = {
     viewPortal: '/user/view_portal',
     wishedProducts: '/wish/products',
     policy: '/policy',
-    termAndConditions: '/termAndConditions'
+    termAndConditions: '/termAndConditions',
+    survey: '/survey'
 }
 
 export const routes = [
@@ -187,5 +188,10 @@ export const routes = [
         path: routerNames.termAndConditions,
         exact: true,
         component: TermAndconditions
+    },
+    {
+        path: routerNames.survey,
+        exact: true,
+        component: Survey
     }
 ];

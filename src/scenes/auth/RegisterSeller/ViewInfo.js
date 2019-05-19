@@ -186,7 +186,7 @@ export default class ContactInfo extends Component {
                                         isLoading={isLoading}
                                         isError={this.isError("terms_and_conditions")}
                                     />
-                                    <WText padding={[0, 10]} fontSize={14}>I agree with <WText fontSize={14} color={Palette.theme_color}> Terms & Conditions</WText></WText>
+                                    <WText padding={[0, 10]} fontSize={14}>I agree with <WText fontSize={14} color={Palette.theme_color} onPress={()=> history.push(routerNames.termAndConditions)}> Terms & Conditions</WText></WText>
                                 </WRow>
                             }
 

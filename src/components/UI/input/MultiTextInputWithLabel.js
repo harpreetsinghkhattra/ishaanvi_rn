@@ -76,10 +76,8 @@ export default class TextInputWithLabel extends Component {
 
         return (
             <WView dial={5} flex={flex ? flex : 0} padding={padding} margin={margin} style={{ alignItems: "stretch" }}>
-                <WText>
-                    <WText fontSize={14} padding={[5, 0]} fontFamily="Muli-Bold">
-                        {label}
-                    </WText>
+                <WText fontSize={14} padding={[5, 0]} lines={10} fontFamily="Muli-Bold">
+                    {label}
                 </WText>
                 <WRow dial={5} style={[container, containerStyle, isError.status ? error : success]}>
                     {

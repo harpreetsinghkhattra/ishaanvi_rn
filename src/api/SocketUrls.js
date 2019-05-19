@@ -138,6 +138,16 @@ const getHomeBanners = {
     on: "/socket/api/response/getAddedBannerLocation"
 }
 
+const getSurvey = {
+    emit: "/socket/api/getSurvey",
+    on: "/socket/api/response/getSurvey"
+}
+
+const saveSurvey = {
+    emit: "/socket/api/saveSurvey",
+    on: "/socket/api/response/saveSurvey"
+}
+
 export {
     edit_user_profile,
     get_user_profile,
@@ -166,5 +176,7 @@ export {
     getProductChatMessage,
     getAllNotifications,
     getHomeBanners,
-    markShopAsViewed
+    markShopAsViewed,
+    getSurvey,
+    saveSurvey
 }

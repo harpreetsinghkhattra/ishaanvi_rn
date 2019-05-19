@@ -17,5 +17,6 @@ export default {
   orange: "#F55217",
   greenBtn1: "#32CD32",
   greenBtn2: "#228B22",
-  lightSeeGreen: "#20B2AA"
+  lightSeeGreen: "#20B2AA",
+  homeSurveyBackground: '#02576c'
 }

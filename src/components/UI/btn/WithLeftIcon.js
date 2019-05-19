@@ -4,7 +4,7 @@ import { WView, WText, WTouchable, WSpinner, WButton, WRow } from '../../common'
 import { TouchableNativeFeedback, Image } from 'react-native'
 import Palette from '../../../Palette'
 
-export default WithLeftIcon = ({ isLoading, isLoadingLoader, onPress, style, label, iconStyle, iconPath }) => {
+export default WithLeftIcon = ({ isLoading, isLoadingLoader, onPress, style, label, iconStyle, iconPath, buttonHeight = 52 }) => {
 
     const { container } = styles;
 
@@ -23,7 +23,7 @@ export default WithLeftIcon = ({ isLoading, isLoadingLoader, onPress, style, lab
                         <WText fontSize={16} fontFamily="Muli-Bold" color={Palette.white} fontWeight="bold" padding={[0, 10]}>{label}</WText>
                     </WRow>
             }
-            containerStyle={[container, style]} />
+            containerStyle={[container, style, { height: buttonHeight }]} />
     )
 }
 
@@ -50,7 +50,6 @@ const styles = {
     container: {
         backgroundColor: Palette.theme_color,
         alignSelf: "stretch",
-        height: 52,
         borderRadius: 5
     }
 }
