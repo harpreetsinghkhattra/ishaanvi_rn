@@ -64,7 +64,7 @@ export default class PagerTabIndicator extends Component {
                     }}
                 >
                     <WView flex dial={5} padding={[8, 0]} style={[isSelected ? styles.bottomBorder : {}]}>
-                        <WText fontSize={18} fontFamily={"Muli-Bold"} color={isSelected ? Palette.black : Palette.border_color}>{tab.label}</WText>
+                        <WText fontSize={18} fontFamily={"Muli-Bold"} color={isSelected ? Palette.black : Palette.white}>{tab.label}</WText>
                     </WView>
                 </TouchableOpacity>
             )

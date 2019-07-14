@@ -14,7 +14,8 @@ export default class ImageSlider extends Component {
         minHeight: PropTypes.number,
         autoPlayEnable: PropTypes.bool,
         imagePress: PropTypes.bool,
-        absolutePath: PropTypes.bool
+        absolutePath: PropTypes.bool,
+        tabStyle: PropTypes.any
     }
 
     static defaultProps = {
@@ -33,12 +34,13 @@ export default class ImageSlider extends Component {
     render() {
         const { data, minHeight } = this.props;
         const empty = [];
-        const { screenWidth, screenHeight, history, autoPlayEnable, absolutePath } = this.props;
+        const { screenWidth, screenHeight, history, autoPlayEnable, absolutePath, tabStyle } = this.props;
 
         const _renderHeader = () => {
             return (
                 <SliderIndicator
                     {...this.props}
+                    style={tabStyle}
                     tabs={data}
                     iconStyle={{ tintColor: Palette.white }}
                 />

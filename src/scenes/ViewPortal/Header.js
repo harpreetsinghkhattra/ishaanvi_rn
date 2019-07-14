@@ -115,6 +115,10 @@ export default class Header extends PureComponent {
         });
     }
 
+    showAlert = (title, message) => {
+        Alert.alert(title, message);
+    }
+
     Btn = ({ iconPath, onPress }) =>
         <WTouchable dial={5} margin={[5, 2]} onPress={onPress} style={styles.iconContainer}>
             <Image source={iconPath} style={styles.iconStyle} />
@@ -193,8 +197,8 @@ export default class Header extends PureComponent {
                     </WRow>
                     <WRow dial={6} flex>
                         <this.Btn onPress={this.dialNumber.bind(this)} iconPath={phone} />
-                        <this.Btn onPress={this.openScreen.bind(this)} iconPath={message} />
-                        <this.Btn onPress={this.onShare.bind(this, data._id)} iconPath={share} /> 
+                        <this.Btn onPress={this.isIAM() ? this.showAlert.bind(this, "", "You can't chat with yourself") : this.openScreen.bind(this)} iconPath={message} />
+                        <this.Btn onPress={this.onShare.bind(this, data._id)} iconPath={share} />
                     </WRow>
                 </WRow>
             </WView>

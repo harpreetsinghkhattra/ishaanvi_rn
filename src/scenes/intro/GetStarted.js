@@ -84,10 +84,10 @@ export default class GetStarted extends Component {
                 label={"Sell or buy.\n Almost everything."}
                 source={ai_1} />,
             <Template
-                label={"Explore the local fashion scene"}
+                label={"Explore the local fashion scene."}
                 source={ai_2} />,
             <Template
-                label={"List in a snap.\n From your phone"}
+                label={"List in a snap.\n From your phone."}
                 source={ai_3} />,
             <Template
                 label={"Find out where to buy the latest looks/items in near you."}

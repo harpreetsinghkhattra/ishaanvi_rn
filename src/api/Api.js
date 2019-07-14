@@ -199,7 +199,7 @@ export class Api {
             .then(({ status, response }) => {
                 if (status) {
                     return request(
-                        `${Config.http.locationBaseUrl}?input=${body.location}&types=establishment&radius=500&key=${Config.keys.googleLocation}`, { "method": "GET" }
+                        `${Config.http.locationBaseUrl}?input=${body.location}&types=address&key=${Config.keys.googleLocation}`, { "method": "GET" }
                     )
                         .then((res) => {
                             console.log("res get => ", res);

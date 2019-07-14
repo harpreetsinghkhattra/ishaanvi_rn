@@ -25,4 +25,9 @@ public class Splash extends AppCompatActivity {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ishaanvi_status_bar_color));
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

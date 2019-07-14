@@ -5,6 +5,7 @@ import { WText, WView, WRow, WSpinner, WTouchable, Image as WImage } from '../..
 import { RecentProductsItem } from '../../ListItems/';
 import Palette from '../../../Palette';
 import { routerNames } from '../../../RouteConfig';
+import { User } from '../../../model/user';
 
 const IMAGE_CARD_WIDTH = 150;
 
@@ -36,6 +37,12 @@ export default class ProductsCardsListItem extends PureComponent {
         if (data && data.mobile_number) {
             Linking.openURL(`tel:+91${data.mobile_number}`);
         } else Alert.alert("", "Number not Found");
+    }
+
+    isIAM = () => {
+        const { _id } = User.getUserData();
+        const { item } = this.props;
+        return item && _id === item.userId
     }
 
     openScreen = (data) => {
@@ -76,6 +83,14 @@ export default class ProductsCardsListItem extends PureComponent {
         } catch (error) {
             alert(error.message);
         }
+    }
+
+    showAlert = (title, message) => {
+        Alert.alert(title, message);
+    }
+
+    componentDidMount = () => {
+        this.isIAM();
     }
 
     render = () => {
@@ -179,7 +194,7 @@ export default class ProductsCardsListItem extends PureComponent {
                                 onPress={this.dialNumber.bind(this, userInfo)}
                                 path={phone} />
                             <this.Btn
-                                onPress={this.openScreen.bind(this, userInfo)}
+                                onPress={this.isIAM() ? this.showAlert.bind(this, "", "You can't chat with yourself") : this.openScreen.bind(this, userInfo)}
                                 path={message} />
                             <this.Btn
                                 onPress={this.onShare.bind(this, _id)}

@@ -13,6 +13,7 @@ import { MyLocation, HomeFilter } from '../Modal/';
 import { get_home_items } from '../../api/SocketUrls';
 import { Api, Socket, User as UserApi } from '../../api';
 import { ProductList } from '../../components/Card/Home';
+import AddProductButton from './AddProductButton';
 
 const UserData = new Storage();
 const PAGE_INDEX = 0;
@@ -139,7 +140,6 @@ export default class Index extends PureComponent {
         const { stretch, btnStyle, btnContainer, border, icon, floatBtn } = styles;
         const { userType } = User.getUserData();
         const { isHomeFilterVisible, isLocationModalVisible, isLazyLoading, data, isLoading, isRefreshingList, isGetNewItems } = this.state;
-        const plus = require('../../images/addshop.png');
         const empty = [];
 
         if (!isLazyLoading) return empty;
@@ -163,14 +163,12 @@ export default class Index extends PureComponent {
                 >
                     <ProductList
                         ref={ref => this.productListRef = ref}
-                        { ...this.props }
+                        {...this.props}
                     />
                 </WView>
                 {
                     userType === 1 &&
-                    <WTouchable onPress={this.openScreen.bind(this, routerNames.post_offer_detail, { screenType: "home" })} dial={5} style={floatBtn}>
-                        <Image source={plus} style={icon} />
-                    </WTouchable>
+                    <AddProductButton onPress={this.openScreen.bind(this, routerNames.post_offer_detail, { screenType: "home" })} />
                 }
             </WView >);
     }

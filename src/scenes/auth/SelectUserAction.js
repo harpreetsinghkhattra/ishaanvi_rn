@@ -10,7 +10,7 @@ import { UserLocation } from '../../model/UserLocation';
 
 const UserData = new Storage();
 
-export default class SelectAdType extends Component {
+export default class SelectUserAction extends Component {
 
     state = {
         isLoading: true

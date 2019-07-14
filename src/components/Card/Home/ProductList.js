@@ -286,7 +286,7 @@ export default class ProductList extends PureComponent {
                                     imagePress={false}
                                     absolutePath
                                     minHeight={125}
-                                    containerBackgroundColor={'transparent'}
+                                    tabStyle={{ backgroundColor: 'transparent', position: 'relative' }}
                                     inActiveColor={Palette.line_color}
                                     autoPlayEnable
                                     {...this.props}

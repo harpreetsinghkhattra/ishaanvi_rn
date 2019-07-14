@@ -15,7 +15,6 @@ export default class SliderIndeicator extends Component {
         initialPage: PropTypes.number,
         pager: PropTypes.instanceOf(TabViews),
         changePageWithAnimation: PropTypes.bool,
-        containerBackgroundColor: PropTypes.string
     }
 
     /**
@@ -24,7 +23,6 @@ export default class SliderIndeicator extends Component {
     static defaultProps = {
         tabs: [],
         changePageWithAnimation: false,
-        containerBackgroundColor: 'rgba(0,0,0,0.2)',
         activeColor: Palette.theme_color,
         inActiveColor: Palette.white
     }
@@ -79,7 +77,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.2)'
     },
     itemContainer: {
         flex: 1,

@@ -82,6 +82,20 @@ export default class AutoComplete extends Component {
             });
     }
 
+    /** Get main text from autocomplete data object */
+    getMainText(data) {
+        if (!data) return 'No address available';
+
+        return data.structured_formatting.main_text;
+    }
+
+    /** Get secondary text from autocomplete data object */
+    getSecondaryText(data) {
+        return data.structured_formatting.secondary_text;
+    }
+
+
+
     _renderRow(item, index) {
         const { description, id } = item;
         const { image, border, stretch } = styles;
@@ -104,9 +118,12 @@ export default class AutoComplete extends Component {
 
         return (
             <WTouchable key={`location_item_${index}`} onPress={() => setLocation()} dial={4} padding={[10, 0]} style={[stretch, index !== locations.length - 1 ? border : {}]}>
-                <WRow>
+                <WRow dial={4}>
                     <Image style={image} source={require("../../images/location.png")} />
-                    <WText margin={[0, 10]} fontSize={14}>{description}</WText>
+                    <WView dial={4} margin={[0, 10]}>
+                        <WText fontSize={15}>{this.getMainText(item)}</WText>
+                        <WText color={Palette.border_color} fontSize={14} lines={5}>{this.getSecondaryText(item)}</WText>
+                    </WView>
                 </WRow>
             </WTouchable>
         );
