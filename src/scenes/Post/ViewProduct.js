@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { WView, WText, WRow, Header, WTextInput, WTouchable } from '../../components/common';
-import { ScrollView, PixelRatio, Image, Platform, PermissionsAndroid, Linking, Share } from 'react-native';
+import { ScrollView, PixelRatio, Image, Platform, PermissionsAndroid, Linking, Share, Alert } from 'react-native';
 import Palette from '../../Palette';
 import { routerNames } from '../../RouteConfig';
 import { User } from '../../model/user';
@@ -136,6 +136,16 @@ export default class ViewProduct extends Component {
         }
     }
 
+    isIAM = () => {
+        const { _id } = User.getUserData();
+        const { productData } = this.state;
+        return productData && _id === productData.userId
+    }
+
+    showAlert = (title, message) => {
+        Alert.alert(title, message);
+    }
+
     render() {
         const { screenWidth, screenHeightWithHeader, history } = this.props;
         const { stretch, btnStyle, btnContainer, border, floatBtn, icon, userPortalFloatBtn, directionFloatBtn } = styles;
@@ -146,6 +156,8 @@ export default class ViewProduct extends Component {
         const userPortalIcon = require('../../images/userPortal.png');
         const similarProducts = productData && productData.user && productData.user.length ?
             productData.user.map(ele => ele.items) : [];
+
+        this.isIAM();
 
         // const { images } = item;
         const images = [
@@ -227,7 +239,7 @@ export default class ViewProduct extends Component {
                     centerBtnLabel={"CHAT & BUY"}
                     rightBtnLabel={"Rate Us"}
                     item={productData}
-                    centerBtnPress={this.openScreen.bind(this, routerNames.chat_room, {
+                    centerBtnPress={this.isIAM() ? this.showAlert.bind(this, "", "You can't chat with yourself") : this.openScreen.bind(this, routerNames.chat_room, {
                         receiverId: productData.userInfo._id,
                         image: productData.userInfo && productData.userInfo.imageUrl ? { uri: productData.userInfo.imageUrl } : require("../../images/profile.png")
                     })}

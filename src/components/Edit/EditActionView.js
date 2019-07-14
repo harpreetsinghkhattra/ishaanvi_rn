@@ -50,11 +50,15 @@ export default class EditActionView extends Component {
                     await LoginManager.logOut();
                     Helper.resetAndPushRoot(history, routerNames.selectUserAction);
                 } else if (res && res.response) {
-                    alert("Please try again in condition");
+                    // alert("Please try again in condition");
+                    this.setAlertMessageVisible(false, {});
+                    Helper.resetAndPushRoot(history, routerNames.selectUserAction);
                 }
             } catch (error) {
                 this.setState({ isLoading: false });
-                alert("Please try again while catch error");
+                // alert("Please try again while catch error");
+                this.setAlertMessageVisible(false, {});
+                Helper.resetAndPushRoot(history, routerNames.selectUserAction);
             }
         });
     }

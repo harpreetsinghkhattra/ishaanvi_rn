@@ -89,10 +89,6 @@ export default class ProductsCardsListItem extends PureComponent {
         Alert.alert(title, message);
     }
 
-    componentDidMount = () => {
-        this.isIAM();
-    }
-
     render = () => {
         const { heading, item: data, isLoading, isViewMore, onPress, userId, onItemPress, isMore, screenWidth, isHorizontal } = this.props;
         const { imageStyle, iconStyle, container, ratingContainer, viewContainer } = styles;

@@ -181,7 +181,7 @@ export default class SelectAuthType extends Component {
                         <WView dial={8} flex backgroundColor={Palette.white}>
                             <WView dial={5} padding={[20, 10]}>
                                 <WText center fontSize={14} lines={5}> By Continuing, you agree to ISHAANVI <WText fontSize={14} color={Palette.theme_color} onPress={() => history.push(routerNames.termAndConditions)}>Terms of Service</WText> and <WText fontSize={14} color={Palette.theme_color} onPress={() => history.push(routerNames.policy)}>Privacy Policy</WText> </WText>
-                                <WText> Version 0.0.9 </WText>
+                                <WText> Version 0.0.15 </WText>
                             </WView>
                         </WView>
                     </WView>
