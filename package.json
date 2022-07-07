@@ -17,7 +17,7 @@
     "@ptomasroos/react-native-multi-slider": "^1.0.0",
     "axios": "^0.18.0",
     "events": "^3.0.0",
-    "moment": "^2.23.0",
+    "moment": "^2.29.4",
     "native-base": "^2.7.2",
     "react": "16.4.1",
     "react-native": "0.56.0",
